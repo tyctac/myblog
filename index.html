@@ -1,10 +1,11 @@
 ---
 layout: default
-title: test title
+title: 我的Blog
 ---
-<!-- Useful for styles with static names... -->
-<link href="{{ site.github.url }}/path/to/css.css" rel="stylesheet">
-<!-- and for documents/pages whose URL's can change... -->
-<a href="{{ page.url | prepend: site.github.url }}">{{ page.title }}</a>
-<h>hahahha</h>
-<p>Hello world!</p>
+<h2>{{ page.title }}</h2>
+<p>最新文章</p>
+<ul>
+　　{% for post in site.posts %}
+　　　　<li>{{ post.date | date_to_string }} <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+　　{% endfor %}
+</ul>
