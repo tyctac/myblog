@@ -1,5 +1,4 @@
 encoding: utf-8
-github:[metadata]
 theme: minima
 kramdown:
     input: GFM
