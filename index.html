@@ -1,5 +1,11 @@
 ---
-layout: default2
+layout: default_index
 ---
-<h1> Hello jekyll </h1>
-<p> This is the index page </p>
+<h1> Hello World! </h1>
+<p> Welcome to the real world,it sucks,but you are gonna love it </p>
+<p> My post List:</p>
+<ul>
+    {% for post in site.posts %}
+        <li><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+</ul>
