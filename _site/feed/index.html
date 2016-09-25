@@ -7,8 +7,125 @@
     <title>dfas</title>
     <link href="tyctac.github.io/feed/" rel="self" />
     <link href="http://geeklu.com" />
-    <lastBuildDate>2016-09-25T21:29:41+08:00</lastBuildDate>
+    <lastBuildDate>2016-09-25T21:51:11+08:00</lastBuildDate>
     <webMaster>kejinlu@gmail.com</webMaster>
+    
+    <item>
+      <title>Ubuntu使用环境配置</title>
+      <link href="tyctac.github.io/2016/09/blog-test/"/>
+      <pubDate>2016-09-25T00:00:00+08:00</pubDate>
+      <author>dfas</author>
+      <guid>tyctac.github.io/2016/09/blog-test</guid>
+      <content:encoded><![CDATA[<p><img src="http://ww3.sinaimg.cn/large/65cc0af7gw1f67pfmy2y2j21hc0xc1kx.jpg" style="width: 80%; height: 80%" /></p>
+
+<p>还记得大学那会儿，特别爱折腾系统，装的最多估计就是Ubuntu系统了，也是从那时候起开始接触Linux，工作之后也就懒得折腾了，选择了同属UNIX系得macOS 。所以很长的时间里就一直使用macOS了。</p>
+
+<p>去年家里买了一个NAS，当时考虑的因素有做工，盘位，系统。最后选择QNAP TS-453 Pro，当时为了便宜选择了从computeruniverse海淘，即使加上关税到手也比国内行货便宜一两千。虽然QNAP的系统比不上群晖，但是这两年已经有很大的改观，用户体验有追赶群晖的趋势。</p>
+
+<p>QNAP TS-453 Pro 四核，四盘位，四千兆网口，内存升级到8G。内置的HD Station支持HDMI显示，HD Station支持一些简单的App，比如Chrome，Kodi，还是比较方便的。TS-453 Pro还支持虚拟化技术，通过Virtualization Station可以安装各种虚拟机，应该是基于KVM技术的；另外Container Station还支持Docker容器，所以使用起来想象空间很大。 没想到今年新的系统开始支持Linux Station，可以有完整的Linux的桌面体验了，当然Linux Station开启后，HD Station 会被关闭，因为都是通过HDMI接口来进行显示的输出。Linux Station是基于LXC来实现的，所以性能优越和原生基本无异。</p>
+
+<p>目前Linux Station还只支持Ubuntu 14.04和16.04这两个LTS版本。想想NAS基本24小时开机，配置个简单的Ubuntu的工作环境，方便平时写写代码，写写文档。在QTS的Linux Station中安装好Ubuntu 16.04，以及确认开启Linux Station后，便可以在显示器上进行操作了。</p>
+
+<p>简单的想了下，想搭建下python和Java的开发环境，以及装一些必要的软件。</p>
+
+<h3 id="python">1. python工作环境配置</h3>
+<p>Ubuntu 16.04安装好了之后默认就带了2.x和3.x的python版本，但是为了更方便的进行版本管理，决定通过pyenv来安装和管理python版本。
+安装pyenv之前先装下git</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo apt-get install git
+</code></pre>
+</div>
+
+<p>然后进行pyenv的安装</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>git clone https://github.com/yyuu/pyenv.git ~/.pyenv
+</code></pre>
+</div>
+
+<p>然后在～/.bashrc 末尾加上下面三行代码</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.pyenv"</span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PYENV_ROOT</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+<span class="nb">eval</span> <span class="s2">"</span><span class="k">$(</span>pyenv init -<span class="k">)</span><span class="s2">"</span>
+</code></pre>
+</div>
+
+<p>然后重启Terminal，输入pyenv看命令是否起作用。</p>
+
+<p>下面便可以通过pyenv来安装你所需要的python的版本了，比如</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pyenv install 3.5.1
+</code></pre>
+</div>
+
+<p>这个时候你会发现 悲剧发生了，由于国内的特定网络原因，python安装的下载速度及其缓慢，基本是10k以内的速度无法忍受（突然想到以前python官网一度无法访问），好在还是由办法解决这个问题的，你可以先想办法到官网把安装包单独下载好，比如我讲下载好的包<code class="highlighter-rouge">Python-3.5.1.tar.xz</code>放到<code class="highlighter-rouge">～/Downloads</code>目录下，然后指定build缓存目录后，再运行install命令</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PYTHON_BUILD_CACHE_PATH</span><span class="o">=</span>~/Downloads
+pyenv install 3.5.1
+pyenv rehash
+</code></pre>
+</div>
+
+<p>安装多个版本的python之后可以通过下面的命令来切换全局的python的版本</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pyenv global 3.5.1
+</code></pre>
+</div>
+
+<p>安装后对应版本的pip也是安装好了的。</p>
+
+<p>最近对深度学习有点感兴趣，所以正好打算装个TensorFlow玩一玩，找到官方的安装指南，选择正确的版本进行安装， <a href="https://www.tensorflow.org/versions/r0.9/get_started/os_setup.html#pip-installation">https://www.tensorflow.org/versions/r0.9/get_started/os_setup.html#pip-installation</a>, NAS的配置注定只能使用CPU的，然后选择对应的python版本和Ubuntu的架构版本</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">TF_BINARY_URL</span><span class="o">=</span>https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.9.0-cp35-cp35m-linux_x86_64.whl
+pip install --upgrade <span class="nv">$TF_BINARY_URL</span>
+</code></pre>
+</div>
+
+<p>这个时候你会发现老问题又来了，pip的库在国内访问慢，所以这个时候你最好指定一个国内的pip源进行安装，这里选择豆瓣的源</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pip install --upgrade <span class="nv">$TF_BINARY_URL</span>  -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
+</code></pre>
+</div>
+
+<p>另外如果你想选择一款python的ide可以选择Pycharm的社区版，一般情况下社区版够用了。</p>
+
+<h3 id="java">2.配置Java环境</h3>
+<p>Java目前一般有open jdk，还有oracle jdk，这里安装oracle jdk，你可以自己到oracle官网下载，手动进行安装，也可以通过添加源的方式使用apt-get工具进行安装</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+</code></pre>
+</div>
+
+<p>安装好了之后可以进行配置，比如如果你系统中安装有多个版本的jdk，那么就可以通过下面的方式来指定默认使用的jdk的版本</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo update-alternatives --config java
+</code></pre>
+</div>
+
+<h3 id="section">3.其他常用软件安装</h3>
+<ul>
+  <li>对应一些独立的第三方下载的deb包，推荐使用GDebi Package Installer （<code class="highlighter-rouge">sudo apt-get install gdebi</code>）</li>
+  <li>中文输入法推荐搜狗输入法，安装搜狗输入法前先安装依赖的包 （<code class="highlighter-rouge">sudo apt-get install fcitx libssh2-1</code>），系统设置中将输入法系统设置为fcitx，然后下载搜狗输入法的包，可以从这里下载 <a href="http://download.pchome.net/utility/lan/ime/download-3955.html">http://download.pchome.net/utility/lan/ime/download-3955.html</a> ,官网的包安装有问题</li>
+  <li>编辑器可以使用github的Atom或者Sublime Text 3</li>
+  <li>markdown编辑器推荐使用haroopad</li>
+  <li>系统优化配置可以使用Unity Tweak Tool （<code class="highlighter-rouge">sudo apt-get install unity-tweak-tool</code>）， 此工具可以设定诸如Launcher的位置等</li>
+  <li>实时顶端状态栏显示系统cpu内存等信息可以通过 indicator multiload 来shi实现 （<code class="highlighter-rouge">sudo apt-get install indicator-multiload</code>）</li>
+  <li>
+    <p>中文字体可以选择微软雅黑，首先到Windows系统下拷贝过来字体文件，进行下列操作之后，便可以选择微软雅黑字体了</p>
+
+    <p><code class="highlighter-rouge">bash
+sudo cp msyh.ttf /usr/share/fonts/
+sudo mkfontscale
+sudo mkfontdir
+sudo fc-cache -fv
+</code></p>
+  </li>
+</ul>
+
+]]></content:encoded>
+    </item>
     
     <item>
       <title>线性回归</title>
@@ -1293,74 +1410,6 @@ didRotateFromInterfaceOrientation:)传递给rootViewController。rootViewControl
 <span class="k">@end</span>
 </code></pre>
 </div>
-
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>谈谈objc公用库</title>
-      <link href="tyctac.github.io/2014/02/objc-lib/"/>
-      <pubDate>2014-02-10T00:00:00+08:00</pubDate>
-      <author>dfas</author>
-      <guid>tyctac.github.io/2014/02/objc-lib</guid>
-      <content:encoded><![CDATA[<h2 id="section">一.概述</h2>
-<p>objc公用库的使用场景还是比较常见的，iOS SDK本身就是公用库的集合；一些开放平台为了方便开发者开发第三方的app，提供相应平台的sdk；还有一个场景就是比较大的公司一般会有多个甚至几十个app，各个app之间势必会有重复的逻辑，为了 “提升效率”“安全性” 或者业务指标，会推一些公用的库供内部各个app使用。 <br />
-公用库本质上就是一些可重用逻辑的集合，是“分而治之”的一种途径，其出现的形式可以是源码亦或是二进制。 <br />
-公用库也需要理清自己的依赖关系，比如依赖系统SDK的哪些库的哪些接口（决定了公用库适用的系统版本），依赖哪些第三方的库。不过你想把一个东西拿出去给别人用，那你就得想方设法去减少不必要的依赖。 <br />
-作为一个公用库的开发者，提供公用库给别人使用时，需要站在使用者的角度去思考问题，公用库的接口以及接入使用的繁简体现了公用库作者的职业道德和素养。</p>
-
-<h2 id="section-1">二.设计与实现</h2>
-<p>第一步当然是明确公用库的目标，要做什么，不做什么，一二三四列出来，并在后继的实现中最大可能地坚持目标原则。  <br />
-项目的构建也有几种选择：</p>
-
-<ul>
-  <li>使用XCode的”Cocoa Touch Static Library”项目模板新建项目，target为一个静态库</li>
-  <li>安装 <a href="https://github.com/kstenerud/iOS-Universal-Framework">iOS Universal Framework</a> ,然后在XCode中通过其提供的”Static iOS Framework”项目模板新建项目，其target为framework库</li>
-</ul>
-
-<p>另外你可以在上面的基础上，通过<a href="http://cocoapods.org/">cocoapods</a>来管理你自己的公用库的依赖。</p>
-
-<p>在实现的时候，公用库自身的源码全都放到某个目录中或者其子目录中(是指那些可以直接拷贝出去使用的源码，不包括自身编译所依赖的文件，比如prefix.pch)。 <br />
-头文件只暴漏那些必须的，在实现库的时候能够在实现文件中进行引入的的则在实现文件中进行引入，如果在需要暴漏的头文件中引入另一个头文件，那么这另一个头文件也必须要暴漏出来。   <br />
-另一个常见的问题便是接口的方法声明不遵循objc的语言规范，给人以山寨的感觉。还是建议公用库的实现最好有一个当前语言的老手带着做，熟悉当前语言的规范和常用的范式，比如何时使用delegate，何时使用block。 <br />
-还有就是在实现的时候尽可能少地引入第三方的依赖，如果确实需要引入，那么编译的时候千万别把公用库自身依赖的第三方的内容当成自己的一部分，如果你很变态，硬要把第三方的内容搞成自己的一部分，那么你至少得修改这些依赖的相关类的类名，静态变量名，如果是category，还得修改其方法名。    <br />
-最后就是你得坚持良好的注释和文档 ，某个方法 如有特殊的需要注意的点，则需要注释说明，你还得提供一个README文件，用于描述当前库的目的，以及各个接口的使用范例。</p>
-
-<h2 id="section-2">三.分发与集成</h2>
-<p>其实在公用库构建的初期，你就得想好分发的方式。一种好的分发方式可以大大降低公用库集成使用的成本。 <br />
-一个公用库要给别人用，无非就两种形式：源码或者二进制格式（额外提供头文件，资源文件），源码的形式，方便使用者进行调试，二进制格式则适用于那些不方便公开源码的公用库。</p>
-
-<ul>
-  <li>先谈谈源码的形式，源码一般放在某个版本控制库中
-    <ul>
-      <li>在以前很多人就直接下载下来将相关类拷贝进自己的工程中，然后直接使用，这样的坏处就是没法明确知道此公用库的版本以及此库作者做了更新后，你还得手动拷贝一次，比较麻烦。</li>
-      <li>后来就开始用git的submodule，主工程无需将某个公用库的源码放到自己的git库中了，而且三方库可以方便的进行更新切换分支等操作，这种情况下最好是将主工程依赖此三方库项目编译出来的target，比如静态库，这样当公用库有增删文件的时候，无需修改主工程项目文件。</li>
-      <li>最近我比较推荐的就是cocoapods的方式了，它的主要优点就是依赖关系的管理，当然其本质上也是将公用库编译成静态库，然后使得主工程依赖此静态库。</li>
-    </ul>
-  </li>
-  <li>二进制的形式需要谈的东西还是比较多的，二进制一般有两种方式
-    <ul>
-      <li>一种是简单的静态库，也就是常见的 xxx.a 文件, 只不过真正使用的时候需要提供头文件或者资源文件，一般资源文件都是以bundle的形式提供。XCode中默认提供的就是这种方式，只不过你创建公用库项目的时候编译出来静态库只支持特定的一种硬件架构体系，如果你想生成一个Universal的静态库的话，那么你得通过工具来将多个静态库进行合并。</li>
-      <li>另一种便是framework的方式，此方式XCode默认并不支持。你在iOS开发的过程中应该接触过不少framework库，这种库都是系统自带的库，供系统中运行的所有app共享使用。framework库的好处就是不但可以包含二进制文件，还可以包含头文件，资源文件等，甚至可以支持多个版本。各个app所使用的自己的公用库，最终都需要link进可执行文件件的，所以本质上还是一个静态库。所以有一些第三方的方案比如<a href="https://github.com/kstenerud/iOS-Universal-Framework">iOS Universal Framework</a>，能够帮助你使用XCode来编译出framework库，当然其中还是有不少坑，比如XCode并不识别framework中的资源文件所以有了Embedded Framework的方案，虽然framework最终只是一个bundle（一个文件夹，里面按照规定的目录结构方式文件），但是对XCode而言这样的target还是有真假（Real／Fake）之分，只有真的情况下XCode主工程在添加依赖的时候才能够选择此公用库项目的framework涨的target。</li>
-      <li>cocoapods也是支持管理二进制格式的，在podspec中通过vendored_frameworks或者vendored_libraries来指定你需要分发的库</li>
-    </ul>
-  </li>
-</ul>
-
-<p>当然不管你以何种方式分发你的公用库，你都得明确声明此公用库适用的系统版本，依赖哪些系统SDK的框架或者静态库，依赖哪些第三方的库以及对应的版本，这是对自己负责也是对别人负责。 <br />
-在使用公用库的时候，XCode都是通过header search path来寻找静态库的头文件的，通过framework search path来寻找framework的，当使用cocoapods来管理的时候，这些环境变量的设置都是自动帮你完成的，在其生成的xcconfig文件中。</p>
-
-<h2 id="section-3">四.和库相关的几个命令</h2>
-<p>下面几个命令都是和二进制库相关的，这些二进制文件可以叫做对象文件，在Mac或者iOS平台中用的都是<a href="http://zh.wikipedia.org/wiki/Mach-O">Mach-O</a>(Mach Object)，所以这些命令其实都是读取或者操作Mach Object的，你可以通过<code class="highlighter-rouge">man</code>来查看相应的详情用户手册。</p>
-
-<ul>
-  <li>nm <br />
- 	display name list (symbol table)，其实就是把对象文件中的相关符号标识都列出来</li>
-  <li>otool <br />
- 	otool，顾名思义就是object tool，比其nm来说，其功能更强大，可以查看对象文件的方方面面，比如展示对象文件的Mach Header，用到了哪些共享库（shared libraries），或者数据段内容等。</li>
-  <li>lipo  <br />
- 	create or operate on universal files，此命令主要是帮你查看或者创建支付多平台的静态库的。比如将两台不同平台的静态进行合并。</li>
-</ul>
 
 ]]></content:encoded>
     </item>
