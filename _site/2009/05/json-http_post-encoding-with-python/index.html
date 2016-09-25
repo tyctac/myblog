@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="卢克" />
+    <title>Python脚本实例 包括xml,json,http,编码 | 卢克</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="卢克" type="application/atom+xml" />
+
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+
+    <script type="text/javascript"
+       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+ jax: ["input/TeX","output/HTML-CSS"],
+ displayAlign: "left"
+});
+</script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>Python脚本实例 包括xml,json,http,编码</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<p>这几天在研究python相关的一些东西,其中涉及的内容包括:</p>
+
+<p>xml的解析,json的解析,urllib的使用,urllib的使用,python中中文编码的问题等</p>
+
+<p>项目托管在Google上，地址是http://code.google.com/p/ipmobile/source/checkout</p>
+
+<p>当然一切都来源于实际工作嘛,首先引入缘由,情景是这样的:</p>
+
+<p>有一个Excel表格,有注册日期,用户ID,注册IP,注册手机号这几个字段,
+但现在需要获取注册IP所在的地址 以及手机号所属地区等信息,
+并根据这些信息进行分类统计等工作</p>
+
+<p>当然如果在没有编码人员介入的情况下,
+需要一个个的到一些网络上的页面上查出地址的信息,然后填到excel里,
+而这完全是重复劳动,完全可以抽象并做出系统,在没有人力进行系统开发的情况下,
+可以使用简单的脚本进行替代,
+本文中,本人使用python脚本进行了相关研究和实验性的工作.用Python写出的代码的可读性非常的高的
+首先是一个简单的例子使用过的是有道的接口获取IP和手机号码的地址的</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python</span>
+<span class="c">#coding=utf-8</span>
+
+<span class="s">"""
+getinfo.py
+Created by Luke on 2009-04-29.
+Copyright (c) 2009 Alibaba. All rights reserved.
+"""</span>
+
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">from</span> <span class="nn">xml2dict</span> <span class="kn">import</span> <span class="n">XML2Dict</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+
+
+<span class="k">def</span> <span class="nf">gbk2utf8</span><span class="p">(</span><span class="n">xml</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"gbk"</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"utf8"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">'gbk'</span><span class="p">,</span> <span class="s">'utf-8'</span><span class="p">);</span>
+
+<span class="k">def</span> <span class="nf">get_ip_info</span><span class="p">(</span><span class="n">ip</span><span class="p">):</span>
+    <span class="n">url</span><span class="o">=</span><span class="s">"http://www.yodao.com/smartresult-xml/search.s?type=ip&amp;q=</span><span class="si">%</span><span class="s">s"</span><span class="o">%</span><span class="n">ip</span>
+    <span class="k">return</span>  <span class="n">gbk2utf8</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+<span class="k">def</span> <span class="nf">get_mobile_info</span><span class="p">(</span><span class="n">mobile</span><span class="p">):</span>
+    <span class="n">url</span><span class="o">=</span><span class="s">"http://www.yodao.com/smartresult-xml/search.s?type=mobile&amp;q=</span><span class="si">%</span><span class="s">s"</span><span class="o">%</span><span class="n">mobile</span>
+    <span class="k">return</span> <span class="n">gbk2utf8</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">fr</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">'x.csv'</span><span class="p">)</span>
+    <span class="n">wr</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="s">'y.csv'</span><span class="p">,</span><span class="s">'w'</span><span class="p">,</span><span class="s">'gbk'</span><span class="p">)</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">XML2Dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fr</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">','</span><span class="p">)</span>
+        <span class="n">ip_item</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">mobile_item</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">ip_dict</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">get_ip_info</span><span class="p">(</span><span class="n">ip_item</span><span class="p">))</span>
+        <span class="n">mobile_dict</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">get_mobile_info</span><span class="p">(</span><span class="n">mobile_item</span><span class="p">))</span>
+        <span class="n">new_line</span><span class="o">=</span><span class="s">''</span>
+        <span class="k">if</span> <span class="n">ip_dict</span><span class="o">.</span><span class="n">smartresult</span><span class="o">!=</span><span class="bp">None</span><span class="p">:</span>
+            <span class="n">new_line</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s">','</span><span class="o">+</span><span class="n">items</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s">','</span><span class="o">+</span><span class="n">items</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="s">','</span>
+                                         <span class="o">+</span><span class="n">ip_dict</span><span class="o">.</span><span class="n">smartresult</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"gbk"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_line</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s">','</span><span class="o">+</span><span class="n">items</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s">','</span><span class="o">+</span><span class="n">items</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="s">','</span>
+        <span class="k">if</span> <span class="n">mobile_dict</span><span class="o">.</span><span class="n">smartresult</span><span class="o">!=</span><span class="bp">None</span><span class="p">:</span>
+            <span class="n">new_line</span> <span class="o">=</span> <span class="n">new_line</span><span class="o">+</span><span class="s">','</span><span class="o">+</span><span class="n">items</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">','</span>
+                                         <span class="o">+</span><span class="n">mobile_dict</span><span class="o">.</span><span class="n">smartresult</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"gbk"</span><span class="p">)</span><span class="o">+</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_line</span> <span class="o">=</span> <span class="n">new_line</span><span class="o">+</span><span class="s">','</span><span class="o">+</span><span class="n">items</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">','</span><span class="o">+</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span>
+        <span class="k">print</span> <span class="n">new_line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"gbk"</span><span class="p">)</span>
+        <span class="n">wr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">new_line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"gbk"</span><span class="p">))</span>
+    <span class="n">fr</span><span class="o">.</span><span class="n">close</span><span class="p">();</span>
+    <span class="n">wr</span><span class="o">.</span><span class="n">close</span><span class="p">();</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span></code></pre></figure>
+
+<p>这段代码从有道那获得的结果是xml编码格式为gbk的,所以在编码上我将其先转换成utf8的,然后再通过xml2dict将其转换成Python的字典结构,这样我就可以直接读取节点的值了.
+这段代码还使用了urllib模块还有读文件写文件的相关知识点,总体来说还是很简单的,主要就是字符串的拼接了,这里的文件格式都是csv的很容易就可以编程excel的格式</p>
+
+<p>但是问题来了,有的IP地址在有道这里查不出来,而在ip138这个网站上可以查出来,后来试了好多,发现IP138的数据库的数据貌似全一些,但是IP138没有提供任何数据读取的API,那怎么办呢?嘿嘿,那就用最那个的办法了,在脚本里解析使用正则表达式处理html,解析出想要的结果,代码如下:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="s">"""
+ip138poster.py
+Created by Luke on 2009-05-04.
+Copyright (c) 2009 Alibaba. All rights reserved.
+"""</span>
+
+<span class="kn">import</span> <span class="nn">httplib</span><span class="o">,</span><span class="nn">urllib</span><span class="p">;</span>  <span class="c">#加载模块</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="k">class</span> <span class="nc">Ip138Poster</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#定义一些文件头</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">"Content-Type"</span><span class="p">:</span><span class="s">"application/x-www-form-urlencoded"</span><span class="p">,</span>
+                    <span class="s">"Connection"</span><span class="p">:</span><span class="s">"Keep-Alive"</span><span class="p">,</span><span class="s">"Referer"</span><span class="p">:</span><span class="s">"http://www.ip138.com/ips.asp"</span><span class="p">};</span>
+        <span class="c">#与网站构建一个连接</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="s">"www.ip138.com"</span><span class="p">);</span>
+
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ip_addr</span><span class="p">):</span>
+        <span class="c">#定义需要进行发送的数据</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">({</span><span class="s">'ip'</span><span class="p">:</span><span class="n">ip_addr</span><span class="p">,</span><span class="s">'action'</span><span class="p">:</span><span class="s">'2'</span><span class="p">});</span>
+        <span class="c">#开始进行数据提交   同时也可以使用get进行</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">"POST"</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s">"/ips8.asp"</span><span class="p">,</span>
+                                            <span class="n">body</span><span class="o">=</span><span class="n">params</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">);</span>
+        <span class="c">#返回处理后的数据</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">();</span>
+        <span class="c">#判断是否提交成功</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="n">s</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">print</span> <span class="n">s</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"gbk"</span><span class="p">)</span>
+            <span class="n">lis</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">r"(?&lt;=&lt;li&gt;).*?(?=&lt;/li&gt;)"</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">lis</span>
+
+    <span class="k">def</span> <span class="nf">get_main_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ip_addr</span><span class="p">):</span>
+        <span class="c">##下面的十六进制的值为"本站主数据："的unicode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_data_parttern</span> <span class="o">=</span> <span class="s">r"(?&lt;=</span><span class="err">\</span><span class="s">xe6</span><span class="err">\</span><span class="s">x9c</span><span class="err">\</span><span class="s">xac</span><span class="err">\</span><span class="s">xe7</span><span class="err">\</span><span class="s">xab</span><span class="err">\</span><span class="s">x99</span><span class="err">\</span><span class="s">xe4</span><span class="err">\</span><span class="s">xb8</span><span class="err">\</span><span class="s">xbb</span><span class="err">\</span><span class="s">xe6</span><span class="err">\</span><span class="s">x95</span><span class="err">\</span><span class="s">xb0</span><span class="err">\</span><span class="s">xe6</span><span class="err">\</span><span class="s">x8d</span><span class="err">\</span><span class="s">xae</span><span class="err">\</span><span class="s">xef</span><span class="err">\</span><span class="s">xbc</span><span class="err">\</span><span class="s">x9a).*"</span>
+        <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">ip_addr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">main_data</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_data_parttern</span><span class="p">,</span><span class="nb">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"gbk"</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"utf8"</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">main_data</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">ret_value</span> <span class="o">=</span> <span class="n">main_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret_value</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf8"</span><span class="p">)</span>
+
+
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#关闭连接</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+
+<span class="c">##由于需要匹配中文，所以需要转换，然后再匹配</span>
+<span class="k">def</span> <span class="nf">UTF2Hex</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"UTF-8"</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"hex"</span><span class="p">)</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="s">""</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="s">"</span><span class="se">\\</span><span class="s">x"</span> <span class="o">+</span> <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">line</span>
+
+<span class="k">def</span> <span class="nf">GBK2Hex</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"GBK"</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">"hex"</span><span class="p">)</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="s">""</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">+=</span> <span class="s">"</span><span class="se">\\</span><span class="s">x"</span> <span class="o">+</span> <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">line</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">poster</span> <span class="o">=</span> <span class="n">Ip138Poster</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">poster</span><span class="o">.</span><span class="n">get_main_data</span><span class="p">(</span><span class="s">"121.0.29.231"</span><span class="p">)</span></code></pre></figure>
+
+<p>这里我还提供一个json的可选方案,可惜的是目前我没有发现国内的可以使用json协议获取ip地址信息的API(SOAP的万网好像有个),所以IP的API是使用国外的,手机号码信息查询国内是有API的,可以直接使用,代码非常非常简单,如下:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python</span>
+<span class="c"># encoding: utf-8</span>
+<span class="s">"""
+locatingsystem.py
+
+Created by Luke on 2009-05-04.
+Copyright (c) 2009 Alibaba.com. All rights reserved.
+"""</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="k">class</span> <span class="nc">LocatingSystem</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_ip_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ip</span><span class="p">):</span>
+        <span class="n">url</span><span class="o">=</span><span class="s">"http://iplocationtools.com/ip_query.php?ip=</span><span class="si">%</span><span class="s">s&amp;output=json"</span><span class="o">%</span><span class="n">ip</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">get_mobile_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mobile</span><span class="p">):</span>
+        <span class="n">url</span><span class="o">=</span><span class="s">"http://api.showji.com/locating/?m=</span><span class="si">%</span><span class="s">s&amp;output=json"</span><span class="o">%</span><span class="n">mobile</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">ls</span> <span class="o">=</span> <span class="n">LocatingSystem</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">ls</span><span class="o">.</span><span class="n">get_ip_json</span><span class="p">(</span><span class="s">"134.34.54.56"</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">ls</span><span class="o">.</span><span class="n">get_mobile_json</span><span class="p">(</span><span class="s">"13819127490"</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span></code></pre></figure>
+
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">卢克</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2009-05-04">2009-05-04</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#Programming" title="Programming">Programming</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#Python" title="Python">Python</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/2009/05/json-http_post-encoding-with-python/" data-title="Python脚本实例 包括xml,json,http,编码" data-url="http://geeklu.com/2009/05/json-http_post-encoding-with-python/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"geeklu"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = 'http://geeklu.com/2009/04/a-python-program/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = 'http://geeklu.com/2009/05/regular-expression-in-python/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-09-25 10:37:43 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

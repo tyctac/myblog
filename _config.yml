@@ -1,8 +1,7 @@
-encoding: utf-8
-theme: minima
-kramdown:
-    input: GFM
-    hard_wrap: false
-gems:
-    - jekyll-coffeescript
-    - jekyll-paginate
+permalink: /:year/:month/:title/
+url: http://geeklu.com
+author: 卢克
+highlighter: rouge
+timezone: Asia/Shanghai
+gems: [jekyll-paginate]
+paginate: 24

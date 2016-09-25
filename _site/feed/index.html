@@ -1,0 +1,1369 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <rss version="2.0"
+        xmlns:content="http://purl.org/rss/1.0/modules/content/"
+        xmlns:atom="http://www.w3.org/2005/Atom"
+  >
+  <channel>
+    <title>卢克</title>
+    <link href="http://geeklu.com/feed/" rel="self" />
+    <link href="http://geeklu.com" />
+    <lastBuildDate>2016-09-25T10:37:43+08:00</lastBuildDate>
+    <webMaster>kejinlu@gmail.com</webMaster>
+    
+    <item>
+      <title>线性回归</title>
+      <link href="http://geeklu.com/2016/08/linear-regression/"/>
+      <pubDate>2016-08-12T00:00:00+08:00</pubDate>
+      <author>卢克</author>
+      <guid>http://geeklu.com/2016/08/linear-regression</guid>
+      <content:encoded><![CDATA[<p>上次在<a href="http://geeklu.com/2016/07/deep-learning-intro/">深度学习起步</a>提到了监督学习和非监督学习，这里要讲的回归就属于监督学习的范畴。</p>
+
+<p>这里先介绍下”回归”（Regression）这个词使用的来源，Regression作为术语被首次使用在高尔顿(Francis Galton,1822～1911)在他的1886年发表的一篇研究人类遗传问题的名为“Regression towards mediocrity in hereditary stature”的论文中，其中相关的上下文就是人类身高的分布相对稳定而不产生两极分化，总是回归于平均水平。 后来该术语被其他人采纳，以至于它今天作为一个一般的统计方法存在，详细资料可以看这篇<a href="https://en.wikipedia.org/wiki/Regression_toward_the_mean">https://en.wikipedia.org/wiki/Regression_toward_the_mean</a>。</p>
+
+<h2 id="section">1. 概率知识回顾</h2>
+<p>学习生涯中最早接触<strong>回归</strong>这个概念是高中数学里统计学部分的<strong>线性回归方程</strong>吧，不过估计都忘得差不多了。 <br />
+回归问题属于统计学，现应用于数据分析，机器学习等多个领域，虽然各个领域对回归的细节表述不完全一致，但是其底层的数学意义是完全一致的。
+  这里就简单介绍说下一元线性模型，假设给定一个样本数据的集合：</p>
+
+<script type="math/tex; mode=display">(x^{(1)}, y^{(1)}),\,(x^{(2)}, y^{(2)})\,...\,(x^{(n)},y^{(n)})</script>
+
+<blockquote>
+  <p>这里的(n)不是指数，而是指第n个样本数据 ,为什么没有使用$x_n,y_n$呢，因为当非一元的线性的时候，比如二元的时候第n个样本数据就得这样表示了($x_1^{(n)},x_2^{(n)},y^{(n)}$)来表示，也就是这种情况会出现下标被占用的情况。</p>
+</blockquote>
+
+<p>这里x为自变量(independent variable)，y为因变量(dependent variable)，且假设x，y之间存在线性关系，那么我们可以建立一个模型:</p>
+
+<script type="math/tex; mode=display">y^{(i)} = \theta_0 + \theta_1x^{(i)} + u^{(i)}</script>
+
+<p>其中 $\theta_0$和 $\theta_1$是两个常数，$u^{(i)}$ 是第i个样本数据的误差项，误差项满足下列基本假定：数学期望为0，且是独立的，服从均值为0,方差为常数 $\delta^2$的正态分布。 <br />
+上面这种模型函数，很多地方叫做总体回归函数 ,总体回归函数一般是未知的，且只有一条，而我们一般研究的是另一个叫做样本回归函数的模型：</p>
+
+<p><script type="math/tex">\hat{y}^{(i)} = \hat{\theta}_0 + \hat{\theta}_1x^{(i)}</script>
+其中实际样本中的 $y^{(i)}$ 值和 $\hat{y}^{(i)}$ 的差 $e^{i} =y^{(i)}-\hat{y}^{(i)}$，我们称之为残差。虽然样本回归函数的模型中 $\hat{\theta}_0 ,\, \hat{\theta}_1$ 随着样本的变化而变化，通过样本数据可以估算出相应的值的，在机器学习的训练中，随着训练的不断进行，也就是样本数据的不断增加，模型的参数也是在不断的变化的。为了方便和通用我就将回归函数写成下面的形式：
+<script type="math/tex">y = \theta_0 + \theta_1x</script></p>
+
+<h2 id="section-1">2. 案例分析</h2>
+<p>下面我们来通过实际的例子而且从机器学习的角度来加深理解一元线性回归模型。
+假设下面是某公司某十个月的广告费用和对应的销售额：</p>
+
+<table border="1">
+<tbody>
+<tr><td><em>广告费（万）</em></td><td><em>销售额（万）</em></td></tr>
+<tr><td>4</td><td>9</td></tr>
+<tr><td>8</td><td>20</td></tr>
+<tr><td>9</td><td>22</td></tr>
+<tr><td>8</td><td>15</td></tr>
+<tr><td>7</td><td>17</td></tr>
+<tr><td>12</td><td>23</td></tr>
+<tr><td>6</td><td>18</td></tr>
+<tr><td>10</td><td>25</td></tr>
+<tr><td>6</td><td>10</td></tr>
+<tr><td>9</td><td>20</td></tr>
+</tbody>    
+</table>
+
+<p>这组数据你可以把它看成训练数据，对于输入广告费都对应一个销售额。我们设广告费为自变量x,销售额为因变量y，那么我们的目标就是根据训练数据集(样本)找出最佳的 $\theta_0$, $\theta_1$(就是找出确定的样本回归函数)，然后就可以通过这个回归函数对训练数据外的输入做出结果的评估。
+我们设 $y=h_{(\theta_0,\theta_1)}(x) = \theta_0 + \theta_1x$, 为了方便可以写作$h_{(\theta)}(x) = \theta_0 + \theta_1x$ 。</p>
+
+<blockquote>
+  <p>人们历来喜欢通过函数的几何意义来加深理解，因为将函数在坐标系中进行表达，更加直观。比如一元函数y=f(x)是在二维坐标系中的线,二元函数z=f(x,y)
+是三维坐标系中的曲面，多于二元的函数的几何意义就不太好表达了。</p>
+</blockquote>
+
+<p>一元线性回归函数在二维坐标系统其实就是一条直线，我们现将上述的那些训练数据在二维坐标系中表示出来。 <br />
+<img src="http://ww2.sinaimg.cn/large/65cc0af7gw1f6r04s9c76j20q90hi75x.jpg" width="80%" height="80%" />​</p>
+
+<p>图上散落的那些交叉点就是上表中的数据，然后我们的目标就是根据这些点拟合出一条直线，然后再通过这条直线，对新的广告费用的输入，给出对应的收入的评估。 <br />
+如果通过机器学习的概念来描述这个过程大概是下面的样子： <br />
+<img src="http://ww3.sinaimg.cn/large/65cc0af7gw1f6t9n6icr9j20b4081zkn.jpg" width="50%" height="50%" />  <br />
+图中的h是hypothesis的意思，这是机器学习的专业属于，你可以把它看做一个函数的名字。  <br />
+所以我们这里的目标就是如果来表示h，我这里就假设h就是一个一元线性的函数，可以表示为：<br />
+<script type="math/tex">h_{(\theta)}(x) = \theta_0 + \theta_1x</script>
+所以要想确定h函数，那就是要找出最优的 $\theta_0$和 $\theta_1$的值，使得得到的直线能够最好地拟合训练数据中的所有的点。假设训练数据中有一个点 $(x^{(i)}, y^{(i)})$ ，那么 $h_{(\theta)}(x^{(i)})$ 和 $y^{(i)}$ 越接近越好。然而问题是训练数据中的点有多个，所以我们需要一个评估模型，来对 $\theta_0$和 $\theta_1$的取值进行评估。</p>
+
+<p>$h_{(\theta)}(x^{(i)}) - y^{(i)}$ 可以叫做，第i个样本数据的误差，误差有可能为正也有可能为负数，所以对其做下平方，$(h_{(\theta)}(x^{(i)}) - y^{(i)})^2$ ,这是其中的一个点，然后我们需要综合考虑所有的点，就得到误差的平法和(若你想刨根问底，为啥使用误差平方和，而不是绝对值的和，可以参考这篇文章 <a href="http://blog.sciencenet.cn/blog-430956-621997.html">http://blog.sciencenet.cn/blog-430956-621997.html</a>)
+<script type="math/tex">\sum_{i=0}^m (h_{(\theta)}(x^{(i)}) - y^{(i)})^2</script></p>
+
+<p>上面公式中的m为样本容量。也就是说当误差平方和最小的时候 $\theta_0$和 $\theta_1$是最优的。为了数学上计算方便，将此过程描述成如下：
+<script type="math/tex">\frac{ 1 }{ 2*m }\sum_{i=0}^m (h_{(\theta)}(x^{(i)}) - y^{(i)})^2</script>
+带入h函数,将问题转变成求 $\theta_0$和 $\theta_1$的函数
+<script type="math/tex">J(\theta_0, \theta_1) = \frac{ 1 }{ 2*m }\sum_{i=0}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})^2</script>
+$J(\theta_0, \theta_1)$可以称之为误差代价函数，可以简称为代价函数。 最终问题就是求当$J(\theta_0, \theta_1)$ 取得最小值时，$\theta_0$和 $\theta_1$的值，变成了一个极值求解的问题。</p>
+
+<script type="math/tex; mode=display">\underset{\theta_0,\theta_1}{minimize} \ J(\theta_0, \theta_1)</script>
+
+<blockquote>
+  <p>也许你可以找出其他的误差代价函数，但是对于线性回归问题，平方和误差代价函数是最好的选择。</p>
+</blockquote>
+
+<h2 id="section-2">3. 几何意义</h2>
+<p>为了简化问题，我们先假设 $\theta_0$等于0，也就是直线经过原点，问题就简化成 <br />
+<script type="math/tex">J(\theta_1) = \ \frac{ 1 }{ 2*m }\sum_{i=0}^m (\theta_1x^{(i)} - y^{(i)})^2</script>
+我们假设样本数据为{(1,1),(2,2),(3,3)},将样本数据带入上述函数
+<script type="math/tex">J(\theta_1) = \ \frac{ 1 }{ 2*3 }[{ (\theta_1 - 1)^2}+{ (2*\theta_1 - 2)^2}+{ (3*\theta_1 - 3)^2}]</script>
+经过计算得到
+<script type="math/tex">J(\theta_1) = \ \frac{ 7 }{ 3 }{ (\theta_1 - 1)^2}</script></p>
+
+<blockquote>
+  <p>上面的计算还算简单，直接心算便可，当遇到复杂的多项式的计算的时候，可以借助相关的软件工具来帮忙加快计算，比如可以通过MuPAD(Matlab的一个应用)的simplify</p>
+</blockquote>
+
+<p>为了便于理解画出对应的函数图</p>
+
+<p><img src="http://ww1.sinaimg.cn/large/65cc0af7gw1f6tdlw2ndbj20q90hiwfi.jpg" width="80%" height="80%" /></p>
+
+<p>可以看到当 $\theta_1$取1时，J取得最小时，所以我要所求的回归函数是   <br />
+<script type="math/tex">h(x) = x</script></p>
+
+<p>我们再来回到之前的问题的求解，将广告费和销售额一个个的代入进行计算：   <br />
+<script type="math/tex">J(\theta_0, \theta_1) = \frac{ 1 }{ 2*m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})^2   \\
+J(\theta_0, \theta_1) = \frac{ 1 }{ 2*10 }*[ (\theta_0 + \theta_1*4 - 9)^2 + \\ (\theta_0 + \theta_1*8 - 20)^2+\\ (\theta_0 + \theta_1*9 - 22)^2+\\ (\theta_0 + \theta_1*8 - 15)^2+\\ (\theta_0 + \theta_1*7 - 17)^2+\\ (\theta_0 + \theta_1*12 - 23)^2+\\ (\theta_0 + \theta_1*6 - 18)^2+\\ (\theta_0 + \theta_1*10 - 25)^2+\\ (\theta_0 + \theta_1*6 - 10)^2+\\ (\theta_0</script>
+J(\theta_1) = \ \frac{ 7 }{ 3 }{ (\theta_1 - 1)^2}
+<script type="math/tex">+ \theta_1*9 - 20)^2] \\
+J(\theta_0, \theta_1) =\frac{ 1 }{ 20 } (10*\theta_0^2+158*\theta_0*\theta_1-358*\theta_0+671*\theta_1^2-3014*\theta_1+3457) \\</script>  <br />
+图形化后是一个曲面如下图，所以最优的几何意义就是去面上在 $J(\theta_0, \theta_1)$ 轴上最小的点对应的 $\theta_0$ 和 $\theta_1$的值。<br />
+<img src="http://ww2.sinaimg.cn/large/65cc0af7gw1f6tprb61c1j20l70hp0wn.jpg" width="80%" height="80%" /></p>
+
+<h2 id="section-3">4. 最小二乘法</h2>
+<p>在实际的计算中，比较常用的有最小二乘法和梯度下降法，这节先讲最小二乘法，这个方法其实在高中的数学课本中以公式的形式存在的,假设样本数据容量为n，线性方程为 <code class="highlighter-rouge">y = a + bx</code>，那么对应的a，b分别为</p>
+
+<script type="math/tex; mode=display">\begin{cases}
+b =\frac{\sum_{i=1}^nx_iy_i-n\bar{x}\bar{y}}{\sum_{i=1}^nx_i^2-n\bar{x}^2}\\
+a=\bar{y}-\hat{b}\bar{x}
+\end{cases}</script>
+
+<p>对于 $h_{(\theta)}(x) = \theta_0 + \theta_1x$ 公式则为：</p>
+
+<script type="math/tex; mode=display">\begin{cases}
+\theta_1 =\frac{\sum_{i=1}^nx^{(i)}y^{(i)}-\frac{1}{n}\sum_{i=1}^nx^{(i)}\sum_{i=1}^ny^{(i)}}{\sum_{i=1}^nx_i^2-\frac{1}{n}(\sum_{i=1}^nx^{(i)})^2}\\
+\theta_0=\frac{1}{n}(\sum_{i=1}^nh(x^{(i)})-\theta_1\sum_{i=1}^nx^{(i)})
+\end{cases}</script>
+
+<p>下面我们来对公式进行推导，一般求函数极致有一个方法就是导数法，我们在求代价函数的极小值的时候，算出代价函数的导函数，然后令导函数为零，算出对应的值，还是先从最简单的开始，假设代价函数为：
+<script type="math/tex">J(\theta_1) = \ \frac{ 7 }{ 3 }{ (\theta_1 - 1)^2}</script></p>
+
+<p>可以看到代价函数是一个一元二次函数，对 $\theta_1$ 进行求导，你可先按照整式的乘积算好了再求导，也可以直接利用复合函数的求导法则进行求导，这里按照复合函数的求导方式进行求导：  <br />
+<script type="math/tex">J^{'}(\theta_1) = \ \frac{ 7 }{ 3 }*2*{ (\theta_1 - 1)*1}\\
+\qquad\Downarrow \\
+J^{'}(\theta_1) = \ \frac{ 14 }{ 3 }{ (\theta_1 - 1)}</script>  <br />
+我们令到函数等于0可以算得当 $\theta_1$ 等于1的时候，代价函数取得最小值0。 <br />
+对于上面的二元的代价函数 $J(\theta_0, \theta_1) = \frac{ 1 }{ 2*m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})^2$ 则需要分别对 $\theta_0$ 和 $\theta_1$ 求偏导：</p>
+
+<script type="math/tex; mode=display">\begin{cases}
+ \frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1) = \frac{ 1 }{ 2*m }\sum_{i=1}^m 2*(\theta_0 + \theta_1x^{(i)} - y^{(i)})*1 \\
+  \frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1) = \frac{ 1 }{ 2*m }\sum_{i=1}^m 2*(\theta_0 + \theta_1x^{(i)} - y^{(i)})*x^{(i)}
+\end{cases}</script>
+
+<p>化简一下：</p>
+
+<script type="math/tex; mode=display">\begin{cases}
+ \frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1) = \frac{ 1 }{ m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)}) \\
+  \frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1) = \frac{ 1 }{ m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})*x^{(i)}
+\end{cases}</script>
+
+<p>我们令偏导数都等于0,然后进行一步步的计算，计算过程其实很简单，主要用到了求和公式的一些特性罢了，详细的过程如下：</p>
+
+<script type="math/tex; mode=display">\begin{cases}
+ \frac{ 1 }{ m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})=0 \\
+ \frac{ 1 }{ m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})*x^{(i)} =0
+ \end{cases}\\
+\qquad\Downarrow \\
+ \begin{cases}
+\sum_{i=1}^m \theta_0 + \sum_{i=1}^m\theta_1x^{(i)} - \sum_{i=1}^my^{(i)}=0 \\
+\sum_{i=1}^m \theta_0*x^{(i)} + \sum_{i=1}^m\theta_1x^{(i)}*x^{(i)} - \sum_{i=1}^my^{(i)}*x^{(i)} =0
+  \end{cases} \\
+\qquad\Downarrow \\
+  \begin{cases}
+ m*\theta_0 + \theta_1*\sum_{i=1}^mx^{(i)} - \sum_{i=1}^my^{(i)}=0 \\
+ \theta_0*\sum_{i=1}^m x^{(i)} + \theta_1*\sum_{i=1}^mx^{(i)}*x^{(i)} - \sum_{i=1}^my^{(i)}*x^{(i)} =0
+   \end{cases}\\
+\qquad\Downarrow \\
+   \begin{cases}
+  \theta_0 = \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})  \\
+  \theta_0*\sum_{i=1}^m x^{(i)} + \theta_1*\sum_{i=1}^mx^{(i)}*x^{(i)} - \sum_{i=1}^my^{(i)}*x^{(i)} =0
+    \end{cases}\\
+\qquad\Downarrow \\
+       \begin{cases}
+      \theta_0 = \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})  \\
+      \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})*\sum_{i=1}^m x^{(i)} + \theta_1*\sum_{i=1}^mx^{(i)}*x^{(i)} - \sum_{i=1}^my^{(i)}*x^{(i)} =0
+        \end{cases}\\
+\qquad\Downarrow \\
+\begin{cases}
+\theta_0 = \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})  \\
+\frac{ 1 }{ m }\sum_{i=1}^my^{(i)}*\sum_{i=1}^m x^{(i)} -\frac{ 1 }{ m }*\theta_1*\sum_{i=1}^mx^{(i)}*\sum_{i=1}^m x^{(i)} + \theta_1*\sum_{i=1}^mx^{(i)}*x^{(i)} - \sum_{i=1}^my^{(i)}*x^{(i)} =0
+\end{cases}\\
+\qquad\Downarrow \\
+\begin{cases}
+\theta_0 = \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})  \\
+\frac{ 1 }{ m }\sum_{i=1}^my^{(i)}*\sum_{i=1}^m x^{(i)}  - \sum_{i=1}^my^{(i)}*x^{(i)} =\theta_1*(\frac{ 1 }{ m }*\sum_{i=1}^mx^{(i)}*\sum_{i=1}^m x^{(i)} - \sum_{i=1}^mx^{(i)}*x^{(i)})
+\end{cases}\\
+\qquad\Downarrow \\
+\begin{cases}
+\theta_0 = \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})  \\
+\theta_1 = \frac{\frac{ 1 }{ m }\sum_{i=1}^my^{(i)}*\sum_{i=1}^m x^{(i)}  - \sum_{i=1}^my^{(i)}*x^{(i)}}{\frac{ 1 }{ m }*(\sum_{i=1}^mx^{(i)})^2 - \sum_{i=1}^m(x^{(i)})^2}
+\end{cases}\\</script>
+
+<h2 id="section-4">5. 多元线性回归的最小二乘法</h2>
+
+<p>上面的研究的都是一元的线性回归，但是实际应用到，一般都是存在多个自变量的，比如公司的销售额其实不仅仅和广告投入相关，还会受别的很多因素的影响，所以这个时候就出现了多元线性回归的情况了。</p>
+
+<h2 id="section-5">6. 梯度下降法</h2>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Disqus迁移至多说</title>
+      <link href="http://geeklu.com/2016/07/disqus-migrate-to-duoshuo/"/>
+      <pubDate>2016-07-27T00:00:00+08:00</pubDate>
+      <author>卢克</author>
+      <guid>http://geeklu.com/2016/07/disqus-migrate-to-duoshuo</guid>
+      <content:encoded><![CDATA[<p>Disqus 国内貌似又没发访问了，博客的评论功能基本就废了，想想要不换个国产的得了，至少能用。
+所以最终综合了一下选择了多说，注册，更改嵌入代码，也是很快，嵌入的时候有几个参数需要设置一下。</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"ds-thread"</span> <span class="nx">data</span><span class="o">-</span><span class="nx">thread</span><span class="o">-</span><span class="nx">key</span><span class="o">=</span><span class="s2">"{{ page.url | remove:'index.html' }}"</span> 
+<span class="nx">data</span><span class="o">-</span><span class="nx">title</span><span class="o">=</span><span class="s2">"{{ page.title }}"</span> 
+<span class="nx">data</span><span class="o">-</span><span class="nx">url</span><span class="o">=</span><span class="s2">"{{ site.url }}{{ page.url | remove:'index.html' }}"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span></code></pre>
+</div>
+
+<p>这里需要自己设置的是 thread-key 表示文章的唯一标识，这里取了url的path部分；title 也就是文章的标题；以及当前文章的url。这些都可以通过jekyll的相关变量来实现。
+设置好了，可以尝试访问下，然后就可以在多说的后台中看到数据了。</p>
+
+<p>接下来就想办法把Disqus的历史评论数据搞过来，好在Disqus和多说都支持数据的导出导入。
+Disqus的数据导出，该翻墙的还是得翻墙。导出来的是xml的格式，具体的数据格式说明可以看这里的xsd描述 <a href="https://help.disqus.com/customer/portal/articles/472149-comments-export">https://help.disqus.com/customer/portal/articles/472149-comments-export</a> 。
+Disqus的数据主要包括三个部分：category，thread，post。
+一般情况下category就一个默认的，可以忽略，所以重点就是thread和post了，thread代表文章实体，post代表评论实体。</p>
+
+<p>然后我们再看看多说导入数据的格式要求，<a href="http://dev.duoshuo.com/docs/500d0629448f04782b00000a">http://dev.duoshuo.com/docs/500d0629448f04782b00000a</a> 这个就比较简单了，就thread和post。
+接下来的事情就上脚本，做数据转换了。</p>
+
+<p>直接python3来伺候了，python用来做文本处理还是比较便捷的，直接内置了诸如xml，json，optparse这些便捷的lib，手起刀落，一个转换的工具就好了，<a href="https://github.com/kejinlu/disqus-migrate-to-duoshuo">https://github.com/kejinlu/disqus-migrate-to-duoshuo</a>。</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>深度学习起步</title>
+      <link href="http://geeklu.com/2016/07/deep-learning-intro/"/>
+      <pubDate>2016-07-27T00:00:00+08:00</pubDate>
+      <author>卢克</author>
+      <guid>http://geeklu.com/2016/07/deep-learning-intro</guid>
+      <content:encoded><![CDATA[<p>深度学习作为机器学习的一个分支也发展了也很多年了，只是一直感觉特别遥远，高深莫测，所以一般都不会接触到。不过近些年深度学习被越来越多的提起，特别是年初AlphaGo和李世石的比赛，打破了电脑在围棋上无法击败人类的预言，深度学习再次被推上风口浪尖。这两年逐渐火起来的自动驾驶，背后也是深度学习，像Google的自动驾驶汽车都需要不断地行驶在真实的路面上进行“学习”。最近流行的Prisma照片艺术化处理软件，其背后的技术也是深度学习：<a href="http://arxiv.org/abs/1508.06576">A Neural Algorithm of Artistic Style</a>。</p>
+
+<p>我们先从机器学习开始吧，通俗点讲机器学习就是指计算机程序随着经验积累而自动提高性能。在机器学习界有一个类似于编程语言中的Hello World问题，即手写数字识别问题，一般都是通过<a href="http://yann.lecun.com/exdb/mnist/">MNIST</a>（Mixed National Institute of Standards and Technology）手写数字图片数据库来训练程序，最后再通过对应的测试数据来测试，得出识别率。
+也就是说如果一个程序对手写数字图片识别的准确率随着不断的训练识别率不断得到提升，那么可以称计算机程序在从训练中进行学习。这里有几个概念，首先任务，这里就是对输入的某个手写图片进行识别；然后是训练，训练则是训练数据，上面的书写数字识别的训练数据便是大量的手写数字图片以及对应的答案；还有就是识别率，识别率会随着不断的学习而变得越来越高，也就是通过学习，程序自己改了自己内部的一些状态，使得对新的手写图片进行识别的时候更加准确。</p>
+
+<p>再来抽象点进行描述，机器学习就是类比人类认识世界的过程，人类通过历史经验进行归纳总结，碰到新的问题后能够根据归纳总价的规律来解决问题。当然机器没有人类大脑这么牛逼的硬件，而有的只是一堆集成电路和软件程序，对于机器学习来讲，机器学习软件通过训练数据来调整优化软件内部计算模型的参数，然后通过优化后的模型参数来处理新的数据，得到结果。</p>
+
+<p>机器学习可以分为两大类：监督学习和无监督学习。监督学习就是训练数据给出数据以及数据对应的标准答案，学习后，对训练样本外的数据做出分类预测；非监督学习就是对没有答案或者标记的数据进行学习，发现数据的结构特性，将相似的数据聚集在一起，这就是所谓的聚类了，聚类并不关心某一类是什么。</p>
+
+<p>我们再来谈谈机器学习的训练数据库，目前在机器视觉这方面比较好些，除了上面Hello World的MNIST数据库，还有全球最大的图像识别数据库<a href="http://image-net.org/">ImageNet</a>,它的缔造者就是斯坦福大学的李飞飞教授，他们利用互联网图片以及众包技术平台来帮助标记这些图片，所以这些图片数据库的构建可以说是“人肉计算”。斯坦福大学每年都会举行一个比赛，邀请谷歌、微软，百度等 IT 企业使用 ImageNet，测试他们的系统运行情况。每年一度的比赛也牵动着各大巨头公司的心弦，过去几年中，系统的图像识别功能大大提高，出错率仅为约 5％ ，比人眼还低。还有一个数据库就是<a href="http://mscoco.org/">MSCOCO</a> ,由微软资助，每年也会举行比赛。</p>
+
+<p>再来说说深度学习，所谓深度是相对于浅层结构的机器学习，这些典型结构包含至多一层或两层非线性特征变换。而深度学习则是增加了计算的层次，原始的数据输入后，会经过多层处理之后才会最终输出得到结果。网络很多都提到深度学习是对人类视觉皮层结构的模拟，但是实际上深度学习的结构更多来源于理论、直觉和经验探索，和神经科学的相关性并没有那么大。拿深度学习中的卷积神经网络来说，确实部分灵感来自于神经科学，但是其和人类大脑的差距还是很大，所以在宣传的时候如果着重强调“神经”这个关键词会给人以错觉。</p>
+
+<p>上面谈到了深度学习的 多层结构，其实里面的每一层都是一些数学计算，有些层里面的节点都包含一些典型的算法，通常我们都是从“回归”相关的算法开始说起，后面会对回归算法进行详细讲解。</p>
+
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Ubuntu使用环境配置</title>
+      <link href="http://geeklu.com/2016/07/ubuntu-config/"/>
+      <pubDate>2016-07-23T00:00:00+08:00</pubDate>
+      <author>卢克</author>
+      <guid>http://geeklu.com/2016/07/ubuntu-config</guid>
+      <content:encoded><![CDATA[<p><img src="http://ww3.sinaimg.cn/large/65cc0af7gw1f67pfmy2y2j21hc0xc1kx.jpg" style="width: 80%; height: 80%" /></p>
+
+<p>还记得大学那会儿，特别爱折腾系统，装的最多估计就是Ubuntu系统了，也是从那时候起开始接触Linux，工作之后也就懒得折腾了，选择了同属UNIX系得macOS 。所以很长的时间里就一直使用macOS了。</p>
+
+<p>去年家里买了一个NAS，当时考虑的因素有做工，盘位，系统。最后选择QNAP TS-453 Pro，当时为了便宜选择了从computeruniverse海淘，即使加上关税到手也比国内行货便宜一两千。虽然QNAP的系统比不上群晖，但是这两年已经有很大的改观，用户体验有追赶群晖的趋势。</p>
+
+<p>QNAP TS-453 Pro 四核，四盘位，四千兆网口，内存升级到8G。内置的HD Station支持HDMI显示，HD Station支持一些简单的App，比如Chrome，Kodi，还是比较方便的。TS-453 Pro还支持虚拟化技术，通过Virtualization Station可以安装各种虚拟机，应该是基于KVM技术的；另外Container Station还支持Docker容器，所以使用起来想象空间很大。 没想到今年新的系统开始支持Linux Station，可以有完整的Linux的桌面体验了，当然Linux Station开启后，HD Station 会被关闭，因为都是通过HDMI接口来进行显示的输出。Linux Station是基于LXC来实现的，所以性能优越和原生基本无异。</p>
+
+<p>目前Linux Station还只支持Ubuntu 14.04和16.04这两个LTS版本。想想NAS基本24小时开机，配置个简单的Ubuntu的工作环境，方便平时写写代码，写写文档。在QTS的Linux Station中安装好Ubuntu 16.04，以及确认开启Linux Station后，便可以在显示器上进行操作了。</p>
+
+<p>简单的想了下，想搭建下python和Java的开发环境，以及装一些必要的软件。</p>
+
+<h3 id="python">1. python工作环境配置</h3>
+<p>Ubuntu 16.04安装好了之后默认就带了2.x和3.x的python版本，但是为了更方便的进行版本管理，决定通过pyenv来安装和管理python版本。
+安装pyenv之前先装下git</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo apt-get install git
+</code></pre>
+</div>
+
+<p>然后进行pyenv的安装</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>git clone https://github.com/yyuu/pyenv.git ~/.pyenv
+</code></pre>
+</div>
+
+<p>然后在～/.bashrc 末尾加上下面三行代码</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.pyenv"</span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PYENV_ROOT</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+<span class="nb">eval</span> <span class="s2">"</span><span class="k">$(</span>pyenv init -<span class="k">)</span><span class="s2">"</span>
+</code></pre>
+</div>
+
+<p>然后重启Terminal，输入pyenv看命令是否起作用。</p>
+
+<p>下面便可以通过pyenv来安装你所需要的python的版本了，比如</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pyenv install 3.5.1
+</code></pre>
+</div>
+
+<p>这个时候你会发现 悲剧发生了，由于国内的特定网络原因，python安装的下载速度及其缓慢，基本是10k以内的速度无法忍受（突然想到以前python官网一度无法访问），好在还是由办法解决这个问题的，你可以先想办法到官网把安装包单独下载好，比如我讲下载好的包<code class="highlighter-rouge">Python-3.5.1.tar.xz</code>放到<code class="highlighter-rouge">～/Downloads</code>目录下，然后指定build缓存目录后，再运行install命令</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PYTHON_BUILD_CACHE_PATH</span><span class="o">=</span>~/Downloads
+pyenv install 3.5.1
+pyenv rehash
+</code></pre>
+</div>
+
+<p>安装多个版本的python之后可以通过下面的命令来切换全局的python的版本</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pyenv global 3.5.1
+</code></pre>
+</div>
+
+<p>安装后对应版本的pip也是安装好了的。</p>
+
+<p>最近对深度学习有点感兴趣，所以正好打算装个TensorFlow玩一玩，找到官方的安装指南，选择正确的版本进行安装， <a href="https://www.tensorflow.org/versions/r0.9/get_started/os_setup.html#pip-installation">https://www.tensorflow.org/versions/r0.9/get_started/os_setup.html#pip-installation</a>, NAS的配置注定只能使用CPU的，然后选择对应的python版本和Ubuntu的架构版本</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">TF_BINARY_URL</span><span class="o">=</span>https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.9.0-cp35-cp35m-linux_x86_64.whl
+pip install --upgrade <span class="nv">$TF_BINARY_URL</span>
+</code></pre>
+</div>
+
+<p>这个时候你会发现老问题又来了，pip的库在国内访问慢，所以这个时候你最好指定一个国内的pip源进行安装，这里选择豆瓣的源</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pip install --upgrade <span class="nv">$TF_BINARY_URL</span>  -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
+</code></pre>
+</div>
+
+<p>另外如果你想选择一款python的ide可以选择Pycharm的社区版，一般情况下社区版够用了。</p>
+
+<h3 id="java">2.配置Java环境</h3>
+<p>Java目前一般有open jdk，还有oracle jdk，这里安装oracle jdk，你可以自己到oracle官网下载，手动进行安装，也可以通过添加源的方式使用apt-get工具进行安装</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+</code></pre>
+</div>
+
+<p>安装好了之后可以进行配置，比如如果你系统中安装有多个版本的jdk，那么就可以通过下面的方式来指定默认使用的jdk的版本</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo update-alternatives --config java
+</code></pre>
+</div>
+
+<h3 id="section">3.其他常用软件安装</h3>
+<ul>
+  <li>对应一些独立的第三方下载的deb包，推荐使用GDebi Package Installer （<code class="highlighter-rouge">sudo apt-get install gdebi</code>）</li>
+  <li>中文输入法推荐搜狗输入法，安装搜狗输入法前先安装依赖的包 （<code class="highlighter-rouge">sudo apt-get install fcitx libssh2-1</code>），系统设置中将输入法系统设置为fcitx，然后下载搜狗输入法的包，可以从这里下载 <a href="http://download.pchome.net/utility/lan/ime/download-3955.html">http://download.pchome.net/utility/lan/ime/download-3955.html</a> ,官网的包安装有问题</li>
+  <li>编辑器可以使用github的Atom或者Sublime Text 3</li>
+  <li>markdown编辑器推荐使用haroopad</li>
+  <li>系统优化配置可以使用Unity Tweak Tool （<code class="highlighter-rouge">sudo apt-get install unity-tweak-tool</code>）， 此工具可以设定诸如Launcher的位置等</li>
+  <li>实时顶端状态栏显示系统cpu内存等信息可以通过 indicator multiload 来shi实现 （<code class="highlighter-rouge">sudo apt-get install indicator-multiload</code>）</li>
+  <li>
+    <p>中文字体可以选择微软雅黑，首先到Windows系统下拷贝过来字体文件，进行下列操作之后，便可以选择微软雅黑字体了</p>
+
+    <p><code class="highlighter-rouge">bash
+sudo cp msyh.ttf /usr/share/fonts/
+sudo mkfontscale
+sudo mkfontdir
+sudo fc-cache -fv
+</code></p>
+  </li>
+</ul>
+
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>关于Xcode7中的tbd文件</title>
+      <link href="http://geeklu.com/2016/03/tbd-file/"/>
+      <pubDate>2016-03-31T00:00:00+08:00</pubDate>
+      <author>卢克</author>
+      <guid>http://geeklu.com/2016/03/tbd-file</guid>
+      <content:encoded><![CDATA[<p><img src="http://ww3.sinaimg.cn/large/65cc0af7jw1f2gfe8bc7yj20ax0ckwg6.jpg" style="width: 50%; height: 50%" />​</p>
+
+<p>tbd 是 <strong>text-based stub libraries</strong>的意思，
+是苹果在Xcode7中使用的一个技术，便于减少Xcode7中SDK的体积。 <br />
+下面讲解下Xcode7如何通过tbd这个技术减少SDK的大小的。
+Xcode7中和各个平台相关的sdk都在<code class="highlighter-rouge">/Applications/Xcode.app/Contents/Developer/Platforms</code> 这个目录下，你可以看到如下的一些平台：</p>
+
+<p>这里列出了平台的名字 以及对应的动态链接库所需要的架构</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>MacOSX (i386,x86_64)
+iPhoneOS (armv7, armv7s, arm64)
+iPhoneSimulator (i386,x86_64)
+AppleTVOS (arm64)
+AppleTVSimulator (x86_64)
+WatchOS (armv7k)
+WatchSimulator (i386)
+</code></pre>
+</div>
+
+<p>每个平台的SDK都在对应的<code class="highlighter-rouge">Developer/SDKs/</code>的子目录下，比如iPhoneOS的sdk在<code class="highlighter-rouge">/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk</code>下，
+每一个SDK目录下都会包含相应的<strong>动态Framework</strong>以及<strong>dylib</strong>库,分别在SDK目录下的<code class="highlighter-rouge">System/Library/Frameworks</code>和<code class="highlighter-rouge">/usr/lib</code>目录下。 <br />
+在使用tbd之前不管是哪个平台，Framework以及各个单独的dylib库的二进制都得放进来，数量多，体积大。但是真正有必要的其实只是各个模拟器要用的动态库，因为MacOSX的库系统自带，那些诸如iPhoneOS，AppleTVOS，WatchOS这些设备要用的动态库，也只是在设备上真正运行的时候才需要，编译的时候只需要一些简单的信息，符号表啥的，编译通过就好了，真正到设备上去跑的时候才真正需要整个动态库的二进制文件。 <br />
+所以为了节省Xcode的体积，苹果创造了一种tbd文件，用作替代那些设备SDK下的动态库，这里我们以<code class="highlighter-rouge">/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CFNetwork.framework</code>这个动态Framework库为例，进入到CFNetwork.framework目录下你会看到一个<strong>CFNetwork.tbd</strong>文件，cat下</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>---
+archs:           [ armv7, armv7s, arm64 ]
+platform:        ios
+install-name:    /System/Library/Frameworks/CFNetwork.framework/CFNetwork
+current-version: 758.3.15
+exports:         
+  - archs:           [ armv7, armv7s, arm64 ]
+    symbols:         [ '$ld$hide$os4.3$_NSHTTPCookieComment', '$ld$hide$os4.3$_NSHTTPCookieCommentURL', 
+                       '$ld$hide$os4.3$_NSHTTPCookieDiscard', '$ld$hide$os4.3$_NSHTTPCookieDomain', 
+                       '$ld$hide$os4.3$_NSHTTPCookieExpires', '$ld$hide$os4.3$_NSHTTPCookieLocationHeader', 
+                       '$ld$hide$os4.3$_NSHTTPCookieManagerAcceptPolicyChangedNotification', 
+                       '$ld$hide$os4.3$_NSHTTPCookieManagerCookiesChangedNotification', 
+                       '$ld$hide$os4.3$_NSHTTPCookieMaximumAge', '$ld$hide$os4.3$_NSHTTPCookieName', 
+                       '$ld$hide$os4.3$_NSHTTPCookieOriginURL', '$ld$hide$os4.3$_NSHTTPCookiePath', 
+                       '$ld$hide$os4.3$_NSHTTPCookiePort', '$ld$hide$os4.3$_NSHTTPCookieSecure', 
+                       '$ld$hide$os4.3$_NSHTTPCookieValue', '$ld$hide$os4.3$_NSHTTPCookieVersion', 
+                       '$ld$hide$os4.3$_NSNetServicesErrorCode', '$ld$hide$os4.3$_NSNetServicesErrorDomain',
+
+.......
+</code></pre>
+</div>
+
+<p>你会发现其实tbd文件就是一个文本文件，其中包含架构信息，以及在真实运行时候二进制所在的位置，以及包含了动态库的符号表还有类的一些信息，这些信息在编译阶段足够了。<strong><em>通过通过这种技术，可以大大减少所有的设备SDK的二进制动态库的体积，其中包含MacOSX，iPhoneOS，AppleTVOS，WatchOS</em></strong>。 <br />
+模拟器SDK的动态库依然是原始的动态库二进制文件,这点你可以进到<code class="highlighter-rouge">/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/CFNetwork.framework</code>目录下进行验证。</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>iOS VoiceOver Programming Guide</title>
+      <link href="http://geeklu.com/2016/03/ios-voiceover-programming-guide/"/>
+      <pubDate>2016-03-07T00:00:00+08:00</pubDate>
+      <author>卢克</author>
+      <guid>http://geeklu.com/2016/03/ios-voiceover-programming-guide</guid>
+      <content:encoded><![CDATA[<h2 id="section">前言</h2>
+
+<p>VoiceOver是苹果“读屏”技术的名称，属于辅助功能的一部分。VoiceOver可以读出屏幕上的信息，以帮助盲人进行人机交互。
+这项技术在苹果的各个系统中都可以看到，OS X，iOS，watchOS，甚至tvOS。
+苹果公司的VoiceOver在2015年6月18日获得了美国盲人基金会（American Foundation for the Blind, AFB）颁发的海伦凯勒成就奖，成为全球首家获得此殊荣的科技公司。
+单从iOS来说，iOS的VoiceOver功能可以毫不夸张的说是三大移动平台中做的最好的。</p>
+
+<p>虽然说苹果默认的UI组件都已经默认支持VoiceOver功能了，但是通常情况下App还是需要对VoiceOver进行适配和优化的，比如说一些自定义复杂UI组件。</p>
+
+<h2 id="section-1">基本使用</h2>
+<p>iPhone上开启VoiceOver功能后，就可以通过 <strong>单指左右轻扫</strong> 来遍历当前界面中的所有的AccessibilityElement（可以被VoiceOver访问的UI元素）,当一个AccessibilityElement被选中后，VoiceOver会将AccessibilityElement的信息读出来。 <strong>单指轻点两次</strong> 能够激活当前元素对应的操作，比如当前AccessibilityElement是一个按钮，那么对应的就是按钮的Action事件。</p>
+
+<p>简单点来说在App开发过程中关于VoiceOver我们需要关注如下几点：</p>
+
+<ul>
+  <li>界面上的AccessibilityElement有哪些</li>
+  <li>AccessibilityElement的位置和形状</li>
+  <li>AccessibilityElement的信息是什么（就是Element被选中后，被读出来内容）</li>
+  <li>AccessibilityElement所能响应的的事件有哪些</li>
+</ul>
+
+<p>UIKit中的控件基本都是 VoiceOver Ready的，即使是UIView，你也可以通过简单的设置其实变成AccessibilityElement。所以这一小节中所讲的AccessibilityElement其实都是UIView或其子类的实例。 <br />
+相关属性和方法基本都在<code class="highlighter-rouge">UIAccessibility.h</code>这个头文件中进行了声明。</p>
+
+<p>所以简单的情况下通过UIView的<code class="highlighter-rouge">isAccessibilityElement</code>属性就可以控制某个View是否是AccessibilityElement，在UIKit的控件中，像UILabel，UIButton 这些控件的isAccessibilityElement属性默认就是true的，UIView这个属性默认是false。</p>
+
+<p>一般情况下AccessibilityElement的位置和形状是通过accessibilityFrame进行设置的，默认值是View在屏幕中的位置，形状就是View的矩形形状。如果你想自己设置accessibilityFrame的值，那么得注意下，这边的frame值是相对于设备Screen的坐标系的，当然可以通过UIAccessibilityConvertFrameToScreenCoordinates函数来帮助转换。此函数有两个参数，一个rect，一个是view， 其含义就是将相对于view这个坐标系的rect转换成相对于screen坐标系的值并返回。所以一般情况下 rect可以是目标Element在父View中的frame，view就为其父view。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public func UIAccessibilityConvertFrameToScreenCoordinates(rect: CGRect, _ view: UIView) -&gt; CGRect
+</code></pre>
+</div>
+
+<p>如果你想设置非矩形的形状，你也可以通过给 <strong>accessibilityPath</strong> 属性指定一个UIBezierPath类型的值来自定义AccessibilityElement的形状。</p>
+
+<p>至于AccessibilityElement的信息可以通过下面几个UIAccessibility的属性来决定</p>
+
+<ul>
+  <li>accessibilityLabel  这是什么</li>
+  <li>accessibilityHint 这个有什么用，会产生什么样的结果</li>
+  <li>accessibilityValue 这个的 <strong>值</strong> 是什么</li>
+  <li>accessibilityTraits 这个的类型以及状态，就是通过traits来表征这个Element的特质，数据类型是一个枚举类型，可以通过按位或的方式合并多个特性。</li>
+</ul>
+
+<p>这里有个需要注意的就是，当某个View的是AccessibilityElement的时候 ，其subviews都会被屏蔽掉，这个特性有时候还是有用的，比如一个View中包含多个Label，那么你希望每一个下面的Label不要单独可以访问到，那么你可以将这个View设置成可以访问的，然后将其accessibilityLabel设置为所有子Label的accessibilityLabel的合并值。</p>
+
+<p>至于AccessibilityElement的事件，最简单的莫过于上面提到 <strong>单指轻点两次</strong> 能够激活当前元素对应的操作了,如果当前AccessibilityElement实现的<code class="highlighter-rouge">public func accessibilityActivate() -&gt; Bool</code>这个方法返回true，那边此逻辑将被调用，否则相当于在AccessibilityElement的accessibilityActivationPoint这个位置点上进行了一次Tap操作。</p>
+
+<h2 id="section-2">高级特性</h2>
+<p>#### Accessibility Container
+设想下这样的一个场景，一个UIView，内部包含一组用户可以进行交互的内容，每一个内容之间是独立的，但是这些内容不是以子View的形式存在，而是通过Quarz 2D或者Core Text渲染而成，所以这部分内容无法通过上面的方式变成AccessibilityElement。这种情况UIView需要按照UIAccessibilityContainer的方式，来将内部的每一个独立的内容都描述成UIAccessibilityElement的实例，这个时候这个UIView我们称之为Accessibility Container。</p>
+
+<p>接下来讲解具体的实现步骤了。
+先说说iOS 8之后如何实现，首先Accessibility Container的isAccessibilityElement值必须设置为false，另外我们需要创建出所有的UIAccessibilityElement的实例，然后赋给accessibilityElements属性（iOS 8.0+）
+假设在一个UIView的子类中，通过叫做updateAccessibleElements的方法来更新维护所有的UIAccessibilityElement实例，当界面上的内容发生变化，或者VoiceOver开启关闭状态发生变化时，调用此方法以更新accessibilityElements，相关伪代码如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    internal func updateAccessibleElements() {
+        guard UIAccessibilityIsVoiceOverRunning() else {
+            self.accessibilityElements = nil
+            return
+        }
+        
+        self.isAccessibilityElement = false
+        var elements = [AnyObject]()
+
+        let element1 = UIAccessibilityElement(accessibilityContainer: self)
+        element1.accessibilityLabel = "element1"
+        element1.accessibilityTraits = UIAccessibilityTraitStaticText
+        element1.accessibilityFrame = UIAccessibilityConvertFrameToScreenCoordinates(element1FrameInSelf, self)
+        elements.append(element1)
+        ...
+        self.accessibilityElements = elements
+    }
+
+</code></pre>
+</div>
+
+<p>如果是iOS 8以下，那么就需要实现下面的几个方法来实现了，比较繁琐：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>// accessibilityElement的个数
+public func accessibilityElementCount() -&gt; Int
+
+// 返回指定Index的accessibilityElement
+public func accessibilityElementAtIndex(index: Int) -&gt; AnyObject?
+
+// 返回指定accessibilityElement的Index
+public func indexOfAccessibilityElement(element: AnyObject) -&gt; Int
+</code></pre>
+</div>
+
+<p>使用上面第二种方式的时候，往往需要自己维护一个包含所有accessibilityElements的数组，然后通过数组来完成上面的这三个方法的返回。这种方法比较累赘，而且当界面更新需要刷新内容的时候，还需要发送通知系统，告诉系统界面上的accessibilityElements有变动需要更新。所以最小版本定位于iOS 8的情况下还是直接设置accessibilityElements属性的方式比较科学。</p>
+
+<p>关于UIAccessibilityElement这个类的设计还是存在一些疑惑的，既然NSObject的UIAccessibility扩展已经包含了诸如<code class="highlighter-rouge">accessibilityLabel</code>,<code class="highlighter-rouge">accessibilityHint</code>这些属性，为何UIAccessibilityElement类中还需要重复声明这些属性，有点重复的感觉。</p>
+
+<h4 id="actions">Actions</h4>
+<p>之前只讲到了最简单的事件，就是单指轻点两下，其实常见的Actions有下面这些，每一个Action都会对应一个方法，可以通过覆盖方法的方式来自定义Action对应的逻辑：</p>
+
+<ul>
+  <li>Activate 单指轻点两次  <br />
+ <code class="highlighter-rouge">public func accessibilityActivate() -&gt; Bool</code></li>
+  <li>Escape. 单指 Z-shaped 手势一般用于退出模态界面或者返回导航的上一页界面  <br />
+<code class="highlighter-rouge">public func accessibilityPerformEscape() -&gt; Bool</code></li>
+  <li>Magic Tap. 双指轻点两次触发 most-intended action.    <br />
+ <code class="highlighter-rouge">public func accessibilityPerformMagicTap() -&gt; Bool</code></li>
+  <li>Three-Finger Scroll. 三指滑动触发界面水平或者垂直的滚动  <br />
+ <code class="highlighter-rouge">public func accessibilityScroll(direction: UIAccessibilityScrollDirection) -&gt; Bool</code></li>
+  <li>Increment. 单指向上滑动，需要设置accessibilityTraits为UIAccessibilityTraitAdjustable，否则对应的方法不会被调用  <br />
+ <code class="highlighter-rouge">public func accessibilityIncrement()</code></li>
+  <li>Decrement. 单指向下滑动，需要设置accessibilityTraits为UIAccessibilityTraitAdjustable，否则对应的方法不会被调用 <br />
+ <code class="highlighter-rouge">public func accessibilityDecrement()</code></li>
+</ul>
+
+<p>这些方法中，其中Escape，Magic Tap，Three-Finger Scroll这几种手势支持在响应链中向上寻找对应的Action方法，首先用户在屏幕上进行相应的手势，系统检查当前VoiceOver的Focus的Element有无实现对应的方法，没有实现的话，则向响应链的上一级寻找。比如有些全局性的操作，对应的方法写在上层View或者ViewController中比较合适。
+其实很多系统提供的组件都默认实现了一些VoiceOver的手势Action，比如UINavigationController, UIAlertController 都提供了对Escape手势的支持。</p>
+
+<h4 id="accessibility-notification">Accessibility Notification</h4>
+<p>Accessibility提供了一系列的通知，可以完成一些特定的需求。比如你可以监听<code class="highlighter-rouge">UIAccessibilityVoiceOverStatusChanged通知，来监控Voice Over功能开启关闭的实时通知 </code>。</p>
+
+<p>或者是你在App中主动发送一些通知，来让系统做出一些变化，比如当你界面上的AccessibilityElement有变动的时候你可以发送<code class="highlighter-rouge">UIAccessibilityLayoutChangedNotification</code>通知，通知发送时使用UIAccessibility的专用的函数,UIAccessibilityPostNotification函数有两个参数，第一个是通知名，第二个是你想让VoiceOver读出来的字符串或者是新的VoiceOver的焦点对应的元素。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, self.myFirstElement)
+</code></pre>
+</div>
+
+<h2 id="section-3">建议</h2>
+
+<ul>
+  <li>AccessibilityElement的信息尽量简洁，accessibilityLabel不要包含提示性质的文案，避免信息干扰</li>
+  <li>TableView的每一个Cell的信息尽量合并，使得Cell变成一个整体的AccessibilityElement，避免无意义的冗余元素之间切换的操作。Cell中有多个按钮的时候，可以考虑使用Magic Tap的方式，Magic Tap的Action中弹出sheet样式的UIAlertController来供用户操作。</li>
+  <li>自定义的模态页面注意设置accessibilityViewIsModal为true，最好支持Escape手势
+的方式退出模态页面。</li>
+  <li>将页面中装饰用的没有实际意义的元素的accessibilityElementsHidden设置成true，减少操作过程中的干扰</li>
+</ul>
+
+<hr />
+
+<p>参考文档:
+<a href="https://developer.apple.com/library/prerelease/ios/documentation/UIKit/Reference/UIAccessibility_Protocol/index.html">UIAccessibility Protocol</a>
+<a href="https://developer.apple.com/library/prerelease/ios/featuredarticles/ViewControllerPGforiPhoneOS/SupportingAccessibility.html">Supporting Accessibility</a>
+<a href="https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/iPhoneAccessibility/Accessibility_on_iPhone/Accessibility_on_iPhone.html">Accessibility Programming Guide for iOS</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Handoff Between iOS App &amp; Website</title>
+      <link href="http://geeklu.com/2015/04/handoff-between-native-app-and-web-browser/"/>
+      <pubDate>2015-04-01T00:00:00+08:00</pubDate>
+      <author>卢克</author>
+      <guid>http://geeklu.com/2015/04/handoff-between-native-app-and-web-browser</guid>
+      <content:encoded><![CDATA[<h3 id="handoff">一.Handoff的基本常识</h3>
+
+<p>iOS 8以及Mac OS X Yosemite之后引入了一个新的功能特性：Handoff。Handoff也就是Continuity特性，连续互通，比如你用iPhone写邮件写到一半想在Mac上继续写，或者Mac上看到一个网页想在手机上浏览，这些便是Handoff的使用场景了。</p>
+
+<p>Handoff的支持有一些硬性的要求：</p>
+
+<ul>
+  <li>互通的所有设备必须支持 Buletooth LE 4.0，Handoff使用BLE信号来传递用户活动数据。</li>
+  <li>设备处于联网状态，有时候有些数据还是会通过互联网来传递的，比如Mail App的邮件内容的同步。</li>
+  <li>所有设备必须连到同一个iCloud账户。</li>
+  <li>当然你还得保证当前设备的Handoff功能打开了(iOS:设置-&gt;通用-&gt;Handoff 与建议的应用程序。 Mac:系统偏好设置-&gt;通用,倒数第二栏有个选项,”允许这台Mac和iCloud设备之间使用Handoff”)</li>
+</ul>
+
+<p>BLE并不像传统的蓝牙，并不需要人工手动进行配对，只要打开就行了，所有的配对数据传输都是自动完成的；设备并不一定需要连在同一个WIFI网络中，Handoff的活动数据通过BLE进行传递，保证及时性以及数据的安全性，你可以在使用过程中尝试将WIFI或者网络关闭，设备还是可以接受到Handoff的通知的。</p>
+
+<p>苹果已经对很多内置的App做了Handoff支持，如Safari浏览器，邮件，电话，消息，提醒事项等都是支持的，在你开始Handoff编程之前可以先使用这些App进行Handoff功能的体验。</p>
+
+<h3 id="ios-app--web-browser">二.iOS App 到 Web Browser</h3>
+
+<p>Handoff编程的核心类便是NSUserActivity了，代表着一个用户的活动，每一个Activity都有一个activityType，用来标识Activity的类型。当App 到 App之间进行Handoff的话，那么接受方需要满足几个条件</p>
+
+<ul>
+  <li>App必须是通过发布证书或者开发者证书进行打包的</li>
+  <li>和发布Activity的App拥有相同的TeamID</li>
+  <li>info.plist中声明了接受的Activity的activityType(key 为 NSUserActivityTypes)</li>
+</ul>
+
+<p>不过很多应用其实也只是在移动设备上有App，在Mac上绝大多数还是走的浏览器，所以iOS App和浏览器的Handoff的需求就变的很常见了。这个时候Activity的另一个叫做webpageURL的属性便有用武之地了，当没有合适的App能够处理当前的Activity的话，系统会转给默认的浏览器进行处理（当然你的这个默认的浏览器的info.plist的NSUserActivityTypes数组中必须声明了 NSUserActivityTypeBrowsingWeb这个type，目前Mac版本的Chrome已经支持了）。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>self.myActivity = [[NSUserActivity alloc] initWithActivityType: @"com.taobao.handoff.act.home"];
+self.myActivity.webpageURL = [NSURL URLWithString:@"http://www.taobao.com"];
+[self.myActivity becomeCurrent];
+</code></pre>
+</div>
+
+<p>当上面的代码执行之后，Activity便会进行分发，接受者接受后，若没有App能够处理当前类型的Activity的话便转交给默认的浏览器去处理了，这里需要特别注意的就是activity的生命周期，当activity被invalidate或者被释放了，那么这个Handoff消息也就消失了，相关设备的Handoff消息就会消失。</p>
+
+<p>关于Handoff的调试，由于到目前为止模拟器还是没有支持Handoff的，所以你必须使用开发者证书进行真机调试。</p>
+
+<h3 id="web-browser--ios-app">三.Web Browser 到 iOS App</h3>
+
+<p>相比于App到Web Browser，Web Browser到iOS App的Handoff实现起来就复杂一些了。
+首先先描述下大体的流程：</p>
+
+<ol>
+  <li>首先在Mac上使用Safari浏览器浏览目标网站，Handoff消息会通过BLE进行分发</li>
+  <li>iOS设备接收到Handoff消息后，检查对应的webpageURL，看是否有某个App的associated-domains （entitlement中的一项）中包含了这个webpageURL, associated-domains对应的Handoff的配置URL样式为 activitycontinuation:example.com</li>
+  <li>如果某个App的associated-domains存在相应的webpageURL,那么iOS会去这个网站的固定的一个URL（地址为https://example.com/apple-app-site-association）获取一个签名过的文件（源文件为一个JSON文件）,如果解密后文件中的App IDs中包含了 之前匹配的App的App ID，那么这个Activity便交给这个匹配的App进行处理。</li>
+</ol>
+
+<p>下面讲解详细的操作步骤</p>
+
+<h4 id="section">1.客户端</h4>
+<p>首先当然还是折腾客户端工程，当你创建好工程，创建好App ID，XCode中设置好自己的Developer账户之后，你便可以设置编译的Code Sign的相关东西了，配置都得选自动的，这样就可以通过XCode来管理配置 App ID 以及相应的 Provisioning Profiles了，当你通过developer后台网站就可以看到Provisioning Profiles中有一堆所谓的Managed by Xcode的条目了。</p>
+
+<p>你需要在XCode工程对应的Target的Capabilities这个Tab中开启Associated Domains，这个时候时候你可能会遇到错误提示“You must be a team admin or agent in order to enable this capability.”,其实即使账户是admin还是会报错，这个可能是XCode的bug吧，你需要切换到General这个tab中将Team先选None，然后再切换到你对应的Team，这个时候Team下方显示错误了，其实就是你更改了Entitlements，而这个和Provisioning Profiles有关联，所以你的Provisioning Profiles也需要重新更新，点击Team下方的Fix Issue按钮，等待重新下载新的Provisioning Profiles，然后回到Capabilities这个tab你会发现刚才的错误已经不见了。</p>
+
+<p>其实Capabilities中的操作除了会在本地生成entitlements文件，还会同步到developer后台去，会修改app对应的App ID的配置，以及在developer后台生成新的Provisioning Profiles。这些东西都和打包签名息息相关。</p>
+
+<p>接着在Associated Domains下加上所需要支持handoff的domains</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>activitycontinuation:taobao.com
+</code></pre>
+</div>
+
+<p>activitycontinuation是服务名，taobao.com是支持的域名
+当Mac上的浏览器访问一个网站的时候，此网站的域名如果被某个App的Associated Domains包含了，那么Handoff底层会去这个域名一个指定的路径下访问一个文件，这个指定的路径便是 :
+https://taobao.com/apple-app-site-association ,这个路径需要返回一个签名过的文件数据，里面指定了当前网站所支持Handoff的App ID们，这个下面会提及到</p>
+
+<h4 id="section-1">2.服务器端</h4>
+<p>需要进行Handoff的网站，需要在https的特定的路径下放一个签名过的文件，这个文件里面指明了Handoff支持哪些App（Domain-approved apps IDs），这个文件的明文为JSON格式,在对JSON文件签名前最好去掉所有无用的空格以及检测下JSON格式的正确性，避免后面带来问题</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="nt">"activitycontinuation"</span><span class="p">:{</span><span class="nt">"apps"</span><span class="p">:[</span><span class="s2">"XN6U3EV979.com.taobao.handoff"</span><span class="p">]}}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>签名则是使用网站的ssl的私钥以及证书进行签名（如果不存在中级证书，那么中级证书可以去掉）</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cat json.txt | openssl smime -sign -inkey taobao.com.key
+                             -signer taobao.com.pem
+                             -certfile intermediate.pem
+                             -noattr -nodetach
+                             -outform DER &gt; apple-app-site-association
+</code></pre>
+</div>
+
+<p>生成的文件放到网站根目录下以及确保可以通过指定的路径进行访问。</p>
+
+<h4 id="section-2">3.如何进行本机调试</h4>
+
+<p>要想在开发机器上进行网站的Handoff的调试则首先的问题就是SSL证书，你需要自己搞一个CA证书，在Mac上可以通过Keychain Access(钥匙串访问)这个App中的证书助理来生成 。</p>
+
+<p>首先是CA证书,这里生成的是自签名的根证书，CA证书的作用就是给网站的SSL的证书进行签名用的，然后创建网站的SSL证书,一步一步走下去，然后通过刚才的CA证书进行签发，这样生成的证书就可以直接用于网站的SSL证书了。</p>
+
+<p>然后选择一个Web Server，我这里选用的<a href="http://download.eclipse.org/jetty/">Jetty</a>，直接下载下来然后就可以直接使用自带的demo了，主要是需要自己配置下SSL。</p>
+
+<p>将默认的ssl配置拷贝到demo工程相应的目录下
+<code class="highlighter-rouge">
+Luke@LukesMac:~/Workspace/jetty » cp etc/jetty-ssl.xml demo-base/etc/ 
+</code></p>
+
+<p>从Keychian Access中导出之前生成的证书文件，导出格式为p12，这样就会包含私钥了。假设导出文件为 lukesmac.p12,导出时候 需要你设置一个密码，你就将其设置为 keypwd
+然后需要将这个p12文件导入demo工程的keystore文件中，默认在demo工程的etc目录下已经存在一个keystore文件，直接导入这个keystore</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>keytool -importkeystore -srckeystore lukesmac.p12 -srcstoretype PKCS12 -destkeystore keystore
+</code></pre>
+</div>
+<p>默认keystore的密钥库口令为storepwd,导入的过程中你还需要输入你上面设置的私钥密码（因为jetty-ssl.xml中配置的私钥密码以及默认keystore中的私钥密码默认为keypwd
+,所以为了方便上面导出私钥所设置的私钥密码保持一致为keypwd）。最后你还需要在demo工程的根目录下的start.ini中加入一行</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>etc/jetty-ssl.xml
+</code></pre>
+</div>
+
+<p>然后你就可以开开心心的启动了，</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Luke@LukesMac:~/Workspace/jetty/demo-base » java -jar ../start.jar
+</code></pre>
+</div>
+
+<p>然后我便可以通过 https://lukesmac.local:8443/ 进行访问了</p>
+
+<p>下面需要将json.txt进行签名，</p>
+
+<p>首先你需要从上面导出的p12文件中搞出私钥文件，再从Keychain Access中导出一份证书的cer文件</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>openssl pkcs12 -in lukesmac.p12 -nocerts -out privateKey.pem
+cat json.txt | openssl smime -sign -inkey privateKey.pem -signer lukesmac.cer -noattr -nodetach -outform DER &gt; apple-app-site-association
+</code></pre>
+</div>
+
+<p>将生成的apple-app-site-association文件放到 demo工程的ROOT目录下，然后重启以及在浏览器中对这个文件进行访问测试。</p>
+
+<p>这个时候你以为一切就绪了，发现手机上handoff的图标依然是safari，打开后发现，网页根本无法打开，其原因就是自己生成的自签名的CA证书不被信任，这个时候你可以讲CA证书按照cer的格式导出，然后通过邮件发送，在iPhone上的邮箱App中点击这个cer的附件，系统会跳转到设置的描述文件的界面去，你需要进行安装证书，之后这个CA证书签发的SSL证书对于这台设备都是可信任的了。</p>
+
+<p>最后就是客户端添加处理逻辑了，可以在Appdelegate中添加如下方法，就可以对传递过来的userActivity进行处理</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void(^)(NSArray *restorableObjects))restorationHandler NS_AVAILABLE_IOS(8_0);
+</code></pre>
+</div>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Facebook Pop 使用指南</title>
+      <link href="http://geeklu.com/2014/05/facebook-pop-usage/"/>
+      <pubDate>2014-05-22T00:00:00+08:00</pubDate>
+      <author>卢克</author>
+      <guid>http://geeklu.com/2014/05/facebook-pop-usage</guid>
+      <content:encoded><![CDATA[<p>当听闻Facebook要开源自己的Animation框架的时候，我还以为是基于Core Animation进行的封装，包含了一些动画效果库。等源码真正出来后，才发现完全想错了，Facebook Pop其实是基于CADisplayLink(Mac平台上使用的CVDisplayLink)实现的独立于Core Animation之外的动画方案。这里就不细说其实现原理了，主要讲讲Facebook Pop如何使用。</p>
+
+<h2 id="section">一.基本概念</h2>
+<p>在计算机的世界里面，其实并不存在绝对连续的动画，你所看到的屏幕上的动画本质上都是离散的，只是在一秒的时间里面离散的帧多到一定的数量人眼就觉得是连续的了，在iOS中，最大的帧率是60帧每秒。
+iOS提供了Core Animation框架，只需要开发者提供关键帧信息，比如提供某个animatable属性终点的关键帧信息，然后中间的值则通过一定的算法进行插值计算，从而实现补间动画。 Core Aniamtion中进行插值计算所依赖的时间曲线由CAMediaTimingFunction提供。
+Pop Animation在使用上和Core Animation很相似，都涉及Animation对象以及Animation的载体的概念，不同的是Core Animation的载体只能是CALayer，而Pop Animation可以是任意基于NSObject的对象。当然大多数情况Animation都是界面上显示的可视的效果，所以动画执行的载体一般都直接或者间接是UIView或者CALayer。但是如果你只是想研究Pop Animation的变化曲线，你也完全可以将其应用于一个普通的数据对象，比如下面这个对象:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@interface</span> <span class="nc">AnimatableModel</span> <span class="p">:</span> <span class="nc">NSObject</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">assign</span><span class="p">)</span> <span class="n">CGFloat</span> <span class="n">animatableValue</span><span class="p">;</span>
+<span class="k">@end</span>
+
+<span class="cp">#import "AnimatableModel.h"
+</span><span class="k">@implementation</span> <span class="nc">AnimatableModel</span>
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimatableValue</span><span class="p">:(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">animatableValue</span><span class="p">{</span>
+  <span class="n">_animatableValue</span> <span class="o">=</span> <span class="n">animatableValue</span><span class="p">;</span>
+  <span class="n">NSLog</span><span class="p">(</span><span class="s">@"%f"</span><span class="p">,</span><span class="n">animatableValue</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+</code></pre>
+</div>
+
+<p>此对象只有一个CGFloat类型的属性，非常简单，这里在AnimatableModel对象上运行几种Pop Animation进行测试，以便统计animatableValue的变化曲线。</p>
+
+<p>由于此对象的属性不在Pop Property的标准属性中，所以需要创建一个POPAnimatableProperty，</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>  POPAnimatableProperty *animatableProperty = [POPAnimatableProperty propertyWithName:@"com.geeklu.animatableValue" initializer:^(POPMutableAnimatableProperty *prop) {
+    prop.writeBlock = ^(id obj, const CGFloat values[]) {
+        [obj setAnimatableValue:values[0]];
+    };
+    prop.readBlock = ^(id obj, CGFloat values[]) {
+        values[0] = [obj animatableValue];
+    };
+}];
+</code></pre>
+</div>
+
+<p>统计的数据来自上面属性变化时的Log数据，制图的时候将时间中除了秒之外的时间部分删除了，所有数据都来自真实测试的数据，并使用Number进行了曲线的绘制。图中的每个点代表一个离散的节点，为了方便观看，使用直线将这些离散的点连接起来了。</p>
+
+<p><img src="http://ww4.sinaimg.cn/mw1024/65cc0af7gw1ego7boez1uj20oc0icju4.jpg" style="width: 50%; height: 50%" />​</p>
+
+<h3 id="popbasicaniamtion-with-easeout-timingfunction">PopBasicAniamtion With EaseOut TimingFunction</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>POPBasicAnimation *animation = [POPBasicAnimation animation];
+animation.property = animatableProperty;
+animation.fromValue = [NSNumber numberWithFloat:0];
+animation.toValue = [NSNumber numberWithFloat:100];
+animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+animation.duration = 1.5;
+
+_animatableModel = [[AnimatableModel alloc] init];
+[_animatableModel pop_addAnimation:animation forKey:@"easeOut"];
+</code></pre>
+</div>
+
+<p><img src="http://ww1.sinaimg.cn/mw1024/65cc0af7gw1egnh3razkxj20sy0kadh2.jpg" style="width: 50%; height: 50%" />​</p>
+
+<p>从上图可以看到，动画开始的时候变化速率较快，到结束的时候就很慢了，这就是所谓的Ease Out效果。</p>
+
+<h3 id="popspringaniamtion">PopSpringAniamtion</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>POPSpringAnimation *animation = [POPSpringAnimation animation];
+animation.property = animatableProperty;
+animation.fromValue = [NSNumber numberWithFloat:0];
+animation.toValue = [NSNumber numberWithFloat:100];
+animation.dynamicsMass = 5;
+
+_animatableModel = [[AnimatableModel alloc] init];
+[_animatableModel pop_addAnimation:animation forKey:@"spring"];
+</code></pre>
+</div>
+
+<p><img src="http://ww4.sinaimg.cn/mw1024/65cc0af7gw1egnh8m1lhtj20oi0gg0u4.jpg" style="width: 50%; height: 50%" />​</p>
+
+<p>一开始快速向终点方向靠近，然后会在终点附近来回摆动，摆动幅度逐渐变弱，最后在终点停止。</p>
+
+<p>通过上面的两个属性值变化的曲线你可以很好的理解动画的类型和属性的变化曲线之前的关联了。
+## 二.Pop Animation的使用
+这里就讲讲Pop Aniamtion自带的几种动画的使用。 Pop Animation自带的动画都是基于POPPropertyAnimation的，POPPropertyAnimation有个很重要的部分就是 POPAnimatableProperty，用来描述animatable的属性。上一节中就看到了如何来创建一个POPAnimatableProperty对象，在初始化的时候，需要在初始化的block中设置writeBlock和readBlock</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>void (^readBlock)(id obj, CGFloat values[])
+void (^writeBlock)(id obj, const CGFloat values[])
+</code></pre>
+</div>
+
+<p>这两个block都是留给动画引擎来使用的，前者用于向目标属性写值,使用者需要做的就是从values中提取数据设置给obj；后者用于读取，也就是从objc中读取放到values中。values[] 最多支持4个数据，也就是说Pop Aniamtion属性数值的维度最大支持4维。
+为了使用便捷，Pop Animation框架提供了很多现成的POPAnimatableProperty预定义，你只需要使用预定义的propertyWithName来初始化POPAnimatableProperty便可，比如以下一些预定义的propertyWithName：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>kPOPLayerBackgroundColor
+...
+kPOPViewAlpha
+...
+</code></pre>
+</div>
+
+<p>这样预定义的POPAnimatableProperty已经帮你设置好writeBlock和readBlock。
+下面的一些基于POPPropertyAnimation的动画都提供了快捷的方法，直接传入propertyWithName便创建好了特定property的动画了。
+下面列举的各个实例都可以在这里找到：<a href="https://github.com/kejinlu/facebook-pop-sample">https://github.com/kejinlu/facebook-pop-sample</a>。</p>
+
+<h3 id="popbasicanimation">1.POPBasicAnimation</h3>
+<p>基本动画，接口方面和CABasicAniamtion很相似，使用可以提供初始值fromValue，这个 终点值toValue，动画时长duration以及决定动画节奏的timingFunction。timingFunction直接使用的CAMediaTimingFunction,是使用一个横向纵向都为一个单位的拥有两个控制点的贝赛尔曲线来描述的，横坐标为时间，纵坐标为动画进度。
+<img src="http://ww2.sinaimg.cn/mw1024/65cc0af7gw1egpvtrn8qmj209307qdhf.jpg" style="width: 50%; height: 50%" />​
+这里举一个View移动的例子：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>NSInteger height = CGRectGetHeight(self.view.bounds);
+NSInteger width = CGRectGetWidth(self.view.bounds);
+
+CGFloat centerX = arc4random() % width;
+CGFloat centerY = arc4random() % height;
+
+POPBasicAnimation *anim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewCenter];
+anim.toValue = [NSValue valueWithCGPoint:CGPointMake(centerX, centerY)];
+anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+anim.duration = 0.4;
+[self.testView pop_addAnimation:anim forKey:@"centerAnimation"];
+</code></pre>
+</div>
+
+<p>这里self.view上放了一个用于动画的testView，然后取一个随机坐标，进行动画。</p>
+
+<h3 id="popspringanimation">2.PopSpringAnimation</h3>
+<p>弹簧动画是Bezier曲线无法表述的，所以无法使用PopBasicAniamtion来实现。PopSpringAnimation便是专门用来实现弹簧动画的。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>POPSpringAnimation *anim = [POPSpringAnimation animationWithPropertyNamed:kPOPViewCenter];
+
+NSInteger height = CGRectGetHeight(self.view.bounds);
+NSInteger width = CGRectGetWidth(self.view.bounds);
+
+CGFloat centerX = arc4random() % width;
+CGFloat centerY = arc4random() % height;
+
+anim.toValue = [NSValue valueWithCGPoint:CGPointMake(centerX, centerY)];
+anim.springBounciness = 16;
+anim.springSpeed = 6;
+[self.testView pop_addAnimation:anim forKey:@"center"];
+</code></pre>
+</div>
+
+<p>&lt;img src=”http://ww1.sinaimg.cn/mw1024/65cc0af7gw1egqpgva69rg208u0fpjtx.gif” style=”width: 25%; height: 25%”;/&gt;​</p>
+
+<p>这个例子的动画和上面的基本动画很相似，都是一个view的移动，但是这里有弹簧效果。POPSpringAnimation主要就是需要注意下几个参数的含义：</p>
+
+<ul>
+  <li>springBounciness 弹簧弹力 取值范围为[0, 20]，默认值为4</li>
+  <li>springSpeed 弹簧速度，速度越快，动画时间越短 [0, 20]，默认为12，和springBounciness一起决定着弹簧动画的效果</li>
+  <li>dynamicsTension  弹簧的张力</li>
+  <li>dynamicsFriction 弹簧摩擦</li>
+  <li>dynamicsMass 质量  。张力，摩擦，质量这三者可以从更细的粒度上替代springBounciness和springSpeed控制弹簧动画的效果</li>
+</ul>
+
+<h3 id="popdecayanimation">3.PopDecayAnimation</h3>
+<p>基于Bezier曲线的timingFuntion同样无法表述Decay Aniamtion，所以Pop就单独实现了一个 PopDecayAnimation，用于衰减动画。衰减动画一个很常见的地方就是 UIScrollView 滑动松开后的减速，这里就基于UIView实现一个自己的ScrollView，然后使用PopDecayAnimation实现
+此代码可以详细参见 <a href="https://github.com/kejinlu/facebook-pop-sample/blob/master/facebook-pop-sample/KKScrollView.m">KKScrollView</a> 的实现，当滑动手势结束时，根据结束的加速度，给衰减动画一个初始的velocity，用来决定衰减的时长。</p>
+
+<p>&lt;img src=”http://ww3.sinaimg.cn/mw1024/65cc0af7gw1egmzoapnqwg206i0bm7nn.gif” style=”width: 25%; height: 25%”;/&gt;​</p>
+
+<h3 id="popcustomanimation">4.POPCustomAnimation</h3>
+<p>POPCustomAnimation 并不是基于POPPropertyAnimation的，它直接继承自PopAnimation用于创建自定义动画用的，通过POPCustomAnimationBlock类型的block进行初始化，</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>typedef BOOL (^POPCustomAnimationBlock)(id target, POPCustomAnimation *animation);
+</code></pre>
+</div>
+
+<p>此block会在界面的每一帧更新的时候被调用，创建者需要在block中根据当前currentTime和elapsedTime来决定如何更新target的相关属性，以实现特定的动画。当你需要结束动画的时候就在block中返回NO，否则返回YES。</p>
+
+<h2 id="pop-animationcore-animation">四.Pop Animation相比于Core Animation的优点</h2>
+<p>Pop Animation应用于CALayer时，在动画运行的任何时刻，layer和其presentationLayer的相关属性值始终保持一致，而Core Animation做不到。 <br />
+Pop Animation可以应用任何NSObject的对象，而Core Aniamtion必须是CALayer。</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Custom Container View Controller</title>
+      <link href="http://geeklu.com/2014/05/custom-container-view-controller/"/>
+      <pubDate>2014-05-08T00:00:00+08:00</pubDate>
+      <author>卢克</author>
+      <guid>http://geeklu.com/2014/05/custom-container-view-controller</guid>
+      <content:encoded><![CDATA[<p>什么是Container View Controller?苹果文档是这么描述的:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>A container view controller contains content owned by other view controllers.
+</code></pre>
+</div>
+
+<p>也就是说一个View Controller显示的某部分内容属于另一个View Controller，那么这个View Controller就是一个Container，比如UIKit中的UINavigationController，UITabBarController。 <br />
+在iOS 5之前苹果是不允许出现自定义的Container的 ，也就是说你创建的一个View Controller的view不能包含另一个View Controller的view，这对于逻辑复杂的界面来说，不易于功能拆分。也许曾经你为了某个公用的显示逻辑，直接将某个View Controller的view添加到另一个View Controller的view上，然后发现可以正常显示和使用，但实际上这种行为是非常危险的。</p>
+
+<p>iOS 5.0 开始支持Custom Container View Controller，开放了用于构建自定义Container的接口。如果你想创建一个自己的Container，那么有一些概念还得弄清楚。Container的主要职责就是管理一个或多个Child View Controller的展示的生命周期，需要传递显示以及旋转相关的回调。其实显示或者旋转的回调的触发的源头来自于window,一个app首先有一个主window，初始化的时候需要给这个主window指定一个rootViewController，window会将显示相关的回调(viewWillAppear:, viewWillDisappear:, viewDidAppear:, or viewDidDisappear: )以及旋转相关的回调(willRotateToInterfaceOrientation:duration:
+,willAnimateRotationToInterfaceOrientation:duration:,
+didRotateFromInterfaceOrientation:)传递给rootViewController。rootViewController需要再将这些callbacks的调用传递给它的Child View Controllers。</p>
+
+<h3 id="section">一.父子关系范式</h3>
+<p>实现一个Custom Container View Controller并不是一个简单的事情，主要分为两个阶段：父子关系的建立以及父子关系的解除。如果pVC将cVC的view添加为自己的subview，那么cVC必须为pVC的Child View Controller，而反过来则不一定成立，比如UINavigationController，一个View Controller被push进来后便和navigationController建立父子关系了,但是只有最上面的View Controller 是显示着的，底下的View Controller的view则被移出了容器的view的显示层级，当一个View Controller被pop之后，便和navigationController解除了父子关系了。</p>
+
+<p><strong>展示一个名为content的child view controller</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> [self addChildViewController:content];  //1
+ content.view.frame = [self frameForContentController]; 
+ [self.view addSubview:self.currentClientView]; //2
+ [content didMoveToParentViewController:self]; //3
+</code></pre>
+</div>
+
+<p>1.将content添加为child view controller，addChildViewController:接口建立了逻辑上的父子关系，子可以通过parentViewController，访问其父VC，addChildViewController:接口的逻辑中会自动调用 <code class="highlighter-rouge">[content willMoveToParentViewController:self];</code><br />
+2.建立父子关系后，便是将content的view加入到父VC的view hierarchy上，同时要决定的是 content的view显示的区域范围。 <br />
+3.调用child的 didMoveToParentViewController: ，以通知child，完成了父子关系的建立</p>
+
+<p><strong>移除一个child view controller</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> [content willMoveToParentViewController:nil]; //1
+ [content.view removeFromSuperview]; //2
+ [content removeFromParentViewController]; //3
+</code></pre>
+</div>
+
+<p>1.通知child，即将解除父子关系，从语义上也可以看出 child的parent即将为nil<br />
+2.将child的view从父VC的view的hierarchy中移除 <br />
+3.通过removeFromParentViewController的调用真正的解除关系，removeFromParentViewController会自动调用 [content didMoveToParentViewController:nil]</p>
+
+<h3 id="appearance-callbacks">二.appearance callbacks的传递</h3>
+<p>上面的实现中有一个问题，就是没看到那些appearance callbacks是如何传递的，答案就是appearance callbacks默认情况下是自动调用的，苹果框架底层帮你实现好了，也就是在上面的addSubview的时候，在subview真正加到父view之前，child的viewWillAppear将被调用，真正被add到父view之后，viewDidAppear会被调用。移除的过程中viewWillDisappear，viewDidDisappear的调用过程也是类似的。<br />
+有时候自动的appearance callbacks的调用并不能满足需求，比如child view的展示有一个动画的过程，这个时候我们并不想viewDidAppear的调用在addSubview的时候进行，而是等展示动画结束后再调用viewDidAppear。也许你可能会提到 <code class="highlighter-rouge">transitionFromViewController:toViewController:duration:options:animations:completion:</code> 这个方法，会帮你自动处理view的add和remove，以及支持animations block，也能够保证在动画开始前调用willAppear或者willDisappear，在调用结束的时候调用didAppear，didDisappear，但是此方式也存在局限性，必须是两个新老子VC的切换，都不能为空，因为要保证新老VC拥有同一个parentViewController，且参数中的viewController不能是系统中的container，比如不能是UINavigationController或者UITabbarController等。  <br />
+所以如果你要自己写一个界面容器往往用不了appearence callbacks自动调用的特性，需要将此特性关闭，然后自己去精确控制appearance callbacks的调用时机。 <br />
+那如何关闭appearance callbacks的自动传递的特性呢？在iOS 5.x中你需要覆盖<code class="highlighter-rouge">automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers</code>,然后返回NO,iOS6+中你需要覆盖 <code class="highlighter-rouge">shouldAutomaticallyForwardAppearanceMethods</code>方法并返回NO. <br />
+手动传递的时候你并不能直接去调用child 的viewWillAppear或者viewDidAppear这些方法，而是需要使用 <code class="highlighter-rouge">beginAppearanceTransition:animated:</code>和<code class="highlighter-rouge">endAppearanceTransition</code>接口来间接触发那些appearance callbacks，且begin和end必须成对出现。 <br />
+<code class="highlighter-rouge">[content beginAppearanceTransition:YES animated:animated]</code>触发content的viewWillAppear，<code class="highlighter-rouge">[content beginAppearanceTransition:NO animated:animated]</code>触发content的viewWillDisappear，和他们配套的[content endAppearanceTransition]分别触发viewDidAppear和viewDidDisappear。  (AppearanceTransition的这两个接口之前在苹果描述的文档中一开始还存在问题，因为文档中一开始说是iOS5不支持这两个接口，其实是支持的，后来苹果纠正了文档中的这个错误)。</p>
+
+<h3 id="rotation-callbacks">三.rotation callbacks的传递</h3>
+<p>也许在iPhone上很少要关心的屏幕旋转问题的，但是大屏幕的iPad上就不同了，很多时候你需要关心横竖屏。rotation callbacks 一般情况下只需要关心三个方法
+<code class="highlighter-rouge">willRotateToInterfaceOrientation:duration:</code>在旋转开始前，此方法会被调用；<code class="highlighter-rouge">willAnimateRotationToInterfaceOrientation:duration:</code> 此方法的调用在旋转动画block的内部，也就是说在此方法中的代码会作为旋转animation block的一部分；<code class="highlighter-rouge">didRotateFromInterfaceOrientation:</code>此方法会在旋转结束时被调用。而作为view controller container 就要肩负起旋转的决策以及旋转的callbacks的传递的责任。</p>
+
+<p>当使用框架的自动传递的特性的时候，作为容器的view controller 会自动
+将这些方法传递给所有的child viewcontrollers， 有时候你可能不需要传递给所有的child viewcontroller，而只需要传递给正在显示的child viewcontroller，那么你就需要禁掉旋转回调自动传递的特性，和禁掉appearance callbacks自动传递的方式类似，需要覆盖相关方法并返回NO，在iOS5.x中，appearance callbacks和rotation callbacks禁掉是公用一个方法的就是 <code class="highlighter-rouge">automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers</code>，在iOS6之后分成两个独立的方法，旋转的则是 <code class="highlighter-rouge">shouldAutomaticallyForwardRotationMethods</code>。 <br />
+旋转相关的除了上面的几个rotation callbacks方法外，还有一个十分重要的概念，就是一个view controller可以决定自己是否支持当前取向的旋转，这个东西在iOS6前后的实现方式还不一样，iOS6之前使用的方法是 <code class="highlighter-rouge">shouldAutorotateToInterfaceOrientation</code>，就是一个view controller覆盖此方法，根据传入的即将旋转的取向的参数，来决定是否旋转。而iOS6.0之后的实现则拆分成两个方法 <code class="highlighter-rouge">shouldAutorotate</code>和<code class="highlighter-rouge">supportedInterfaceOrientations</code>,前者决定再旋转的时候是否去根据<code class="highlighter-rouge">supportedInterfaceOrientations</code>所支持的取向来决定是否旋转，也就是说如果<code class="highlighter-rouge">shouldAutorotate</code>返回YES的时候，才会去调用<code class="highlighter-rouge">supportedInterfaceOrientations</code>检查当前view controller支持的取向，如果当前取向在支持的范围中，则进行旋转，如果不在则不旋转；而当<code class="highlighter-rouge">shouldAutorotate</code>返回NO的时候，则根本不会去管<code class="highlighter-rouge">supportedInterfaceOrientations</code>这个方法，反正是不会跟着设备旋转就是了。 <br />
+而作为界面容器你要注意的就是你需要去检查你的child view controller，检查他们对横竖屏的支持情况，以便容器自己决策在横竖屏旋转时候是否支持当前的取向，和上面的callbacks传递的方向相比，这其实是一个反向的传递。</p>
+
+<h3 id="section-1">四.创建自己的容器基类</h3>
+<p>当你需要构建自己的Container View Controller的时候，每一个Container都会有一些相同的逻辑，如果你每一个都写一遍会存在很多重复代码，所以最好你创建一个Container基类，去实现容器都需要的逻辑。那到底有哪些逻辑是每一个Container都需要做的呢？关闭Appearance和Rotation相关方法的自动传递；当Container的Appearance和Rotation相关方法被调用时，需要将方法传递给相关的Child View Controller；以及当前Container是否支持旋转的决策逻辑等。下面为一个容器基类的示范:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#import "ContainerBaseController.h"
+</span>
+<span class="k">@implementation</span> <span class="nc">ContainerBaseController</span>
+
+<span class="cp">#pragma mark -
+#pragma mark Overrides
+</span><span class="c1">//NS_DEPRECATED_IOS(5_0,6_0)
+</span><span class="k">-</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers</span><span class="p">{</span>
+<span class="k">return</span> <span class="nb">NO</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//NS_AVAILABLE_IOS(6_0)
+</span><span class="o">-</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">shouldAutomaticallyForwardAppearanceMethods</span><span class="p">{</span>
+    <span class="k">return</span> <span class="nb">NO</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//NS_AVAILABLE_IOS(6_0)
+</span><span class="o">-</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">shouldAutomaticallyForwardRotationMethods</span><span class="p">{</span>
+<span class="k">return</span> <span class="nb">NO</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewWillAppear</span><span class="o">:</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">animated</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">super</span> <span class="nf">viewWillAppear</span><span class="p">:</span><span class="n">animated</span><span class="p">];</span>
+
+    <span class="n">NSArray</span> <span class="o">*</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nf">childViewControllersWithAppearanceCallbackAutoForward</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="k">in</span> <span class="n">viewControllers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">viewController</span> <span class="nf">beginAppearanceTransition</span><span class="p">:</span><span class="nb">YES</span> <span class="nf">animated</span><span class="p">:</span><span class="n">animated</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewDidAppear</span><span class="o">:</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">animated</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">super</span> <span class="nf">viewDidAppear</span><span class="p">:</span><span class="n">animated</span><span class="p">];</span>
+
+    <span class="n">NSArray</span> <span class="o">*</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nf">childViewControllersWithAppearanceCallbackAutoForward</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="k">in</span> <span class="n">viewControllers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">viewController</span> <span class="nf">endAppearanceTransition</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewWillDisappear</span><span class="o">:</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">animated</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">super</span> <span class="nf">viewWillDisappear</span><span class="p">:</span><span class="n">animated</span><span class="p">];</span>
+
+    <span class="n">NSArray</span> <span class="o">*</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nf">childViewControllersWithAppearanceCallbackAutoForward</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="k">in</span> <span class="n">viewControllers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">viewController</span> <span class="nf">beginAppearanceTransition</span><span class="p">:</span><span class="nb">NO</span> <span class="nf">animated</span><span class="p">:</span><span class="n">animated</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewDidDisappear</span><span class="o">:</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">animated</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">super</span> <span class="nf">viewDidDisappear</span><span class="p">:</span><span class="n">animated</span><span class="p">];</span>
+
+    <span class="n">NSArray</span> <span class="o">*</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nf">childViewControllersWithAppearanceCallbackAutoForward</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="k">in</span> <span class="n">viewControllers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">viewController</span> <span class="nf">endAppearanceTransition</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">willRotateToInterfaceOrientation</span><span class="o">:</span><span class="p">(</span><span class="n">UIInterfaceOrientation</span><span class="p">)</span><span class="n">toInterfaceOrientation</span> <span class="n">duration</span><span class="o">:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="n">duration</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">super</span> <span class="nf">willRotateToInterfaceOrientation</span><span class="p">:</span><span class="n">toInterfaceOrientation</span> <span class="nf">duration</span><span class="p">:</span><span class="n">duration</span><span class="p">];</span>
+
+    <span class="n">NSArray</span> <span class="o">*</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nf">childViewControllersWithRotationCallbackAutoForward</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="k">in</span> <span class="n">viewControllers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">viewController</span> <span class="nf">willRotateToInterfaceOrientation</span><span class="p">:</span><span class="n">toInterfaceOrientation</span> <span class="nf">duration</span><span class="p">:</span><span class="n">duration</span><span class="p">];</span>
+
+<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">willAnimateRotationToInterfaceOrientation</span><span class="o">:</span><span class="p">(</span><span class="n">UIInterfaceOrientation</span><span class="p">)</span><span class="n">toInterfaceOrientation</span> <span class="n">duration</span><span class="o">:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="n">duration</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">super</span> <span class="nf">willAnimateRotationToInterfaceOrientation</span><span class="p">:</span><span class="n">toInterfaceOrientation</span> <span class="nf">duration</span><span class="p">:</span><span class="n">duration</span><span class="p">];</span>
+
+    <span class="n">NSArray</span> <span class="o">*</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nf">childViewControllersWithRotationCallbackAutoForward</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="k">in</span> <span class="n">viewControllers</span><span class="p">)</span> <span class="p">{</span>
+            <span class="p">[</span><span class="n">viewController</span> <span class="nf">willAnimateRotationToInterfaceOrientation</span><span class="p">:</span><span class="n">toInterfaceOrientation</span> <span class="nf">duration</span><span class="p">:</span><span class="n">duration</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">didRotateFromInterfaceOrientation</span><span class="o">:</span><span class="p">(</span><span class="n">UIInterfaceOrientation</span><span class="p">)</span><span class="n">fromInterfaceOrientation</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">super</span> <span class="nf">didRotateFromInterfaceOrientation</span><span class="p">:</span><span class="n">fromInterfaceOrientation</span><span class="p">];</span>
+
+    <span class="n">NSArray</span> <span class="o">*</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nf">childViewControllersWithRotationCallbackAutoForward</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="k">in</span> <span class="n">viewControllers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">viewController</span> <span class="nf">didRotateFromInterfaceOrientation</span><span class="p">:</span><span class="n">fromInterfaceOrientation</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/*
+ NS_AVAILABLE_IOS(6_0) 
+ 向下查看和旋转相关的ChildViewController的shouldAutorotate的值
+ 只有所有相关的子VC都支持Autorotate，才返回YES
+ */</span>
+<span class="o">-</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">shouldAutorotate</span><span class="p">{</span>
+    <span class="n">NSArray</span> <span class="o">*</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nf">childViewControllersWithRotationCallbackAutoForward</span><span class="p">];</span>
+    <span class="n">BOOL</span> <span class="n">shouldAutorotate</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="k">in</span> <span class="n">viewControllers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">shouldAutorotate</span> <span class="o">=</span> <span class="n">shouldAutorotate</span> <span class="o">&amp;&amp;</span>  <span class="p">[</span><span class="n">viewController</span> <span class="nf">shouldAutorotate</span><span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">shouldAutorotate</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/*
+ NS_AVAILABLE_IOS(6_0) 
+ 此方法会在设备旋转且shouldAutorotate返回YES的时候才会被触发
+ 根据对应的所有支持的取向来决定是否需要旋转
+ 作为容器，支持的取向还决定于自己的相关子ViewControllers
+ */</span>
+<span class="o">-</span> <span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="n">supportedInterfaceOrientations</span><span class="p">{</span>
+    <span class="n">NSUInteger</span> <span class="n">supportedInterfaceOrientations</span> <span class="o">=</span> <span class="n">UIInterfaceOrientationMaskAll</span><span class="p">;</span>
+
+    <span class="n">NSArray</span> <span class="o">*</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nf">childViewControllersWithRotationCallbackAutoForward</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="k">in</span> <span class="n">viewControllers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">supportedInterfaceOrientations</span> <span class="o">=</span> <span class="n">supportedInterfaceOrientations</span> <span class="o">&amp;</span> <span class="p">[</span><span class="n">viewController</span> <span class="nf">supportedInterfaceOrientations</span><span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">supportedInterfaceOrientations</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="cm">/*
+ NS_DEPRECATED_IOS(2_0, 6_0) 6.0以下，设备旋转时，此方法会被调用
+ 用来决定是否要旋转
+ */</span>
+<span class="o">-</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">shouldAutorotateToInterfaceOrientation</span><span class="o">:</span><span class="p">(</span><span class="n">UIInterfaceOrientation</span><span class="p">)</span><span class="n">toInterfaceOrientation</span><span class="p">{</span>
+    <span class="n">BOOL</span> <span class="n">shouldAutorotate</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+    <span class="n">NSArray</span> <span class="o">*</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nf">childViewControllersWithRotationCallbackAutoForward</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="k">in</span> <span class="n">viewControllers</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">shouldAutorotate</span> <span class="o">=</span> <span class="n">shouldAutorotate</span> <span class="o">&amp;&amp;</span>  <span class="p">[</span><span class="n">viewController</span> <span class="nf">shouldAutorotateToInterfaceOrientation</span><span class="p">:</span><span class="n">toInterfaceOrientation</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">shouldAutorotate</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cp">#pragma mark -
+#pragma mark 下面两个方法是在需要的情况下给基类覆盖用的，毕竟不是所有的容器都需要将相关方法传递给所有的childViewControllers
+</span><span class="o">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="n">childViewControllersWithAppearanceCallbackAutoForward</span><span class="p">{</span>
+    <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">childViewControllers</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="n">childViewControllersWithRotationCallbackAutoForward</span><span class="p">{</span>
+    <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">childViewControllers</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+</code></pre>
+</div>
+
+<h3 id="container">五.创建自己的Container</h3>
+<p>####设计要点
+创建一个Container，首先你得设计好Container View Controller的行为和公开的API，你可以好好参考UIKit中自带的一些Container的设计风格，比如UINaivgationController就是管理着一组Content View Controller的堆栈的Container,且正在显示的是栈顶的View Controller。</p>
+
+<p>主要接口有View Controller的推入，此过程中viewController会和navigationController建立父子关系，并将viewController显示出来，如果animated是YES的话，则会有过场动画：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
+</code></pre>
+</div>
+
+<p>pop操作，移除栈顶的内容，会解除和navigationController的父子关系：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>- (UIViewController *)popViewControllerAnimated:(BOOL)animated;
+</code></pre>
+</div>
+
+<p>当然关于pop还有一些其他的便捷接口，这里就不赘述了。</p>
+
+<p>另外需要提供一些快捷的接口方便<strong>获取特定的Child View Controller</strong>，比如<code class="highlighter-rouge">topViewController</code>可以获取栈顶的View Controller。</p>
+
+<p>另外如有必要，Container还需要留有<strong>delegate接口</strong>，便于通知外面Container的相关行为阶段，便于外部做出相关操作，比如UINaivgationController就会在即将要push一个新的View Controller，已经push了一个新的View Controller等时机留有delegate方法。</p>
+
+<p>还有一个需要考虑的问题就是直接或者间接的Child View Controller如何快速的<strong>检索</strong>到相应的Container呢？一般Container在实现的时候就需要考虑此问题并提供相应的接口，实现的方法一般就是实现一个UIViewController的Category，比如UINavigationController，在某个View Controller中访问其navigationController属性，会向上遍历，直到找到最近的类型为UINavigationController的祖先，如果找不到则为nil：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@interface</span> <span class="nc">UIViewController</span> <span class="p">(</span><span class="nl">UINavigationControllerItem</span><span class="p">)</span>
+<span class="p">...</span>
+<span class="k">@property</span><span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">readonly</span><span class="p">,</span><span class="n">retain</span><span class="p">)</span> <span class="n">UINavigationController</span> <span class="o">*</span><span class="n">navigationController</span><span class="p">;</span>
+
+<span class="k">@end</span>
+</code></pre>
+</div>
+
+<p>####实现一个简单的模态窗口Container <br />
+模态展示 则至少存在present，dismiss的接口，以及获取模态View Controller的属性</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#import &lt;UIKit/UIKit.h&gt;
+#import "ContainerBaseController.h"
+</span>
+<span class="k">@interface</span> <span class="nc">SimpleModalContainerController</span> <span class="p">:</span> <span class="nc">ContainerBaseController</span>
+
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">UIViewController</span> <span class="o">*</span><span class="n">simpleModalViewController</span><span class="p">;</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">presentSimpleModalViewController</span><span class="p">:(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewControllerToPresent</span>
+                            <span class="nf">animated</span><span class="p">:(</span><span class="n">BOOL</span><span class="p">)</span><span class="nv">animated</span><span class="p">;</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dismissSimpleModalViewControllerAnimated</span><span class="p">:(</span><span class="n">BOOL</span><span class="p">)</span><span class="nv">animated</span><span class="p">;</span>
+
+<span class="k">@end</span>
+
+<span class="c1">//实现如下
+</span><span class="cp">#import "SimpleModalContainerController.h"
+</span>
+<span class="k">@interface</span> <span class="nc">SimpleModalContainerController</span> <span class="p">()</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readwrite</span><span class="p">)</span> <span class="n">UIViewController</span> <span class="o">*</span><span class="n">simpleModalViewController</span><span class="p">;</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">UIButton</span> <span class="o">*</span><span class="n">backgroundButton</span><span class="p">;</span>
+<span class="k">@end</span>
+
+<span class="k">@implementation</span> <span class="nc">SimpleModalContainerController</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">buttonTapped</span><span class="p">:(</span><span class="n">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">{</span>
+    <span class="p">[</span><span class="n">self</span> <span class="nf">dismissSimpleModalViewControllerAnimated</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="n">backgroundButton</span><span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_backgroundButton</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">_backgroundButton</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIButton</span> <span class="nf">buttonWithType</span><span class="p">:</span><span class="n">UIButtonTypeCustom</span><span class="p">];</span>
+        <span class="n">_backgroundButton</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="nf">blackColor</span><span class="p">];</span>
+        <span class="n">_backgroundButton</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span> <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
+        <span class="n">_backgroundButton</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">;</span>
+        <span class="p">[</span><span class="n">_backgroundButton</span> <span class="nf">addTarget</span><span class="p">:</span><span class="n">self</span> <span class="nf">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">buttonTapped</span><span class="o">:</span><span class="p">)</span> <span class="n">forControlEvents</span><span class="o">:</span><span class="n">UIControlEventTouchUpInside</span><span class="p">];</span>
+
+    <span class="p">}</span>
+    <span class="n">_backgroundButton</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">_backgroundButton</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">presentSimpleModalViewController</span><span class="o">:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewControllerToPresent</span>
+                            <span class="n">animated</span><span class="o">:</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">animated</span><span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span> <span class="o">&amp;&amp;</span> <span class="n">viewControllerToPresent</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span> <span class="o">=</span> <span class="n">viewControllerToPresent</span><span class="p">;</span>
+    
+        <span class="p">[</span><span class="n">self</span> <span class="nf">addChildViewController</span><span class="p">:</span><span class="n">viewControllerToPresent</span><span class="p">];</span>
+    
+        <span class="p">[</span><span class="n">viewControllerToPresent</span> <span class="nf">beginAppearanceTransition</span><span class="p">:</span><span class="nb">YES</span> <span class="nf">animated</span><span class="p">:</span><span class="n">animated</span><span class="p">];</span>
+    
+        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nf">addSubview</span><span class="p">:</span><span class="n">self</span><span class="p">.</span><span class="n">backgroundButton</span><span class="p">];</span>
+    
+        <span class="n">viewControllerToPresent</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">CGRectGetWidth</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span> <span class="n">CGRectGetHeight</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nf">addSubview</span><span class="p">:</span><span class="n">viewControllerToPresent</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+    
+        <span class="k">if</span> <span class="p">(</span><span class="n">animated</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">viewControllerToPresent</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">backgroundButton</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        
+            <span class="p">[</span><span class="n">UIView</span> <span class="nf">animateWithDuration</span><span class="p">:</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span> <span class="nf">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+                <span class="n">viewControllerToPresent</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+                <span class="n">self</span><span class="p">.</span><span class="n">backgroundButton</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">;</span>
+            <span class="p">}</span> <span class="n">completion</span><span class="o">:^</span><span class="p">(</span><span class="n">BOOL</span> <span class="n">finished</span><span class="p">)</span> <span class="p">{</span>
+                <span class="p">[</span><span class="n">viewControllerToPresent</span> <span class="nf">endAppearanceTransition</span><span class="p">];</span>
+                <span class="p">[</span><span class="n">viewControllerToPresent</span> <span class="nf">didMoveToParentViewController</span><span class="p">:</span><span class="n">self</span><span class="p">];</span>
+            <span class="p">}];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">backgroundButton</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">3</span><span class="p">;</span>
+            <span class="p">[</span><span class="n">viewControllerToPresent</span> <span class="nf">endAppearanceTransition</span><span class="p">];</span>
+            <span class="p">[</span><span class="n">viewControllerToPresent</span> <span class="nf">didMoveToParentViewController</span><span class="p">:</span><span class="n">self</span><span class="p">];</span>
+        <span class="p">}</span>
+    
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">dismissSimpleModalViewControllerAnimated</span><span class="o">:</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">animated</span><span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span> <span class="nf">willMoveToParentViewController</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span> <span class="nf">beginAppearanceTransition</span><span class="p">:</span><span class="nb">NO</span> <span class="nf">animated</span><span class="p">:</span><span class="n">animated</span><span class="p">];</span>
+    
+        <span class="k">if</span> <span class="p">(</span><span class="n">animated</span><span class="p">)</span> <span class="p">{</span>
+            <span class="p">[</span><span class="n">UIView</span> <span class="nf">animateWithDuration</span><span class="p">:</span><span class="mi">0</span><span class="p">.</span><span class="mi">3</span> <span class="nf">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+                <span class="n">self</span><span class="p">.</span><span class="n">backgroundButton</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                <span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+            <span class="p">}</span> <span class="n">completion</span><span class="o">:^</span><span class="p">(</span><span class="n">BOOL</span> <span class="n">finished</span><span class="p">)</span> <span class="p">{</span>
+                <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">backgroundButton</span> <span class="nf">removeFromSuperview</span><span class="p">];</span>
+            
+                <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span><span class="p">.</span><span class="n">view</span> <span class="nf">removeFromSuperview</span><span class="p">];</span>
+                <span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+                <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span> <span class="nf">endAppearanceTransition</span><span class="p">];</span>
+                <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span> <span class="nf">removeFromParentViewController</span><span class="p">];</span>
+                <span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+            <span class="p">}];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">backgroundButton</span> <span class="nf">removeFromSuperview</span><span class="p">];</span>
+
+            <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span><span class="p">.</span><span class="n">view</span> <span class="nf">removeFromSuperview</span><span class="p">];</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+            <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span> <span class="nf">endAppearanceTransition</span><span class="p">];</span>
+            <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span> <span class="nf">removeFromParentViewController</span><span class="p">];</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">simpleModalViewController</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+</code></pre>
+</div>
+
+<p>UIViewController的Category用于Child View Controller 获取上层的SimpleModalContainerController</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@interface</span> <span class="nc">UIViewController</span> <span class="p">(</span><span class="nl">SimpleModalContainerController</span><span class="p">)</span>
+
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">SimpleModalContainerController</span> <span class="o">*</span><span class="n">simpleModalContainerController</span><span class="p">;</span>
+
+<span class="k">@end</span>
+
+<span class="k">@implementation</span> <span class="nc">UIViewController</span> <span class="p">(</span><span class="nl">SimpleModalContainerController</span><span class="p">)</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="n">SimpleModalContainerController</span> <span class="o">*</span><span class="p">)</span><span class="n">simpleModalContainerController</span><span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="n">viewController</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">parentViewController</span><span class="p">;</span> <span class="n">viewController</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">;</span> <span class="n">viewController</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">.</span><span class="n">parentViewController</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">([</span><span class="n">viewController</span> <span class="nf">isKindOfClass</span><span class="p">:[</span><span class="n">SimpleModalContainerController</span> <span class="nf">class</span><span class="p">]])</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">SimpleModalContainerController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+</code></pre>
+</div>
+
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>谈谈objc公用库</title>
+      <link href="http://geeklu.com/2014/02/objc-lib/"/>
+      <pubDate>2014-02-10T00:00:00+08:00</pubDate>
+      <author>卢克</author>
+      <guid>http://geeklu.com/2014/02/objc-lib</guid>
+      <content:encoded><![CDATA[<h2 id="section">一.概述</h2>
+<p>objc公用库的使用场景还是比较常见的，iOS SDK本身就是公用库的集合；一些开放平台为了方便开发者开发第三方的app，提供相应平台的sdk；还有一个场景就是比较大的公司一般会有多个甚至几十个app，各个app之间势必会有重复的逻辑，为了 “提升效率”“安全性” 或者业务指标，会推一些公用的库供内部各个app使用。 <br />
+公用库本质上就是一些可重用逻辑的集合，是“分而治之”的一种途径，其出现的形式可以是源码亦或是二进制。 <br />
+公用库也需要理清自己的依赖关系，比如依赖系统SDK的哪些库的哪些接口（决定了公用库适用的系统版本），依赖哪些第三方的库。不过你想把一个东西拿出去给别人用，那你就得想方设法去减少不必要的依赖。 <br />
+作为一个公用库的开发者，提供公用库给别人使用时，需要站在使用者的角度去思考问题，公用库的接口以及接入使用的繁简体现了公用库作者的职业道德和素养。</p>
+
+<h2 id="section-1">二.设计与实现</h2>
+<p>第一步当然是明确公用库的目标，要做什么，不做什么，一二三四列出来，并在后继的实现中最大可能地坚持目标原则。  <br />
+项目的构建也有几种选择：</p>
+
+<ul>
+  <li>使用XCode的”Cocoa Touch Static Library”项目模板新建项目，target为一个静态库</li>
+  <li>安装 <a href="https://github.com/kstenerud/iOS-Universal-Framework">iOS Universal Framework</a> ,然后在XCode中通过其提供的”Static iOS Framework”项目模板新建项目，其target为framework库</li>
+</ul>
+
+<p>另外你可以在上面的基础上，通过<a href="http://cocoapods.org/">cocoapods</a>来管理你自己的公用库的依赖。</p>
+
+<p>在实现的时候，公用库自身的源码全都放到某个目录中或者其子目录中(是指那些可以直接拷贝出去使用的源码，不包括自身编译所依赖的文件，比如prefix.pch)。 <br />
+头文件只暴漏那些必须的，在实现库的时候能够在实现文件中进行引入的的则在实现文件中进行引入，如果在需要暴漏的头文件中引入另一个头文件，那么这另一个头文件也必须要暴漏出来。   <br />
+另一个常见的问题便是接口的方法声明不遵循objc的语言规范，给人以山寨的感觉。还是建议公用库的实现最好有一个当前语言的老手带着做，熟悉当前语言的规范和常用的范式，比如何时使用delegate，何时使用block。 <br />
+还有就是在实现的时候尽可能少地引入第三方的依赖，如果确实需要引入，那么编译的时候千万别把公用库自身依赖的第三方的内容当成自己的一部分，如果你很变态，硬要把第三方的内容搞成自己的一部分，那么你至少得修改这些依赖的相关类的类名，静态变量名，如果是category，还得修改其方法名。    <br />
+最后就是你得坚持良好的注释和文档 ，某个方法 如有特殊的需要注意的点，则需要注释说明，你还得提供一个README文件，用于描述当前库的目的，以及各个接口的使用范例。</p>
+
+<h2 id="section-2">三.分发与集成</h2>
+<p>其实在公用库构建的初期，你就得想好分发的方式。一种好的分发方式可以大大降低公用库集成使用的成本。 <br />
+一个公用库要给别人用，无非就两种形式：源码或者二进制格式（额外提供头文件，资源文件），源码的形式，方便使用者进行调试，二进制格式则适用于那些不方便公开源码的公用库。</p>
+
+<ul>
+  <li>先谈谈源码的形式，源码一般放在某个版本控制库中
+    <ul>
+      <li>在以前很多人就直接下载下来将相关类拷贝进自己的工程中，然后直接使用，这样的坏处就是没法明确知道此公用库的版本以及此库作者做了更新后，你还得手动拷贝一次，比较麻烦。</li>
+      <li>后来就开始用git的submodule，主工程无需将某个公用库的源码放到自己的git库中了，而且三方库可以方便的进行更新切换分支等操作，这种情况下最好是将主工程依赖此三方库项目编译出来的target，比如静态库，这样当公用库有增删文件的时候，无需修改主工程项目文件。</li>
+      <li>最近我比较推荐的就是cocoapods的方式了，它的主要优点就是依赖关系的管理，当然其本质上也是将公用库编译成静态库，然后使得主工程依赖此静态库。</li>
+    </ul>
+  </li>
+  <li>二进制的形式需要谈的东西还是比较多的，二进制一般有两种方式
+    <ul>
+      <li>一种是简单的静态库，也就是常见的 xxx.a 文件, 只不过真正使用的时候需要提供头文件或者资源文件，一般资源文件都是以bundle的形式提供。XCode中默认提供的就是这种方式，只不过你创建公用库项目的时候编译出来静态库只支持特定的一种硬件架构体系，如果你想生成一个Universal的静态库的话，那么你得通过工具来将多个静态库进行合并。</li>
+      <li>另一种便是framework的方式，此方式XCode默认并不支持。你在iOS开发的过程中应该接触过不少framework库，这种库都是系统自带的库，供系统中运行的所有app共享使用。framework库的好处就是不但可以包含二进制文件，还可以包含头文件，资源文件等，甚至可以支持多个版本。各个app所使用的自己的公用库，最终都需要link进可执行文件件的，所以本质上还是一个静态库。所以有一些第三方的方案比如<a href="https://github.com/kstenerud/iOS-Universal-Framework">iOS Universal Framework</a>，能够帮助你使用XCode来编译出framework库，当然其中还是有不少坑，比如XCode并不识别framework中的资源文件所以有了Embedded Framework的方案，虽然framework最终只是一个bundle（一个文件夹，里面按照规定的目录结构方式文件），但是对XCode而言这样的target还是有真假（Real／Fake）之分，只有真的情况下XCode主工程在添加依赖的时候才能够选择此公用库项目的framework涨的target。</li>
+      <li>cocoapods也是支持管理二进制格式的，在podspec中通过vendored_frameworks或者vendored_libraries来指定你需要分发的库</li>
+    </ul>
+  </li>
+</ul>
+
+<p>当然不管你以何种方式分发你的公用库，你都得明确声明此公用库适用的系统版本，依赖哪些系统SDK的框架或者静态库，依赖哪些第三方的库以及对应的版本，这是对自己负责也是对别人负责。 <br />
+在使用公用库的时候，XCode都是通过header search path来寻找静态库的头文件的，通过framework search path来寻找framework的，当使用cocoapods来管理的时候，这些环境变量的设置都是自动帮你完成的，在其生成的xcconfig文件中。</p>
+
+<h2 id="section-3">四.和库相关的几个命令</h2>
+<p>下面几个命令都是和二进制库相关的，这些二进制文件可以叫做对象文件，在Mac或者iOS平台中用的都是<a href="http://zh.wikipedia.org/wiki/Mach-O">Mach-O</a>(Mach Object)，所以这些命令其实都是读取或者操作Mach Object的，你可以通过<code class="highlighter-rouge">man</code>来查看相应的详情用户手册。</p>
+
+<ul>
+  <li>nm <br />
+ 	display name list (symbol table)，其实就是把对象文件中的相关符号标识都列出来</li>
+  <li>otool <br />
+ 	otool，顾名思义就是object tool，比其nm来说，其功能更强大，可以查看对象文件的方方面面，比如展示对象文件的Mach Header，用到了哪些共享库（shared libraries），或者数据段内容等。</li>
+  <li>lipo  <br />
+ 	create or operate on universal files，此命令主要是帮你查看或者创建支付多平台的静态库的。比如将两台不同平台的静态进行合并。</li>
+</ul>
+
+]]></content:encoded>
+    </item>
+    
+  </channel>
+</rss>

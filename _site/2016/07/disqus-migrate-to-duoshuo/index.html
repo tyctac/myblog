@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="卢克" />
+    <title>Disqus迁移至多说 | 卢克</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="卢克" type="application/atom+xml" />
+
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+
+    <script type="text/javascript"
+       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+ jax: ["input/TeX","output/HTML-CSS"],
+ displayAlign: "left"
+});
+</script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>Disqus迁移至多说</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<p>Disqus 国内貌似又没发访问了，博客的评论功能基本就废了，想想要不换个国产的得了，至少能用。
+所以最终综合了一下选择了多说，注册，更改嵌入代码，也是很快，嵌入的时候有几个参数需要设置一下。</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"ds-thread"</span> <span class="nx">data</span><span class="o">-</span><span class="nx">thread</span><span class="o">-</span><span class="nx">key</span><span class="o">=</span><span class="s2">"{{ page.url | remove:'index.html' }}"</span> 
+<span class="nx">data</span><span class="o">-</span><span class="nx">title</span><span class="o">=</span><span class="s2">"{{ page.title }}"</span> 
+<span class="nx">data</span><span class="o">-</span><span class="nx">url</span><span class="o">=</span><span class="s2">"{{ site.url }}{{ page.url | remove:'index.html' }}"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span></code></pre>
+</div>
+
+<p>这里需要自己设置的是 thread-key 表示文章的唯一标识，这里取了url的path部分；title 也就是文章的标题；以及当前文章的url。这些都可以通过jekyll的相关变量来实现。
+设置好了，可以尝试访问下，然后就可以在多说的后台中看到数据了。</p>
+
+<p>接下来就想办法把Disqus的历史评论数据搞过来，好在Disqus和多说都支持数据的导出导入。
+Disqus的数据导出，该翻墙的还是得翻墙。导出来的是xml的格式，具体的数据格式说明可以看这里的xsd描述 <a href="https://help.disqus.com/customer/portal/articles/472149-comments-export">https://help.disqus.com/customer/portal/articles/472149-comments-export</a> 。
+Disqus的数据主要包括三个部分：category，thread，post。
+一般情况下category就一个默认的，可以忽略，所以重点就是thread和post了，thread代表文章实体，post代表评论实体。</p>
+
+<p>然后我们再看看多说导入数据的格式要求，<a href="http://dev.duoshuo.com/docs/500d0629448f04782b00000a">http://dev.duoshuo.com/docs/500d0629448f04782b00000a</a> 这个就比较简单了，就thread和post。
+接下来的事情就上脚本，做数据转换了。</p>
+
+<p>直接python3来伺候了，python用来做文本处理还是比较便捷的，直接内置了诸如xml，json，optparse这些便捷的lib，手起刀落，一个转换的工具就好了，<a href="https://github.com/kejinlu/disqus-migrate-to-duoshuo">https://github.com/kejinlu/disqus-migrate-to-duoshuo</a>。</p>
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">卢克</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2016-07-27">2016-07-27</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#Programming" title="Programming">Programming</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#Python" title="Python">Python</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/2016/07/disqus-migrate-to-duoshuo/" data-title="Disqus迁移至多说" data-url="http://geeklu.com/2016/07/disqus-migrate-to-duoshuo/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"geeklu"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = 'http://geeklu.com/2016/07/deep-learning-intro/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = 'http://geeklu.com/2016/08/linear-regression/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-09-25 10:37:43 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
