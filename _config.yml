@@ -1,6 +1,5 @@
 permalink: /:year/:month/:title/
-url: tyctac.github.io
-#http://geeklu.com
+url: http://tyctac.github.io
 author: dfas
 highlighter: rouge
 timezone: Asia/Shanghai
