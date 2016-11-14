@@ -1,6 +1,6 @@
 --- 
 layout: post
-title: tittle tattle
+title: javascript tittle tattle
 categories:
 - programming
 tags:
