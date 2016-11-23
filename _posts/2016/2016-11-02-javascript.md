@@ -11,6 +11,14 @@ tags:
 
 1. Function Invocation Pattern
 2. Method Invocation Pattern
+   
+    eg:
+```
+function car(){}
+car.show = function(){
+    return this;//this is the object car
+}
+```
 3. Constructor Pattern
 4. Apply Pattern
 
