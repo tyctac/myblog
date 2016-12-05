@@ -7,6 +7,15 @@ tags:
 - javascript
 ---
 
+## language core  
+构造函数问题：  
+```
+alert(cat1.constructor == Cat); //true
+alert(cat2.constructor == Cat); //true
+alert(cat1.instanceof Cat); //true
+alert(cat2.instanceof Cat); //true
+```
+
 ### Several ways to find this in javascript
 
 1. Function Invocation Pattern
@@ -30,3 +39,22 @@ car.show = function(){
 
 ### ajax problem
 - 无可奈何，为了实现异步中的异步，只能再发一次ajax请求不过结果倒也不错
+
+### things about event
+- 事件注册方法 ele.addEventListener(type,handler,flag),flag 是一个布尔值，true表示捕捉阶段执行，false表示事件冒泡阶段执行
+
+### angularJs
+- 模块中定义指令  
+```
+var app = angular.module("myApp",[]);
+app.directive("runoobDirective",function(){
+    return {
+         template:"<!<h1>self define directive</h1>"
+    }
+});
+```  
+
+| directives | introduction |
+|------------|:------------:|
+|ng-init|initiate|
+|
