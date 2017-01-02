@@ -5,4 +5,4 @@ highlighter: rouge
 timezone: Asia/Shanghai
 gems: [jekyll-paginate]
 paginate: 24
-markdown: redcarpet
+markdown: rdiscount
