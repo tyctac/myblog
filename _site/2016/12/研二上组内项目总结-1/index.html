@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="dfas" />
+    <title>组内项目组织结构 | dfas</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="dfas" type="application/atom+xml" />
+
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+
+    <script type="text/javascript"
+       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+ jax: ["input/TeX","output/HTML-CSS"],
+ displayAlign: "left"
+});
+</script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>组内项目组织结构</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<p>我负责的部分主要集中在web部分，期间需要用到数据库的操作，所以用到了springmvc作为整个功能部分的框架，数据库是mysql和neo4j图形数据库，neo4j属于nosql的一种，听说在数据时代会有很广阔的应用，我有个<em>小项目</em>的灵感与之有关，有时间得好好研究一下，具体细节与项目中走的弯路和遇到的坑之后会记录下来，如果我还记得的话，或者还认为它有记录下来的必要的话。</p>
+
+<p>首先，项目的功能与组织结构。
+1. 所用到的软件，框架，外部库（按照数据流从底层向上的顺序):<br />
+数据库：mysql，neo4j
+后台：java，springmvc（按照注解）
+前端：d3.js,百度开源的脑图库
+2. 关键功能模块<br />
+可视化分析模块，脑图分析模块，时间线模块
+3. 模块组织结构<br />
+由于功能并不复杂，并没有采用angularjs，这一类框架，而是直接采用引用外部库文件的方式进行js的代码组织，其中在百度脑图的部分由于不能够直接使用它的源代码，所以在它的源代码中做了修改之后，又进行的构建打包的工作，之后的博客中会记录相关内容。</p>
+
+<p>这段时间的感悟：<br />
+1. 很重要的一点就是独立思考和解决问题的能力<br />
+    1. 对比分析，模块套用<br />
+对于一个模块功能出了bug，而同样条件下的另一个模块却能够正常工作，此时应该使用比较分析<br />
+    2. 抓住关键，重点分析<br />
+    3. 注重细节，小心验证<br />
+需要强调的是注意所话费的时间，这必须根据自身的能力与经验进行安排，bug不可能完全排除，所花费的时间与效果也不会是成正比，有些关键问题需要花费大量时间进行排查，而有些则在出现时再解决也不会造成太大损失，<br />
+    4. 想到时再做补充</p>
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">dfas</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2016-12-25">2016-12-25</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#project" title="project">project</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#Conclusion" title="Conclusion">Conclusion</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/2016/12/%E7%A0%94%E4%BA%8C%E4%B8%8A%E7%BB%84%E5%86%85%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93-1/" data-title="组内项目组织结构" data-url="http://localhost:4000/2016/12/%E7%A0%94%E4%BA%8C%E4%B8%8A%E7%BB%84%E5%86%85%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93-1/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"geeklu"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = 'http://localhost:4000/2016/11/neo4j/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = 'http://localhost:4000/2016/12/%E7%A0%94%E4%BA%8C%E4%B8%8A%E7%BB%84%E5%86%85%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

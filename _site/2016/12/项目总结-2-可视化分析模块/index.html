@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="dfas" />
+    <title>项目总结 2 可视化分析模块 | dfas</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="dfas" type="application/atom+xml" />
+
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+
+    <script type="text/javascript"
+       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+ jax: ["input/TeX","output/HTML-CSS"],
+ displayAlign: "left"
+});
+</script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>项目总结 2 可视化分析模块</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<p>边与点的更新还有边标记的更新功能实现都是在update函数中实现的，下面贴下代码：<br />
+1. 将nodes和links绑定到force<br />
+```
+s.force.nodes(this.nodes)</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>        .force("link",d3.forceLink(this.links).distance(50).id(function(d) {
+
+            return d.id;
+
+        }))
+
+        .restart(); ``` 将nodes或links数组绑定到指定的dom元素上，这里以links举例   ``` var link = this.vis.selectAll("line.link")
+
+        .data(this.links); ``` enter部分继续append相应dom元素，exit部分直接删除   ``` linkEnter.append("line")
+
+           .attr("class","link")
+
+           .style("position","relative")
+
+           .style("z-index","-1"); link.exit().remove(); ``` 最后一点，对于某些被绑定的dom的属性的设置，可以直接在设置里面在function中传递参数d将所绑定的数据传递进去，比如：   ``` linktextEnter.append("text")
+
+           .style("font-size","12px")
+
+           .text(function(d){
+
+               return getTag(d.source.type.toString()+d.target.type.toString());
+
+           }) ```  
+</code></pre>
+</div>
+
+<p><strong>以上</strong>就是update函数的核心部分，d3的灵魂就在与将dom元素与数据的绑定之上，可以用绑定的数据对元素进行各种设置和操作，重要的之后想起来再做补充。</p>
+
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">dfas</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2016-12-26">2016-12-26</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#web" title="web">web</a>&nbsp;
+  
+  <a href="/categories/#project" title="project">project</a>&nbsp;
+  
+  <a href="/categories/#programming" title="programming">programming</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#d3.js" title="d3.js">d3.js</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/2016/12/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93-2-%E5%8F%AF%E8%A7%86%E5%8C%96%E5%88%86%E6%9E%90%E6%A8%A1%E5%9D%97/" data-title="项目总结 2 可视化分析模块" data-url="http://localhost:4000/2016/12/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93-2-%E5%8F%AF%E8%A7%86%E5%8C%96%E5%88%86%E6%9E%90%E6%A8%A1%E5%9D%97/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"geeklu"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = 'http://localhost:4000/2016/12/%E7%A0%94%E4%BA%8C%E4%B8%8A%E7%BB%84%E5%86%85%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = 'http://localhost:4000/2016/12/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93-3-%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95%E6%A8%A1%E5%9D%97/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

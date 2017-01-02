@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="dfas" />
+    <title>javascript tittle tattle | dfas</title>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAD/APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIiAAAiIiIiIiIAACIiIiIiIgERERERERIiAREREREREiIBERERERESIgERIiIiERIiAREiIiIREiIBESIhERESIgERIiERERIiAREiIiIiIiIBESIiIiIiIgERIiIiIiIiAREREREREAABEREREREQAAERERERERAADgAQAA4AEAAOABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA8AAAAPAAAADwAA" rel="icon" type="image/x-icon" />
+    <link href="/feed/" rel="alternate" title="dfas" type="application/atom+xml" />
+
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <link href='/media/webfonts/ss-social.css' rel='stylesheet'>
+    <link href='/media/webfonts/ss-standard.css' rel='stylesheet'>
+    <link href="/media/css/screen.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+
+    <script type="text/javascript"
+       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+ jax: ["input/TeX","output/HTML-CSS"],
+ displayAlign: "left"
+});
+</script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <div class="buttons">
+          <a href="/" class="ss-icon" title="Go to homepage">home</a>
+          <a href="/categories" class="ss-icon" title="Category" >list</a>
+          <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
+          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
+          <a href="/about" class="ss-icon" title="About" >user</a>
+          <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
+        </div>
+        <h1>javascript tittle tattle</h1>
+        </header>
+        <hr>
+        <article class="content">
+        <section class="post">
+<h2 id="language-core">language core</h2>
+<p>构造函数问题：<br />
+<code class="highlighter-rouge">
+alert(cat1.constructor == Cat); //true
+alert(cat2.constructor == Cat); //true
+alert(cat1.instanceof Cat); //true
+alert(cat2.instanceof Cat); //true
+</code></p>
+
+<h3 id="several-ways-to-find-this-in-javascript">Several ways to find this in javascript</h3>
+
+<ol>
+  <li>Function Invocation Pattern</li>
+  <li>
+    <p>Method Invocation Pattern</p>
+
+    <p>eg:
+<code class="highlighter-rouge">
+function car(){}
+car.show = function(){
+ return this;//this is the object car
+}
+</code></p>
+  </li>
+  <li>Constructor Pattern</li>
+  <li>Apply Pattern</li>
+</ol>
+
+<h3 id="seajs-example-deploy-problem-window7">sea.js example deploy problem (window7)</h3>
+<ul>
+  <li>在gitbash中按照readme.md步骤不能执行成功，之后再cmd中交替执行结果可以执行成功，应该是环境变量的问题吧—-&gt;<strong>TODO</strong> 真是乱搞，还是之用cmd吧，用什么gitbash，要什么自行车！！！</li>
+  <li>exports 本来是module.exports的一个引用，当只用module.exports（即exports）不够用的时候，此时可以对module.exports重新赋值，这样的话就能够有exports能够保留，module.exports也能够被当作另外的一个接口使用！！！</li>
+  <li>seajs使用首先将sea.js引入到html文件中，教程中的使用spm安装的情况应该是 <strong>node</strong> 中使用的场景</li>
+  <li>使用spm进行合并和压缩（eg：spm build main.js –combine –app-url zxx)</li>
+</ul>
+
+<h3 id="ajax-problem">ajax problem</h3>
+<ul>
+  <li>无可奈何，为了实现异步中的异步，只能再发一次ajax请求不过结果倒也不错</li>
+</ul>
+
+<h3 id="things-about-event">things about event</h3>
+<ul>
+  <li>事件注册方法 ele.addEventListener(type,handler,flag),flag 是一个布尔值，true表示捕捉阶段执行，false表示事件冒泡阶段执行</li>
+</ul>
+
+<h3 id="angularjs">angularJs</h3>
+<ul>
+  <li>模块中定义指令<br />
+<code class="highlighter-rouge">
+var app = angular.module("myApp",[]);
+app.directive("runoobDirective",function(){
+  return {
+       template:"&lt;!&lt;h1&gt;self define directive&lt;/h1&gt;"
+  }
+});
+</code></li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>directives</th>
+      <th style="text-align: center">introduction</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ng-init</td>
+      <td style="text-align: center">initiate</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+  </tbody>
+</table>
+
+</section>
+<section class="meta">
+<span class="author">
+  <a href="http://geeklu.com">dfas</a>
+</span>
+<span class="time">
+  /
+  <time datetime="2016-11-02">2016-11-02</time>
+</span>
+<br />
+<span class="license">
+  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">(CC) BY-NC-SA</a>
+</span>
+
+<span class="categories">
+  in categories
+  
+  <a href="/categories/#programming" title="programming">programming</a>&nbsp;
+  
+</span>
+
+
+<span class="tags">
+  tagged with 
+  
+  <a href="/tags/#javascript" title="javascript">javascript</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="comment">
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/2016/11/javascript/" data-title="javascript tittle tattle" data-url="http://localhost:4000/2016/11/javascript/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"geeklu"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+<script type="text/javascript">
+$(function(){
+  $(document).keydown(function(e) {
+    var url = false;
+        if (e.which == 37 || e.which == 74) {  // Left arrow and J
+            
+        url = 'http://localhost:4000/2016/10/today-thoughts/';
+        
+        }
+        else if (e.which == 39 || e.which == 75) {  // Right arrow and K
+            
+        url = 'http://localhost:4000/2016/11/today-question/';
+        
+        }
+        if (url) {
+            window.location = url;
+        }
+  });
+})
+</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-12936429-2']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
