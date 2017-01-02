@@ -54,7 +54,7 @@
         <hr>
         <article class="content">
         <section class="post">
-<h2 id="section">前言</h2>
+<h2 id="qian-yan-">前言</h2>
 
 <p>VoiceOver是苹果“读屏”技术的名称，属于辅助功能的一部分。VoiceOver可以读出屏幕上的信息，以帮助盲人进行人机交互。
 这项技术在苹果的各个系统中都可以看到，OS X，iOS，watchOS，甚至tvOS。
@@ -63,7 +63,7 @@
 
 <p>虽然说苹果默认的UI组件都已经默认支持VoiceOver功能了，但是通常情况下App还是需要对VoiceOver进行适配和优化的，比如说一些自定义复杂UI组件。</p>
 
-<h2 id="section-1">基本使用</h2>
+<h2 id="ji-ben-shi-yong-">基本使用</h2>
 <p>iPhone上开启VoiceOver功能后，就可以通过 <strong>单指左右轻扫</strong> 来遍历当前界面中的所有的AccessibilityElement（可以被VoiceOver访问的UI元素）,当一个AccessibilityElement被选中后，VoiceOver会将AccessibilityElement的信息读出来。 <strong>单指轻点两次</strong> 能够激活当前元素对应的操作，比如当前AccessibilityElement是一个按钮，那么对应的就是按钮的Action事件。</p>
 
 <p>简单点来说在App开发过程中关于VoiceOver我们需要关注如下几点：</p>
@@ -101,7 +101,7 @@
 
 <p>至于AccessibilityElement的事件，最简单的莫过于上面提到 <strong>单指轻点两次</strong> 能够激活当前元素对应的操作了,如果当前AccessibilityElement实现的<code class="highlighter-rouge">public func accessibilityActivate() -&gt; Bool</code>这个方法返回true，那边此逻辑将被调用，否则相当于在AccessibilityElement的accessibilityActivationPoint这个位置点上进行了一次Tap操作。</p>
 
-<h2 id="section-2">高级特性</h2>
+<h2 id="gao-ji-te-xing-">高级特性</h2>
 <p>#### Accessibility Container
 设想下这样的一个场景，一个UIView，内部包含一组用户可以进行交互的内容，每一个内容之间是独立的，但是这些内容不是以子View的形式存在，而是通过Quarz 2D或者Core Text渲染而成，所以这部分内容无法通过上面的方式变成AccessibilityElement。这种情况UIView需要按照UIAccessibilityContainer的方式，来将内部的每一个独立的内容都描述成UIAccessibilityElement的实例，这个时候这个UIView我们称之为Accessibility Container。</p>
 
@@ -177,7 +177,7 @@ public func indexOfAccessibilityElement(element: AnyObject) -&gt; Int
 </code></pre>
 </div>
 
-<h2 id="section-3">建议</h2>
+<h2 id="jian-yi-">建议</h2>
 
 <ul>
   <li>AccessibilityElement的信息尽量简洁，accessibilityLabel不要包含提示性质的文案，避免信息干扰</li>
@@ -228,7 +228,7 @@ public func indexOfAccessibilityElement(element: AnyObject) -&gt; Int
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2016/03/ios-voiceover-programming-guide/" data-title="iOS VoiceOver Programming Guide" data-url="http://tyctac.github.io/2016/03/ios-voiceover-programming-guide/"></div>
+	<div class="ds-thread" data-thread-key="/2016/03/ios-voiceover-programming-guide/" data-title="iOS VoiceOver Programming Guide" data-url="http://localhost:4000/2016/03/ios-voiceover-programming-guide/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -254,12 +254,12 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2015/04/handoff-between-native-app-and-web-browser/';
+        url = 'http://localhost:4000/2015/04/handoff-between-native-app-and-web-browser/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
-        url = 'http://tyctac.github.io/2016/03/tbd-file/';
+        url = 'http://localhost:4000/2016/03/tbd-file/';
         
         }
         if (url) {
@@ -274,7 +274,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>

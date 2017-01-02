@@ -58,6 +58,12 @@
 <ul>
   <li>jquery.getScript()
 跨源请求，不存在xmlhttprequest对象，而且脚本内容获取不到，为什么？</li>
+  <li>Json 转换为复杂java对象问题<a href="http://blog.csdn.net/wistbean/article/detail/48036891">-&gt;</a></li>
+</ul>
+
+<h2 id="todo">TODO</h2>
+<ul>
+  <li>jsp 中&lt;%=request.getParameter(“currentPage”)%&gt;</li>
 </ul>
 
 </section>
@@ -94,7 +100,7 @@
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2016/11/today-question/" data-title="today's questions" data-url="http://tyctac.github.io/2016/11/today-question/"></div>
+	<div class="ds-thread" data-thread-key="/2016/11/today-question/" data-title="today's questions" data-url="http://localhost:4000/2016/11/today-question/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -120,11 +126,13 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2016/11/javascript-find-this/';
+        url = 'http://localhost:4000/2016/11/javascript/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
+        url = 'http://localhost:4000/2016/11/java-stuff/';
+        
         }
         if (url) {
             window.location = url;
@@ -138,7 +146,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>

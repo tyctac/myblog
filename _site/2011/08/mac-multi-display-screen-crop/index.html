@@ -54,12 +54,12 @@
         <hr>
         <article class="content">
         <section class="post">
-<h3 id="section">一.多屏介绍</h3>
+<h3 id="duo-ping-jie-shao-">一.多屏介绍</h3>
 
 <p>mac可以支持多屏显示，有一个屏幕是作为主屏存在的，也就是那个显示Menu Bar以及Dock的屏幕。别的屏幕可以作为扩展屏，或者作为镜像屏幕(其实就是两个屏幕的内容一样)。
 我们可以将Menubar 拖到任意一个屏幕（改变主屏），我们可以调整屏幕的左右或者上下位置，我们可以调整屏幕的错位大小（就是上下或者左右拖动屏幕，最大程度的时候，两个屏幕角对角，以保证俩个屏幕有相交区域，鼠标从一个屏幕进入另一个屏幕，需要从从相交的区域进去）。</p>
 
-<h3 id="nsscreen">二.NSScreen类</h3>
+<h3 id="er-nsscreenlei-">二.NSScreen类</h3>
 
 <p>在Cocoa中，我们可以通过NSScreen类获取所有screen的信息。
 可以通过 <code class="highlighter-rouge">+ (NSArray *)screens</code> 这个类方法获取所有的screen对象，其中第一个元素是放置Menu Bar的屏幕。“The screen containing the menu bar is always the first object (index 0) in the array returned by the screens method.”</p>
@@ -71,7 +71,7 @@
 <p>我们可以通过- (NSRect)frame方法获得screen的frame，包括menu bar以及dock的区域。 <br />
 - (NSRect)visibleFrame获得的区域不包含menu bar以及dock占用的区域。</p>
 
-<h3 id="section-1">三.计算区域并截图</h3>
+<h3 id="san-ji-suan-qu-yu-bing-jie-tu-">三.计算区域并截图</h3>
 
 <p>多个屏幕的情况下，其实系统将所有的screen放置在一个包括所有屏幕的矩形内。
 我们可以通过如下方法计算出整个矩形的frame</p>
@@ -132,7 +132,7 @@
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2011/08/mac-multi-display-screen-crop/" data-title="Mac 多屏显示 编程" data-url="http://tyctac.github.io/2011/08/mac-multi-display-screen-crop/"></div>
+	<div class="ds-thread" data-thread-key="/2011/08/mac-multi-display-screen-crop/" data-title="Mac 多屏显示 编程" data-url="http://localhost:4000/2011/08/mac-multi-display-screen-crop/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -158,12 +158,12 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2011/07/about-field-editor/';
+        url = 'http://localhost:4000/2011/07/about-field-editor/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
-        url = 'http://tyctac.github.io/2011/08/nscell-copywithzone/';
+        url = 'http://localhost:4000/2011/08/nscell-copywithzone/';
         
         }
         if (url) {
@@ -178,7 +178,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>

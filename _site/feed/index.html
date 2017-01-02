@@ -5,607 +5,267 @@
   >
   <channel>
     <title>dfas</title>
-    <link href="http://tyctac.github.io/feed/" rel="self" />
+    <link href="http://localhost:4000/feed/" rel="self" />
     <link href="http://geeklu.com" />
-    <lastBuildDate>2016-11-03T09:25:22+08:00</lastBuildDate>
+    <lastBuildDate>2017-01-02T22:41:50+08:00</lastBuildDate>
     <webMaster>kejinlu@gmail.com</webMaster>
     
     <item>
+      <title>2017-test</title>
+      <link href="http://localhost:4000/2017/01/test/"/>
+      <pubDate>2017-01-01T00:00:00+08:00</pubDate>
+      <author>dfas</author>
+      <guid>http://localhost:4000/2017/01/test</guid>
+      <content:encoded><![CDATA[<h3 id="this-is-a-test-md-file">this is a test md file</h3>
+<p><script type="math/tex">x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}</script> <br />
+\(x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}\)</p>
+
+<p>another test</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>项目总结 3 历史记录模块</title>
+      <link href="http://localhost:4000/2016/12/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93-3-%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95%E6%A8%A1%E5%9D%97/"/>
+      <pubDate>2016-12-26T00:00:00+08:00</pubDate>
+      <author>dfas</author>
+      <guid>http://localhost:4000/2016/12/项目总结-3-历史记录模块</guid>
+      <content:encoded><![CDATA[
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>项目总结 2 可视化分析模块</title>
+      <link href="http://localhost:4000/2016/12/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93-2-%E5%8F%AF%E8%A7%86%E5%8C%96%E5%88%86%E6%9E%90%E6%A8%A1%E5%9D%97/"/>
+      <pubDate>2016-12-26T00:00:00+08:00</pubDate>
+      <author>dfas</author>
+      <guid>http://localhost:4000/2016/12/项目总结-2-可视化分析模块</guid>
+      <content:encoded><![CDATA[<p>边与点的更新还有边标记的更新功能实现都是在update函数中实现的，下面贴下代码：<br />
+1. 将nodes和links绑定到force<br />
+```
+s.force.nodes(this.nodes)</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>        .force("link",d3.forceLink(this.links).distance(50).id(function(d) {
+
+            return d.id;
+
+        }))
+
+        .restart(); ``` 将nodes或links数组绑定到指定的dom元素上，这里以links举例   ``` var link = this.vis.selectAll("line.link")
+
+        .data(this.links); ``` enter部分继续append相应dom元素，exit部分直接删除   ``` linkEnter.append("line")
+
+           .attr("class","link")
+
+           .style("position","relative")
+
+           .style("z-index","-1"); link.exit().remove(); ``` 最后一点，对于某些被绑定的dom的属性的设置，可以直接在设置里面在function中传递参数d将所绑定的数据传递进去，比如：   ``` linktextEnter.append("text")
+
+           .style("font-size","12px")
+
+           .text(function(d){
+
+               return getTag(d.source.type.toString()+d.target.type.toString());
+
+           }) ```  
+</code></pre>
+</div>
+
+<p><strong>以上</strong>就是update函数的核心部分，d3的灵魂就在与将dom元素与数据的绑定之上，可以用绑定的数据对元素进行各种设置和操作，重要的之后想起来再做补充。</p>
+
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>研二上组内前端组内前端项目总结</title>
+      <link href="http://localhost:4000/2016/12/%E7%A0%94%E4%BA%8C%E4%B8%8A%E7%BB%84%E5%86%85%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/"/>
+      <pubDate>2016-12-25T00:00:00+08:00</pubDate>
+      <author>dfas</author>
+      <guid>http://localhost:4000/2016/12/研二上组内项目总结</guid>
+      <content:encoded><![CDATA[<p>给组里干了四个多月的活了，多数做的是前端方向，期间也或多或少的用到了<strong>springmvc</strong>，<strong>neo4j</strong>这些东西，虽然说我并不是很讨厌做前端方面的工作，但是从长远考虑，必须得有一技之长，做系统集成感觉并不是能够很快在技术这个圈子里面立足的，这是我的第一感觉，我也没有能力，没有资源去进一步的进行分析，所以即使像这种左右人生轨迹的重大抉择我也只有靠之前的经验与知识积累来进行自我判断，说的直白点，就是靠感觉，年轻不怕走弯路，不走弯路又怎么知道什么是直路呢，像这种事情我们要想获得比较清醒的认知比较实际的就只能靠自己去经历，然后靠自身去体会去判断了，不管怎样这都是一笔宝贵的人生财富吧。</p>
+
+<p>总觉得有很多东西要写，想把很多自以为很棒的想法写下来，可能是对自己记忆力的一种不自行的体现吧，高效的工作，高效的总结也是很重要的一部分，以前以为学习很简单，看来我是大错特错了，常常都是一件事情入门很容易，然后再进入某个阶段，通过努力或者天分，方法甚至贵人点拨的方式才能进入新的层次，这些都是进入某个领域的必要阶段（我的自己认为的比较靠谱的结论），但是对于我自己来说，通常好奇心严重，装比思想严重，常常到了可以稍微显摆的阶段便不再有深入下去的动力，因为深入下去便伴随着风险，一种付出时间与精力而得不到回报的风险，可能这就是我没有特别专长的原因吧，无论是业余爱好上还是学习上往往都是如此。但是世上的规则都是如此，每个人都没有无限的时间与精力，从这方面来说，上帝还是很公平的，往往关键就是谁先认识到了这个道理，并且作出的合乎自身特点与自身所能利用的资源而正确的选择，最终获得成功。</p>
+
+<p>那么我们为什么要获得成功呢，有必要说明一下，成功，小学语文上的定义是:获得预期的结果。我们为什么要获得预期的结果呢，人生在世，能够经历的事情是有限的，预期的结果就是你为了获得自己想要的某种意识上的答案而必须经历的过程，这就是对成功的自我要求，而如果常常获得不了成功，那就说明你往往获得不了自己想要的某种答案，这对于我们的时间和精力来说都是一种极大的浪费，我的人生目的是追寻生命的意义，而读玩卷书不如行万里路，读书只是一种重要而又远远不够的方式，所以我需要按照正确的方法论的指引合理的分配自己的时间，资源组织自己的行为，来获得自己想要的答案，期间的乐趣也在于此吧。</p>
+
+<p>眼界决定高度，不能怂，数学确实重要，努力学好数学，做好机器学习，加油！！！</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>组内项目组织结构</title>
+      <link href="http://localhost:4000/2016/12/%E7%A0%94%E4%BA%8C%E4%B8%8A%E7%BB%84%E5%86%85%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93-1/"/>
+      <pubDate>2016-12-25T00:00:00+08:00</pubDate>
+      <author>dfas</author>
+      <guid>http://localhost:4000/2016/12/研二上组内项目总结-1</guid>
+      <content:encoded><![CDATA[<p>我负责的部分主要集中在web部分，期间需要用到数据库的操作，所以用到了springmvc作为整个功能部分的框架，数据库是mysql和neo4j图形数据库，neo4j属于nosql的一种，听说在数据时代会有很广阔的应用，我有个<em>小项目</em>的灵感与之有关，有时间得好好研究一下，具体细节与项目中走的弯路和遇到的坑之后会记录下来，如果我还记得的话，或者还认为它有记录下来的必要的话。</p>
+
+<p>首先，项目的功能与组织结构。
+1. 所用到的软件，框架，外部库（按照数据流从底层向上的顺序):<br />
+数据库：mysql，neo4j
+后台：java，springmvc（按照注解）
+前端：d3.js,百度开源的脑图库
+2. 关键功能模块<br />
+可视化分析模块，脑图分析模块，时间线模块
+3. 模块组织结构<br />
+由于功能并不复杂，并没有采用angularjs，这一类框架，而是直接采用引用外部库文件的方式进行js的代码组织，其中在百度脑图的部分由于不能够直接使用它的源代码，所以在它的源代码中做了修改之后，又进行的构建打包的工作，之后的博客中会记录相关内容。</p>
+
+<p>这段时间的感悟：<br />
+1. 很重要的一点就是独立思考和解决问题的能力<br />
+    1. 对比分析，模块套用<br />
+对于一个模块功能出了bug，而同样条件下的另一个模块却能够正常工作，此时应该使用比较分析<br />
+    2. 抓住关键，重点分析<br />
+    3. 注重细节，小心验证<br />
+需要强调的是注意所话费的时间，这必须根据自身的能力与经验进行安排，bug不可能完全排除，所花费的时间与效果也不会是成正比，有些关键问题需要花费大量时间进行排查，而有些则在出现时再解决也不会造成太大损失，<br />
+    4. 想到时再做补充</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Neo4j</title>
+      <link href="http://localhost:4000/2016/11/neo4j/"/>
+      <pubDate>2016-11-05T00:00:00+08:00</pubDate>
+      <author>dfas</author>
+      <guid>http://localhost:4000/2016/11/neo4j</guid>
+      <content:encoded><![CDATA[<p>一个节点可以有一个关系是指向自己的，可以吗？</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Java Stuff</title>
+      <link href="http://localhost:4000/2016/11/java-stuff/"/>
+      <pubDate>2016-11-04T00:00:00+08:00</pubDate>
+      <author>dfas</author>
+      <guid>http://localhost:4000/2016/11/java-stuff</guid>
+      <content:encoded><![CDATA[<h1 id="java-reflection">java reflection</h1>
+<ul>
+  <li>用泛型存储取出来后不能用，（存储的对象中含有包含另一个对象的list）只好用更死板的方法，只是应为没有预先分配存储空间而已。。。
+# hibernate java
+<code class="highlighter-rouge">
+Session session = HibernateUtil.currentSessioin();
+Transaction tran = session.beginTransaction();
+.....
+tran.commit();
+</code></li>
+</ul>
+
+]]></content:encoded>
+    </item>
+    
+    <item>
       <title>today's questions</title>
-      <link href="http://tyctac.github.io/2016/11/today-question/"/>
+      <link href="http://localhost:4000/2016/11/today-question/"/>
       <pubDate>2016-11-03T00:00:00+08:00</pubDate>
       <author>dfas</author>
-      <guid>http://tyctac.github.io/2016/11/today-question</guid>
+      <guid>http://localhost:4000/2016/11/today-question</guid>
       <content:encoded><![CDATA[<h2 id="ajax-function">Ajax function</h2>
 <ul>
   <li>jquery.getScript()
 跨源请求，不存在xmlhttprequest对象，而且脚本内容获取不到，为什么？</li>
+  <li>Json 转换为复杂java对象问题<a href="http://blog.csdn.net/wistbean/article/detail/48036891">-&gt;</a></li>
+</ul>
+
+<h2 id="todo">TODO</h2>
+<ul>
+  <li>jsp 中&lt;%=request.getParameter(“currentPage”)%&gt;</li>
 </ul>
 ]]></content:encoded>
     </item>
     
     <item>
-      <title>tittle tattle</title>
-      <link href="http://tyctac.github.io/2016/11/javascript-find-this/"/>
+      <title>javascript tittle tattle</title>
+      <link href="http://localhost:4000/2016/11/javascript/"/>
       <pubDate>2016-11-02T00:00:00+08:00</pubDate>
       <author>dfas</author>
-      <guid>http://tyctac.github.io/2016/11/javascript-find-this</guid>
-      <content:encoded><![CDATA[<h3 id="several-ways-to-find-this-in-javascript">Several ways to find this in javascript</h3>
+      <guid>http://localhost:4000/2016/11/javascript</guid>
+      <content:encoded><![CDATA[<h2 id="language-core">language core</h2>
+<p>构造函数问题：<br />
+<code class="highlighter-rouge">
+alert(cat1.constructor == Cat); //true
+alert(cat2.constructor == Cat); //true
+alert(cat1.instanceof Cat); //true
+alert(cat2.instanceof Cat); //true
+</code></p>
+
+<h3 id="several-ways-to-find-this-in-javascript">Several ways to find this in javascript</h3>
 
 <ol>
   <li>Function Invocation Pattern</li>
-  <li>Method Invocation Pattern</li>
+  <li>
+    <p>Method Invocation Pattern</p>
+
+    <p>eg:
+<code class="highlighter-rouge">
+function car(){}
+car.show = function(){
+ return this;//this is the object car
+}
+</code></p>
+  </li>
   <li>Constructor Pattern</li>
   <li>Apply Pattern</li>
 </ol>
+
+<h3 id="seajs-example-deploy-problem-window7">sea.js example deploy problem (window7)</h3>
+<ul>
+  <li>在gitbash中按照readme.md步骤不能执行成功，之后再cmd中交替执行结果可以执行成功，应该是环境变量的问题吧—-&gt;<strong>TODO</strong> 真是乱搞，还是之用cmd吧，用什么gitbash，要什么自行车！！！</li>
+  <li>exports 本来是module.exports的一个引用，当只用module.exports（即exports）不够用的时候，此时可以对module.exports重新赋值，这样的话就能够有exports能够保留，module.exports也能够被当作另外的一个接口使用！！！</li>
+  <li>seajs使用首先将sea.js引入到html文件中，教程中的使用spm安装的情况应该是 <strong>node</strong> 中使用的场景</li>
+  <li>使用spm进行合并和压缩（eg：spm build main.js –combine –app-url zxx)</li>
+</ul>
+
+<h3 id="ajax-problem">ajax problem</h3>
+<ul>
+  <li>无可奈何，为了实现异步中的异步，只能再发一次ajax请求不过结果倒也不错</li>
+</ul>
+
+<h3 id="things-about-event">things about event</h3>
+<ul>
+  <li>事件注册方法 ele.addEventListener(type,handler,flag),flag 是一个布尔值，true表示捕捉阶段执行，false表示事件冒泡阶段执行</li>
+</ul>
+
+<h3 id="angularjs">angularJs</h3>
+<ul>
+  <li>模块中定义指令<br />
+<code class="highlighter-rouge">
+var app = angular.module("myApp",[]);
+app.directive("runoobDirective",function(){
+  return {
+       template:"&lt;!&lt;h1&gt;self define directive&lt;/h1&gt;"
+  }
+});
+</code></li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>directives</th>
+      <th style="text-align: center">introduction</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ng-init</td>
+      <td style="text-align: center">initiate</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+  </tbody>
+</table>
 ]]></content:encoded>
     </item>
     
     <item>
       <title>today question</title>
-      <link href="http://tyctac.github.io/2016/10/today-thoughts/"/>
+      <link href="http://localhost:4000/2016/10/today-thoughts/"/>
       <pubDate>2016-10-08T00:00:00+08:00</pubDate>
       <author>dfas</author>
-      <guid>http://tyctac.github.io/2016/10/today-thoughts</guid>
+      <guid>http://localhost:4000/2016/10/today-thoughts</guid>
       <content:encoded><![CDATA[<h2 id="saving-private-ryan">Saving Private Ryan</h2>
 <p>有时候觉得人就是应该</p>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>today question</title>
-      <link href="http://tyctac.github.io/2016/09/today-question/"/>
-      <pubDate>2016-09-30T00:00:00+08:00</pubDate>
-      <author>dfas</author>
-      <guid>http://tyctac.github.io/2016/09/today-question</guid>
-      <content:encoded><![CDATA[<p>在libuv的加分下，可以允许node.js支持数万并发连接？   如何理解</p>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Ubuntu使用环境配置</title>
-      <link href="http://tyctac.github.io/2016/09/blog-test/"/>
-      <pubDate>2016-09-25T00:00:00+08:00</pubDate>
-      <author>dfas</author>
-      <guid>http://tyctac.github.io/2016/09/blog-test</guid>
-      <content:encoded><![CDATA[<p><img src="http://ww3.sinaimg.cn/large/65cc0af7gw1f67pfmy2y2j21hc0xc1kx.jpg" style="width: 80%; height: 80%" /></p>
-
-<p>还记得大学那会儿，特别爱折腾系统，装的最多估计就是Ubuntu系统了，也是从那时候起开始接触Linux，工作之后也就懒得折腾了，选择了同属UNIX系得macOS 。所以很长的时间里就一直使用macOS了。</p>
-
-<p>去年家里买了一个NAS，当时考虑的因素有做工，盘位，系统。最后选择QNAP TS-453 Pro，当时为了便宜选择了从computeruniverse海淘，即使加上关税到手也比国内行货便宜一两千。虽然QNAP的系统比不上群晖，但是这两年已经有很大的改观，用户体验有追赶群晖的趋势。</p>
-
-<p>QNAP TS-453 Pro 四核，四盘位，四千兆网口，内存升级到8G。内置的HD Station支持HDMI显示，HD Station支持一些简单的App，比如Chrome，Kodi，还是比较方便的。TS-453 Pro还支持虚拟化技术，通过Virtualization Station可以安装各种虚拟机，应该是基于KVM技术的；另外Container Station还支持Docker容器，所以使用起来想象空间很大。 没想到今年新的系统开始支持Linux Station，可以有完整的Linux的桌面体验了，当然Linux Station开启后，HD Station 会被关闭，因为都是通过HDMI接口来进行显示的输出。Linux Station是基于LXC来实现的，所以性能优越和原生基本无异。</p>
-
-<p>目前Linux Station还只支持Ubuntu 14.04和16.04这两个LTS版本。想想NAS基本24小时开机，配置个简单的Ubuntu的工作环境，方便平时写写代码，写写文档。在QTS的Linux Station中安装好Ubuntu 16.04，以及确认开启Linux Station后，便可以在显示器上进行操作了。</p>
-
-<p>简单的想了下，想搭建下python和Java的开发环境，以及装一些必要的软件。</p>
-
-<h3 id="python">1. python工作环境配置</h3>
-<p>Ubuntu 16.04安装好了之后默认就带了2.x和3.x的python版本，但是为了更方便的进行版本管理，决定通过pyenv来安装和管理python版本。
-安装pyenv之前先装下git</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo apt-get install git
-</code></pre>
-</div>
-
-<p>然后进行pyenv的安装</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>git clone https://github.com/yyuu/pyenv.git ~/.pyenv
-</code></pre>
-</div>
-
-<p>然后在～/.bashrc 末尾加上下面三行代码</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.pyenv"</span>
-<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PYENV_ROOT</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
-<span class="nb">eval</span> <span class="s2">"</span><span class="k">$(</span>pyenv init -<span class="k">)</span><span class="s2">"</span>
-</code></pre>
-</div>
-
-<p>然后重启Terminal，输入pyenv看命令是否起作用。</p>
-
-<p>下面便可以通过pyenv来安装你所需要的python的版本了，比如</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pyenv install 3.5.1
-</code></pre>
-</div>
-
-<p>这个时候你会发现 悲剧发生了，由于国内的特定网络原因，python安装的下载速度及其缓慢，基本是10k以内的速度无法忍受（突然想到以前python官网一度无法访问），好在还是由办法解决这个问题的，你可以先想办法到官网把安装包单独下载好，比如我讲下载好的包<code class="highlighter-rouge">Python-3.5.1.tar.xz</code>放到<code class="highlighter-rouge">～/Downloads</code>目录下，然后指定build缓存目录后，再运行install命令</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PYTHON_BUILD_CACHE_PATH</span><span class="o">=</span>~/Downloads
-pyenv install 3.5.1
-pyenv rehash
-</code></pre>
-</div>
-
-<p>安装多个版本的python之后可以通过下面的命令来切换全局的python的版本</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pyenv global 3.5.1
-</code></pre>
-</div>
-
-<p>安装后对应版本的pip也是安装好了的。</p>
-
-<p>最近对深度学习有点感兴趣，所以正好打算装个TensorFlow玩一玩，找到官方的安装指南，选择正确的版本进行安装， <a href="https://www.tensorflow.org/versions/r0.9/get_started/os_setup.html#pip-installation">https://www.tensorflow.org/versions/r0.9/get_started/os_setup.html#pip-installation</a>, NAS的配置注定只能使用CPU的，然后选择对应的python版本和Ubuntu的架构版本</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">TF_BINARY_URL</span><span class="o">=</span>https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.9.0-cp35-cp35m-linux_x86_64.whl
-pip install --upgrade <span class="nv">$TF_BINARY_URL</span>
-</code></pre>
-</div>
-
-<p>这个时候你会发现老问题又来了，pip的库在国内访问慢，所以这个时候你最好指定一个国内的pip源进行安装，这里选择豆瓣的源</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pip install --upgrade <span class="nv">$TF_BINARY_URL</span>  -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
-</code></pre>
-</div>
-
-<p>另外如果你想选择一款python的ide可以选择Pycharm的社区版，一般情况下社区版够用了。</p>
-
-<h3 id="java">2.配置Java环境</h3>
-<p>Java目前一般有open jdk，还有oracle jdk，这里安装oracle jdk，你可以自己到oracle官网下载，手动进行安装，也可以通过添加源的方式使用apt-get工具进行安装</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo add-apt-repository ppa:webupd8team/java
-sudo apt-get update
-sudo apt-get install oracle-java8-installer
-</code></pre>
-</div>
-
-<p>安装好了之后可以进行配置，比如如果你系统中安装有多个版本的jdk，那么就可以通过下面的方式来指定默认使用的jdk的版本</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo update-alternatives --config java
-</code></pre>
-</div>
-
-<h3 id="section">3.其他常用软件安装</h3>
-<ul>
-  <li>对应一些独立的第三方下载的deb包，推荐使用GDebi Package Installer （<code class="highlighter-rouge">sudo apt-get install gdebi</code>）</li>
-  <li>中文输入法推荐搜狗输入法，安装搜狗输入法前先安装依赖的包 （<code class="highlighter-rouge">sudo apt-get install fcitx libssh2-1</code>），系统设置中将输入法系统设置为fcitx，然后下载搜狗输入法的包，可以从这里下载 <a href="http://download.pchome.net/utility/lan/ime/download-3955.html">http://download.pchome.net/utility/lan/ime/download-3955.html</a> ,官网的包安装有问题</li>
-  <li>编辑器可以使用github的Atom或者Sublime Text 3</li>
-  <li>markdown编辑器推荐使用haroopad</li>
-  <li>系统优化配置可以使用Unity Tweak Tool （<code class="highlighter-rouge">sudo apt-get install unity-tweak-tool</code>）， 此工具可以设定诸如Launcher的位置等</li>
-  <li>实时顶端状态栏显示系统cpu内存等信息可以通过 indicator multiload 来shi实现 （<code class="highlighter-rouge">sudo apt-get install indicator-multiload</code>）</li>
-  <li>
-    <p>中文字体可以选择微软雅黑，首先到Windows系统下拷贝过来字体文件，进行下列操作之后，便可以选择微软雅黑字体了</p>
-
-    <p><code class="highlighter-rouge">bash
-sudo cp msyh.ttf /usr/share/fonts/
-sudo mkfontscale
-sudo mkfontdir
-sudo fc-cache -fv
-</code></p>
-  </li>
-</ul>
-
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>线性回归</title>
-      <link href="http://tyctac.github.io/2016/08/linear-regression/"/>
-      <pubDate>2016-08-12T00:00:00+08:00</pubDate>
-      <author>dfas</author>
-      <guid>http://tyctac.github.io/2016/08/linear-regression</guid>
-      <content:encoded><![CDATA[<p>上次在<a href="http://geeklu.com/2016/07/deep-learning-intro/">深度学习起步</a>提到了监督学习和非监督学习，这里要讲的回归就属于监督学习的范畴。</p>
-
-<p>这里先介绍下”回归”（Regression）这个词使用的来源，Regression作为术语被首次使用在高尔顿(Francis Galton,1822～1911)在他的1886年发表的一篇研究人类遗传问题的名为“Regression towards mediocrity in hereditary stature”的论文中，其中相关的上下文就是人类身高的分布相对稳定而不产生两极分化，总是回归于平均水平。 后来该术语被其他人采纳，以至于它今天作为一个一般的统计方法存在，详细资料可以看这篇<a href="https://en.wikipedia.org/wiki/Regression_toward_the_mean">https://en.wikipedia.org/wiki/Regression_toward_the_mean</a>。</p>
-
-<h2 id="section">1. 概率知识回顾</h2>
-<p>学习生涯中最早接触<strong>回归</strong>这个概念是高中数学里统计学部分的<strong>线性回归方程</strong>吧，不过估计都忘得差不多了。 <br />
-回归问题属于统计学，现应用于数据分析，机器学习等多个领域，虽然各个领域对回归的细节表述不完全一致，但是其底层的数学意义是完全一致的。
-  这里就简单介绍说下一元线性模型，假设给定一个样本数据的集合：</p>
-
-<script type="math/tex; mode=display">(x^{(1)}, y^{(1)}),\,(x^{(2)}, y^{(2)})\,...\,(x^{(n)},y^{(n)})</script>
-
-<blockquote>
-  <p>这里的(n)不是指数，而是指第n个样本数据 ,为什么没有使用$x_n,y_n$呢，因为当非一元的线性的时候，比如二元的时候第n个样本数据就得这样表示了($x_1^{(n)},x_2^{(n)},y^{(n)}$)来表示，也就是这种情况会出现下标被占用的情况。</p>
-</blockquote>
-
-<p>这里x为自变量(independent variable)，y为因变量(dependent variable)，且假设x，y之间存在线性关系，那么我们可以建立一个模型:</p>
-
-<script type="math/tex; mode=display">y^{(i)} = \theta_0 + \theta_1x^{(i)} + u^{(i)}</script>
-
-<p>其中 $\theta_0$和 $\theta_1$是两个常数，$u^{(i)}$ 是第i个样本数据的误差项，误差项满足下列基本假定：数学期望为0，且是独立的，服从均值为0,方差为常数 $\delta^2$的正态分布。 <br />
-上面这种模型函数，很多地方叫做总体回归函数 ,总体回归函数一般是未知的，且只有一条，而我们一般研究的是另一个叫做样本回归函数的模型：</p>
-
-<p><script type="math/tex">\hat{y}^{(i)} = \hat{\theta}_0 + \hat{\theta}_1x^{(i)}</script>
-其中实际样本中的 $y^{(i)}$ 值和 $\hat{y}^{(i)}$ 的差 $e^{i} =y^{(i)}-\hat{y}^{(i)}$，我们称之为残差。虽然样本回归函数的模型中 $\hat{\theta}_0 ,\, \hat{\theta}_1$ 随着样本的变化而变化，通过样本数据可以估算出相应的值的，在机器学习的训练中，随着训练的不断进行，也就是样本数据的不断增加，模型的参数也是在不断的变化的。为了方便和通用我就将回归函数写成下面的形式：
-<script type="math/tex">y = \theta_0 + \theta_1x</script></p>
-
-<h2 id="section-1">2. 案例分析</h2>
-<p>下面我们来通过实际的例子而且从机器学习的角度来加深理解一元线性回归模型。
-假设下面是某公司某十个月的广告费用和对应的销售额：</p>
-
-<table border="1">
-<tbody>
-<tr><td><em>广告费（万）</em></td><td><em>销售额（万）</em></td></tr>
-<tr><td>4</td><td>9</td></tr>
-<tr><td>8</td><td>20</td></tr>
-<tr><td>9</td><td>22</td></tr>
-<tr><td>8</td><td>15</td></tr>
-<tr><td>7</td><td>17</td></tr>
-<tr><td>12</td><td>23</td></tr>
-<tr><td>6</td><td>18</td></tr>
-<tr><td>10</td><td>25</td></tr>
-<tr><td>6</td><td>10</td></tr>
-<tr><td>9</td><td>20</td></tr>
-</tbody>    
-</table>
-
-<p>这组数据你可以把它看成训练数据，对于输入广告费都对应一个销售额。我们设广告费为自变量x,销售额为因变量y，那么我们的目标就是根据训练数据集(样本)找出最佳的 $\theta_0$, $\theta_1$(就是找出确定的样本回归函数)，然后就可以通过这个回归函数对训练数据外的输入做出结果的评估。
-我们设 $y=h_{(\theta_0,\theta_1)}(x) = \theta_0 + \theta_1x$, 为了方便可以写作$h_{(\theta)}(x) = \theta_0 + \theta_1x$ 。</p>
-
-<blockquote>
-  <p>人们历来喜欢通过函数的几何意义来加深理解，因为将函数在坐标系中进行表达，更加直观。比如一元函数y=f(x)是在二维坐标系中的线,二元函数z=f(x,y)
-是三维坐标系中的曲面，多于二元的函数的几何意义就不太好表达了。</p>
-</blockquote>
-
-<p>一元线性回归函数在二维坐标系统其实就是一条直线，我们现将上述的那些训练数据在二维坐标系中表示出来。 <br />
-<img src="http://ww2.sinaimg.cn/large/65cc0af7gw1f6r04s9c76j20q90hi75x.jpg" width="80%" height="80%" />​</p>
-
-<p>图上散落的那些交叉点就是上表中的数据，然后我们的目标就是根据这些点拟合出一条直线，然后再通过这条直线，对新的广告费用的输入，给出对应的收入的评估。 <br />
-如果通过机器学习的概念来描述这个过程大概是下面的样子： <br />
-<img src="http://ww3.sinaimg.cn/large/65cc0af7gw1f6t9n6icr9j20b4081zkn.jpg" width="50%" height="50%" />  <br />
-图中的h是hypothesis的意思，这是机器学习的专业属于，你可以把它看做一个函数的名字。  <br />
-所以我们这里的目标就是如果来表示h，我这里就假设h就是一个一元线性的函数，可以表示为：<br />
-<script type="math/tex">h_{(\theta)}(x) = \theta_0 + \theta_1x</script>
-所以要想确定h函数，那就是要找出最优的 $\theta_0$和 $\theta_1$的值，使得得到的直线能够最好地拟合训练数据中的所有的点。假设训练数据中有一个点 $(x^{(i)}, y^{(i)})$ ，那么 $h_{(\theta)}(x^{(i)})$ 和 $y^{(i)}$ 越接近越好。然而问题是训练数据中的点有多个，所以我们需要一个评估模型，来对 $\theta_0$和 $\theta_1$的取值进行评估。</p>
-
-<p>$h_{(\theta)}(x^{(i)}) - y^{(i)}$ 可以叫做，第i个样本数据的误差，误差有可能为正也有可能为负数，所以对其做下平方，$(h_{(\theta)}(x^{(i)}) - y^{(i)})^2$ ,这是其中的一个点，然后我们需要综合考虑所有的点，就得到误差的平法和(若你想刨根问底，为啥使用误差平方和，而不是绝对值的和，可以参考这篇文章 <a href="http://blog.sciencenet.cn/blog-430956-621997.html">http://blog.sciencenet.cn/blog-430956-621997.html</a>)
-<script type="math/tex">\sum_{i=0}^m (h_{(\theta)}(x^{(i)}) - y^{(i)})^2</script></p>
-
-<p>上面公式中的m为样本容量。也就是说当误差平方和最小的时候 $\theta_0$和 $\theta_1$是最优的。为了数学上计算方便，将此过程描述成如下：
-<script type="math/tex">\frac{ 1 }{ 2*m }\sum_{i=0}^m (h_{(\theta)}(x^{(i)}) - y^{(i)})^2</script>
-带入h函数,将问题转变成求 $\theta_0$和 $\theta_1$的函数
-<script type="math/tex">J(\theta_0, \theta_1) = \frac{ 1 }{ 2*m }\sum_{i=0}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})^2</script>
-$J(\theta_0, \theta_1)$可以称之为误差代价函数，可以简称为代价函数。 最终问题就是求当$J(\theta_0, \theta_1)$ 取得最小值时，$\theta_0$和 $\theta_1$的值，变成了一个极值求解的问题。</p>
-
-<script type="math/tex; mode=display">\underset{\theta_0,\theta_1}{minimize} \ J(\theta_0, \theta_1)</script>
-
-<blockquote>
-  <p>也许你可以找出其他的误差代价函数，但是对于线性回归问题，平方和误差代价函数是最好的选择。</p>
-</blockquote>
-
-<h2 id="section-2">3. 几何意义</h2>
-<p>为了简化问题，我们先假设 $\theta_0$等于0，也就是直线经过原点，问题就简化成 <br />
-<script type="math/tex">J(\theta_1) = \ \frac{ 1 }{ 2*m }\sum_{i=0}^m (\theta_1x^{(i)} - y^{(i)})^2</script>
-我们假设样本数据为{(1,1),(2,2),(3,3)},将样本数据带入上述函数
-<script type="math/tex">J(\theta_1) = \ \frac{ 1 }{ 2*3 }[{ (\theta_1 - 1)^2}+{ (2*\theta_1 - 2)^2}+{ (3*\theta_1 - 3)^2}]</script>
-经过计算得到
-<script type="math/tex">J(\theta_1) = \ \frac{ 7 }{ 3 }{ (\theta_1 - 1)^2}</script></p>
-
-<blockquote>
-  <p>上面的计算还算简单，直接心算便可，当遇到复杂的多项式的计算的时候，可以借助相关的软件工具来帮忙加快计算，比如可以通过MuPAD(Matlab的一个应用)的simplify</p>
-</blockquote>
-
-<p>为了便于理解画出对应的函数图</p>
-
-<p><img src="http://ww1.sinaimg.cn/large/65cc0af7gw1f6tdlw2ndbj20q90hiwfi.jpg" width="80%" height="80%" /></p>
-
-<p>可以看到当 $\theta_1$取1时，J取得最小时，所以我要所求的回归函数是   <br />
-<script type="math/tex">h(x) = x</script></p>
-
-<p>我们再来回到之前的问题的求解，将广告费和销售额一个个的代入进行计算：   <br />
-<script type="math/tex">J(\theta_0, \theta_1) = \frac{ 1 }{ 2*m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})^2   \\
-J(\theta_0, \theta_1) = \frac{ 1 }{ 2*10 }*[ (\theta_0 + \theta_1*4 - 9)^2 + \\ (\theta_0 + \theta_1*8 - 20)^2+\\ (\theta_0 + \theta_1*9 - 22)^2+\\ (\theta_0 + \theta_1*8 - 15)^2+\\ (\theta_0 + \theta_1*7 - 17)^2+\\ (\theta_0 + \theta_1*12 - 23)^2+\\ (\theta_0 + \theta_1*6 - 18)^2+\\ (\theta_0 + \theta_1*10 - 25)^2+\\ (\theta_0 + \theta_1*6 - 10)^2+\\ (\theta_0</script>
-J(\theta_1) = \ \frac{ 7 }{ 3 }{ (\theta_1 - 1)^2}
-<script type="math/tex">+ \theta_1*9 - 20)^2] \\
-J(\theta_0, \theta_1) =\frac{ 1 }{ 20 } (10*\theta_0^2+158*\theta_0*\theta_1-358*\theta_0+671*\theta_1^2-3014*\theta_1+3457) \\</script>  <br />
-图形化后是一个曲面如下图，所以最优的几何意义就是去面上在 $J(\theta_0, \theta_1)$ 轴上最小的点对应的 $\theta_0$ 和 $\theta_1$的值。<br />
-<img src="http://ww2.sinaimg.cn/large/65cc0af7gw1f6tprb61c1j20l70hp0wn.jpg" width="80%" height="80%" /></p>
-
-<h2 id="section-3">4. 最小二乘法</h2>
-<p>在实际的计算中，比较常用的有最小二乘法和梯度下降法，这节先讲最小二乘法，这个方法其实在高中的数学课本中以公式的形式存在的,假设样本数据容量为n，线性方程为 <code class="highlighter-rouge">y = a + bx</code>，那么对应的a，b分别为</p>
-
-<script type="math/tex; mode=display">\begin{cases}
-b =\frac{\sum_{i=1}^nx_iy_i-n\bar{x}\bar{y}}{\sum_{i=1}^nx_i^2-n\bar{x}^2}\\
-a=\bar{y}-\hat{b}\bar{x}
-\end{cases}</script>
-
-<p>对于 $h_{(\theta)}(x) = \theta_0 + \theta_1x$ 公式则为：</p>
-
-<script type="math/tex; mode=display">\begin{cases}
-\theta_1 =\frac{\sum_{i=1}^nx^{(i)}y^{(i)}-\frac{1}{n}\sum_{i=1}^nx^{(i)}\sum_{i=1}^ny^{(i)}}{\sum_{i=1}^nx_i^2-\frac{1}{n}(\sum_{i=1}^nx^{(i)})^2}\\
-\theta_0=\frac{1}{n}(\sum_{i=1}^nh(x^{(i)})-\theta_1\sum_{i=1}^nx^{(i)})
-\end{cases}</script>
-
-<p>下面我们来对公式进行推导，一般求函数极致有一个方法就是导数法，我们在求代价函数的极小值的时候，算出代价函数的导函数，然后令导函数为零，算出对应的值，还是先从最简单的开始，假设代价函数为：
-<script type="math/tex">J(\theta_1) = \ \frac{ 7 }{ 3 }{ (\theta_1 - 1)^2}</script></p>
-
-<p>可以看到代价函数是一个一元二次函数，对 $\theta_1$ 进行求导，你可先按照整式的乘积算好了再求导，也可以直接利用复合函数的求导法则进行求导，这里按照复合函数的求导方式进行求导：  <br />
-<script type="math/tex">J^{'}(\theta_1) = \ \frac{ 7 }{ 3 }*2*{ (\theta_1 - 1)*1}\\
-\qquad\Downarrow \\
-J^{'}(\theta_1) = \ \frac{ 14 }{ 3 }{ (\theta_1 - 1)}</script>  <br />
-我们令到函数等于0可以算得当 $\theta_1$ 等于1的时候，代价函数取得最小值0。 <br />
-对于上面的二元的代价函数 $J(\theta_0, \theta_1) = \frac{ 1 }{ 2*m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})^2$ 则需要分别对 $\theta_0$ 和 $\theta_1$ 求偏导：</p>
-
-<script type="math/tex; mode=display">\begin{cases}
- \frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1) = \frac{ 1 }{ 2*m }\sum_{i=1}^m 2*(\theta_0 + \theta_1x^{(i)} - y^{(i)})*1 \\
-  \frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1) = \frac{ 1 }{ 2*m }\sum_{i=1}^m 2*(\theta_0 + \theta_1x^{(i)} - y^{(i)})*x^{(i)}
-\end{cases}</script>
-
-<p>化简一下：</p>
-
-<script type="math/tex; mode=display">\begin{cases}
- \frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1) = \frac{ 1 }{ m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)}) \\
-  \frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1) = \frac{ 1 }{ m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})*x^{(i)}
-\end{cases}</script>
-
-<p>我们令偏导数都等于0,然后进行一步步的计算，计算过程其实很简单，主要用到了求和公式的一些特性罢了，详细的过程如下：</p>
-
-<script type="math/tex; mode=display">\begin{cases}
- \frac{ 1 }{ m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})=0 \\
- \frac{ 1 }{ m }\sum_{i=1}^m (\theta_0 + \theta_1x^{(i)} - y^{(i)})*x^{(i)} =0
- \end{cases}\\
-\qquad\Downarrow \\
- \begin{cases}
-\sum_{i=1}^m \theta_0 + \sum_{i=1}^m\theta_1x^{(i)} - \sum_{i=1}^my^{(i)}=0 \\
-\sum_{i=1}^m \theta_0*x^{(i)} + \sum_{i=1}^m\theta_1x^{(i)}*x^{(i)} - \sum_{i=1}^my^{(i)}*x^{(i)} =0
-  \end{cases} \\
-\qquad\Downarrow \\
-  \begin{cases}
- m*\theta_0 + \theta_1*\sum_{i=1}^mx^{(i)} - \sum_{i=1}^my^{(i)}=0 \\
- \theta_0*\sum_{i=1}^m x^{(i)} + \theta_1*\sum_{i=1}^mx^{(i)}*x^{(i)} - \sum_{i=1}^my^{(i)}*x^{(i)} =0
-   \end{cases}\\
-\qquad\Downarrow \\
-   \begin{cases}
-  \theta_0 = \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})  \\
-  \theta_0*\sum_{i=1}^m x^{(i)} + \theta_1*\sum_{i=1}^mx^{(i)}*x^{(i)} - \sum_{i=1}^my^{(i)}*x^{(i)} =0
-    \end{cases}\\
-\qquad\Downarrow \\
-       \begin{cases}
-      \theta_0 = \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})  \\
-      \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})*\sum_{i=1}^m x^{(i)} + \theta_1*\sum_{i=1}^mx^{(i)}*x^{(i)} - \sum_{i=1}^my^{(i)}*x^{(i)} =0
-        \end{cases}\\
-\qquad\Downarrow \\
-\begin{cases}
-\theta_0 = \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})  \\
-\frac{ 1 }{ m }\sum_{i=1}^my^{(i)}*\sum_{i=1}^m x^{(i)} -\frac{ 1 }{ m }*\theta_1*\sum_{i=1}^mx^{(i)}*\sum_{i=1}^m x^{(i)} + \theta_1*\sum_{i=1}^mx^{(i)}*x^{(i)} - \sum_{i=1}^my^{(i)}*x^{(i)} =0
-\end{cases}\\
-\qquad\Downarrow \\
-\begin{cases}
-\theta_0 = \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})  \\
-\frac{ 1 }{ m }\sum_{i=1}^my^{(i)}*\sum_{i=1}^m x^{(i)}  - \sum_{i=1}^my^{(i)}*x^{(i)} =\theta_1*(\frac{ 1 }{ m }*\sum_{i=1}^mx^{(i)}*\sum_{i=1}^m x^{(i)} - \sum_{i=1}^mx^{(i)}*x^{(i)})
-\end{cases}\\
-\qquad\Downarrow \\
-\begin{cases}
-\theta_0 = \frac{ 1 }{ m }(\sum_{i=1}^my^{(i)}-\theta_1*\sum_{i=1}^mx^{(i)})  \\
-\theta_1 = \frac{\frac{ 1 }{ m }\sum_{i=1}^my^{(i)}*\sum_{i=1}^m x^{(i)}  - \sum_{i=1}^my^{(i)}*x^{(i)}}{\frac{ 1 }{ m }*(\sum_{i=1}^mx^{(i)})^2 - \sum_{i=1}^m(x^{(i)})^2}
-\end{cases}\\</script>
-
-<h2 id="section-4">5. 多元线性回归的最小二乘法</h2>
-
-<p>上面的研究的都是一元的线性回归，但是实际应用到，一般都是存在多个自变量的，比如公司的销售额其实不仅仅和广告投入相关，还会受别的很多因素的影响，所以这个时候就出现了多元线性回归的情况了。</p>
-
-<h2 id="section-5">6. 梯度下降法</h2>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Disqus迁移至多说</title>
-      <link href="http://tyctac.github.io/2016/07/disqus-migrate-to-duoshuo/"/>
-      <pubDate>2016-07-27T00:00:00+08:00</pubDate>
-      <author>dfas</author>
-      <guid>http://tyctac.github.io/2016/07/disqus-migrate-to-duoshuo</guid>
-      <content:encoded><![CDATA[<p>Disqus 国内貌似又没发访问了，博客的评论功能基本就废了，想想要不换个国产的得了，至少能用。
-所以最终综合了一下选择了多说，注册，更改嵌入代码，也是很快，嵌入的时候有几个参数需要设置一下。</p>
-
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"ds-thread"</span> <span class="nx">data</span><span class="o">-</span><span class="nx">thread</span><span class="o">-</span><span class="nx">key</span><span class="o">=</span><span class="s2">"{{ page.url | remove:'index.html' }}"</span> 
-<span class="nx">data</span><span class="o">-</span><span class="nx">title</span><span class="o">=</span><span class="s2">"{{ page.title }}"</span> 
-<span class="nx">data</span><span class="o">-</span><span class="nx">url</span><span class="o">=</span><span class="s2">"{{ site.url }}{{ page.url | remove:'index.html' }}"</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
-</span></code></pre>
-</div>
-
-<p>这里需要自己设置的是 thread-key 表示文章的唯一标识，这里取了url的path部分；title 也就是文章的标题；以及当前文章的url。这些都可以通过jekyll的相关变量来实现。
-设置好了，可以尝试访问下，然后就可以在多说的后台中看到数据了。</p>
-
-<p>接下来就想办法把Disqus的历史评论数据搞过来，好在Disqus和多说都支持数据的导出导入。
-Disqus的数据导出，该翻墙的还是得翻墙。导出来的是xml的格式，具体的数据格式说明可以看这里的xsd描述 <a href="https://help.disqus.com/customer/portal/articles/472149-comments-export">https://help.disqus.com/customer/portal/articles/472149-comments-export</a> 。
-Disqus的数据主要包括三个部分：category，thread，post。
-一般情况下category就一个默认的，可以忽略，所以重点就是thread和post了，thread代表文章实体，post代表评论实体。</p>
-
-<p>然后我们再看看多说导入数据的格式要求，<a href="http://dev.duoshuo.com/docs/500d0629448f04782b00000a">http://dev.duoshuo.com/docs/500d0629448f04782b00000a</a> 这个就比较简单了，就thread和post。
-接下来的事情就上脚本，做数据转换了。</p>
-
-<p>直接python3来伺候了，python用来做文本处理还是比较便捷的，直接内置了诸如xml，json，optparse这些便捷的lib，手起刀落，一个转换的工具就好了，<a href="https://github.com/kejinlu/disqus-migrate-to-duoshuo">https://github.com/kejinlu/disqus-migrate-to-duoshuo</a>。</p>
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>深度学习起步</title>
-      <link href="http://tyctac.github.io/2016/07/deep-learning-intro/"/>
-      <pubDate>2016-07-27T00:00:00+08:00</pubDate>
-      <author>dfas</author>
-      <guid>http://tyctac.github.io/2016/07/deep-learning-intro</guid>
-      <content:encoded><![CDATA[<p>深度学习作为机器学习的一个分支也发展了也很多年了，只是一直感觉特别遥远，高深莫测，所以一般都不会接触到。不过近些年深度学习被越来越多的提起，特别是年初AlphaGo和李世石的比赛，打破了电脑在围棋上无法击败人类的预言，深度学习再次被推上风口浪尖。这两年逐渐火起来的自动驾驶，背后也是深度学习，像Google的自动驾驶汽车都需要不断地行驶在真实的路面上进行“学习”。最近流行的Prisma照片艺术化处理软件，其背后的技术也是深度学习：<a href="http://arxiv.org/abs/1508.06576">A Neural Algorithm of Artistic Style</a>。</p>
-
-<p>我们先从机器学习开始吧，通俗点讲机器学习就是指计算机程序随着经验积累而自动提高性能。在机器学习界有一个类似于编程语言中的Hello World问题，即手写数字识别问题，一般都是通过<a href="http://yann.lecun.com/exdb/mnist/">MNIST</a>（Mixed National Institute of Standards and Technology）手写数字图片数据库来训练程序，最后再通过对应的测试数据来测试，得出识别率。
-也就是说如果一个程序对手写数字图片识别的准确率随着不断的训练识别率不断得到提升，那么可以称计算机程序在从训练中进行学习。这里有几个概念，首先任务，这里就是对输入的某个手写图片进行识别；然后是训练，训练则是训练数据，上面的书写数字识别的训练数据便是大量的手写数字图片以及对应的答案；还有就是识别率，识别率会随着不断的学习而变得越来越高，也就是通过学习，程序自己改了自己内部的一些状态，使得对新的手写图片进行识别的时候更加准确。</p>
-
-<p>再来抽象点进行描述，机器学习就是类比人类认识世界的过程，人类通过历史经验进行归纳总结，碰到新的问题后能够根据归纳总价的规律来解决问题。当然机器没有人类大脑这么牛逼的硬件，而有的只是一堆集成电路和软件程序，对于机器学习来讲，机器学习软件通过训练数据来调整优化软件内部计算模型的参数，然后通过优化后的模型参数来处理新的数据，得到结果。</p>
-
-<p>机器学习可以分为两大类：监督学习和无监督学习。监督学习就是训练数据给出数据以及数据对应的标准答案，学习后，对训练样本外的数据做出分类预测；非监督学习就是对没有答案或者标记的数据进行学习，发现数据的结构特性，将相似的数据聚集在一起，这就是所谓的聚类了，聚类并不关心某一类是什么。</p>
-
-<p>我们再来谈谈机器学习的训练数据库，目前在机器视觉这方面比较好些，除了上面Hello World的MNIST数据库，还有全球最大的图像识别数据库<a href="http://image-net.org/">ImageNet</a>,它的缔造者就是斯坦福大学的李飞飞教授，他们利用互联网图片以及众包技术平台来帮助标记这些图片，所以这些图片数据库的构建可以说是“人肉计算”。斯坦福大学每年都会举行一个比赛，邀请谷歌、微软，百度等 IT 企业使用 ImageNet，测试他们的系统运行情况。每年一度的比赛也牵动着各大巨头公司的心弦，过去几年中，系统的图像识别功能大大提高，出错率仅为约 5％ ，比人眼还低。还有一个数据库就是<a href="http://mscoco.org/">MSCOCO</a> ,由微软资助，每年也会举行比赛。</p>
-
-<p>再来说说深度学习，所谓深度是相对于浅层结构的机器学习，这些典型结构包含至多一层或两层非线性特征变换。而深度学习则是增加了计算的层次，原始的数据输入后，会经过多层处理之后才会最终输出得到结果。网络很多都提到深度学习是对人类视觉皮层结构的模拟，但是实际上深度学习的结构更多来源于理论、直觉和经验探索，和神经科学的相关性并没有那么大。拿深度学习中的卷积神经网络来说，确实部分灵感来自于神经科学，但是其和人类大脑的差距还是很大，所以在宣传的时候如果着重强调“神经”这个关键词会给人以错觉。</p>
-
-<p>上面谈到了深度学习的 多层结构，其实里面的每一层都是一些数学计算，有些层里面的节点都包含一些典型的算法，通常我们都是从“回归”相关的算法开始说起，后面会对回归算法进行详细讲解。</p>
-
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Ubuntu使用环境配置</title>
-      <link href="http://tyctac.github.io/2016/07/ubuntu-config/"/>
-      <pubDate>2016-07-23T00:00:00+08:00</pubDate>
-      <author>dfas</author>
-      <guid>http://tyctac.github.io/2016/07/ubuntu-config</guid>
-      <content:encoded><![CDATA[<p><img src="http://ww3.sinaimg.cn/large/65cc0af7gw1f67pfmy2y2j21hc0xc1kx.jpg" style="width: 80%; height: 80%" /></p>
-
-<p>还记得大学那会儿，特别爱折腾系统，装的最多估计就是Ubuntu系统了，也是从那时候起开始接触Linux，工作之后也就懒得折腾了，选择了同属UNIX系得macOS 。所以很长的时间里就一直使用macOS了。</p>
-
-<p>去年家里买了一个NAS，当时考虑的因素有做工，盘位，系统。最后选择QNAP TS-453 Pro，当时为了便宜选择了从computeruniverse海淘，即使加上关税到手也比国内行货便宜一两千。虽然QNAP的系统比不上群晖，但是这两年已经有很大的改观，用户体验有追赶群晖的趋势。</p>
-
-<p>QNAP TS-453 Pro 四核，四盘位，四千兆网口，内存升级到8G。内置的HD Station支持HDMI显示，HD Station支持一些简单的App，比如Chrome，Kodi，还是比较方便的。TS-453 Pro还支持虚拟化技术，通过Virtualization Station可以安装各种虚拟机，应该是基于KVM技术的；另外Container Station还支持Docker容器，所以使用起来想象空间很大。 没想到今年新的系统开始支持Linux Station，可以有完整的Linux的桌面体验了，当然Linux Station开启后，HD Station 会被关闭，因为都是通过HDMI接口来进行显示的输出。Linux Station是基于LXC来实现的，所以性能优越和原生基本无异。</p>
-
-<p>目前Linux Station还只支持Ubuntu 14.04和16.04这两个LTS版本。想想NAS基本24小时开机，配置个简单的Ubuntu的工作环境，方便平时写写代码，写写文档。在QTS的Linux Station中安装好Ubuntu 16.04，以及确认开启Linux Station后，便可以在显示器上进行操作了。</p>
-
-<p>简单的想了下，想搭建下python和Java的开发环境，以及装一些必要的软件。</p>
-
-<h3 id="python">1. python工作环境配置</h3>
-<p>Ubuntu 16.04安装好了之后默认就带了2.x和3.x的python版本，但是为了更方便的进行版本管理，决定通过pyenv来安装和管理python版本。
-安装pyenv之前先装下git</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo apt-get install git
-</code></pre>
-</div>
-
-<p>然后进行pyenv的安装</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>git clone https://github.com/yyuu/pyenv.git ~/.pyenv
-</code></pre>
-</div>
-
-<p>然后在～/.bashrc 末尾加上下面三行代码</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.pyenv"</span>
-<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PYENV_ROOT</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
-<span class="nb">eval</span> <span class="s2">"</span><span class="k">$(</span>pyenv init -<span class="k">)</span><span class="s2">"</span>
-</code></pre>
-</div>
-
-<p>然后重启Terminal，输入pyenv看命令是否起作用。</p>
-
-<p>下面便可以通过pyenv来安装你所需要的python的版本了，比如</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pyenv install 3.5.1
-</code></pre>
-</div>
-
-<p>这个时候你会发现 悲剧发生了，由于国内的特定网络原因，python安装的下载速度及其缓慢，基本是10k以内的速度无法忍受（突然想到以前python官网一度无法访问），好在还是由办法解决这个问题的，你可以先想办法到官网把安装包单独下载好，比如我讲下载好的包<code class="highlighter-rouge">Python-3.5.1.tar.xz</code>放到<code class="highlighter-rouge">～/Downloads</code>目录下，然后指定build缓存目录后，再运行install命令</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PYTHON_BUILD_CACHE_PATH</span><span class="o">=</span>~/Downloads
-pyenv install 3.5.1
-pyenv rehash
-</code></pre>
-</div>
-
-<p>安装多个版本的python之后可以通过下面的命令来切换全局的python的版本</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pyenv global 3.5.1
-</code></pre>
-</div>
-
-<p>安装后对应版本的pip也是安装好了的。</p>
-
-<p>最近对深度学习有点感兴趣，所以正好打算装个TensorFlow玩一玩，找到官方的安装指南，选择正确的版本进行安装， <a href="https://www.tensorflow.org/versions/r0.9/get_started/os_setup.html#pip-installation">https://www.tensorflow.org/versions/r0.9/get_started/os_setup.html#pip-installation</a>, NAS的配置注定只能使用CPU的，然后选择对应的python版本和Ubuntu的架构版本</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">TF_BINARY_URL</span><span class="o">=</span>https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.9.0-cp35-cp35m-linux_x86_64.whl
-pip install --upgrade <span class="nv">$TF_BINARY_URL</span>
-</code></pre>
-</div>
-
-<p>这个时候你会发现老问题又来了，pip的库在国内访问慢，所以这个时候你最好指定一个国内的pip源进行安装，这里选择豆瓣的源</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pip install --upgrade <span class="nv">$TF_BINARY_URL</span>  -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
-</code></pre>
-</div>
-
-<p>另外如果你想选择一款python的ide可以选择Pycharm的社区版，一般情况下社区版够用了。</p>
-
-<h3 id="java">2.配置Java环境</h3>
-<p>Java目前一般有open jdk，还有oracle jdk，这里安装oracle jdk，你可以自己到oracle官网下载，手动进行安装，也可以通过添加源的方式使用apt-get工具进行安装</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo add-apt-repository ppa:webupd8team/java
-sudo apt-get update
-sudo apt-get install oracle-java8-installer
-</code></pre>
-</div>
-
-<p>安装好了之后可以进行配置，比如如果你系统中安装有多个版本的jdk，那么就可以通过下面的方式来指定默认使用的jdk的版本</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo update-alternatives --config java
-</code></pre>
-</div>
-
-<h3 id="section">3.其他常用软件安装</h3>
-<ul>
-  <li>对应一些独立的第三方下载的deb包，推荐使用GDebi Package Installer （<code class="highlighter-rouge">sudo apt-get install gdebi</code>）</li>
-  <li>中文输入法推荐搜狗输入法，安装搜狗输入法前先安装依赖的包 （<code class="highlighter-rouge">sudo apt-get install fcitx libssh2-1</code>），系统设置中将输入法系统设置为fcitx，然后下载搜狗输入法的包，可以从这里下载 <a href="http://download.pchome.net/utility/lan/ime/download-3955.html">http://download.pchome.net/utility/lan/ime/download-3955.html</a> ,官网的包安装有问题</li>
-  <li>编辑器可以使用github的Atom或者Sublime Text 3</li>
-  <li>markdown编辑器推荐使用haroopad</li>
-  <li>系统优化配置可以使用Unity Tweak Tool （<code class="highlighter-rouge">sudo apt-get install unity-tweak-tool</code>）， 此工具可以设定诸如Launcher的位置等</li>
-  <li>实时顶端状态栏显示系统cpu内存等信息可以通过 indicator multiload 来shi实现 （<code class="highlighter-rouge">sudo apt-get install indicator-multiload</code>）</li>
-  <li>
-    <p>中文字体可以选择微软雅黑，首先到Windows系统下拷贝过来字体文件，进行下列操作之后，便可以选择微软雅黑字体了</p>
-
-    <p><code class="highlighter-rouge">bash
-sudo cp msyh.ttf /usr/share/fonts/
-sudo mkfontscale
-sudo mkfontdir
-sudo fc-cache -fv
-</code></p>
-  </li>
-</ul>
-
-]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>关于Xcode7中的tbd文件</title>
-      <link href="http://tyctac.github.io/2016/03/tbd-file/"/>
-      <pubDate>2016-03-31T00:00:00+08:00</pubDate>
-      <author>dfas</author>
-      <guid>http://tyctac.github.io/2016/03/tbd-file</guid>
-      <content:encoded><![CDATA[<p><img src="http://ww3.sinaimg.cn/large/65cc0af7jw1f2gfe8bc7yj20ax0ckwg6.jpg" style="width: 50%; height: 50%" />​</p>
-
-<p>tbd 是 <strong>text-based stub libraries</strong>的意思，
-是苹果在Xcode7中使用的一个技术，便于减少Xcode7中SDK的体积。 <br />
-下面讲解下Xcode7如何通过tbd这个技术减少SDK的大小的。
-Xcode7中和各个平台相关的sdk都在<code class="highlighter-rouge">/Applications/Xcode.app/Contents/Developer/Platforms</code> 这个目录下，你可以看到如下的一些平台：</p>
-
-<p>这里列出了平台的名字 以及对应的动态链接库所需要的架构</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>MacOSX (i386,x86_64)
-iPhoneOS (armv7, armv7s, arm64)
-iPhoneSimulator (i386,x86_64)
-AppleTVOS (arm64)
-AppleTVSimulator (x86_64)
-WatchOS (armv7k)
-WatchSimulator (i386)
-</code></pre>
-</div>
-
-<p>每个平台的SDK都在对应的<code class="highlighter-rouge">Developer/SDKs/</code>的子目录下，比如iPhoneOS的sdk在<code class="highlighter-rouge">/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk</code>下，
-每一个SDK目录下都会包含相应的<strong>动态Framework</strong>以及<strong>dylib</strong>库,分别在SDK目录下的<code class="highlighter-rouge">System/Library/Frameworks</code>和<code class="highlighter-rouge">/usr/lib</code>目录下。 <br />
-在使用tbd之前不管是哪个平台，Framework以及各个单独的dylib库的二进制都得放进来，数量多，体积大。但是真正有必要的其实只是各个模拟器要用的动态库，因为MacOSX的库系统自带，那些诸如iPhoneOS，AppleTVOS，WatchOS这些设备要用的动态库，也只是在设备上真正运行的时候才需要，编译的时候只需要一些简单的信息，符号表啥的，编译通过就好了，真正到设备上去跑的时候才真正需要整个动态库的二进制文件。 <br />
-所以为了节省Xcode的体积，苹果创造了一种tbd文件，用作替代那些设备SDK下的动态库，这里我们以<code class="highlighter-rouge">/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CFNetwork.framework</code>这个动态Framework库为例，进入到CFNetwork.framework目录下你会看到一个<strong>CFNetwork.tbd</strong>文件，cat下</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>---
-archs:           [ armv7, armv7s, arm64 ]
-platform:        ios
-install-name:    /System/Library/Frameworks/CFNetwork.framework/CFNetwork
-current-version: 758.3.15
-exports:         
-  - archs:           [ armv7, armv7s, arm64 ]
-    symbols:         [ '$ld$hide$os4.3$_NSHTTPCookieComment', '$ld$hide$os4.3$_NSHTTPCookieCommentURL', 
-                       '$ld$hide$os4.3$_NSHTTPCookieDiscard', '$ld$hide$os4.3$_NSHTTPCookieDomain', 
-                       '$ld$hide$os4.3$_NSHTTPCookieExpires', '$ld$hide$os4.3$_NSHTTPCookieLocationHeader', 
-                       '$ld$hide$os4.3$_NSHTTPCookieManagerAcceptPolicyChangedNotification', 
-                       '$ld$hide$os4.3$_NSHTTPCookieManagerCookiesChangedNotification', 
-                       '$ld$hide$os4.3$_NSHTTPCookieMaximumAge', '$ld$hide$os4.3$_NSHTTPCookieName', 
-                       '$ld$hide$os4.3$_NSHTTPCookieOriginURL', '$ld$hide$os4.3$_NSHTTPCookiePath', 
-                       '$ld$hide$os4.3$_NSHTTPCookiePort', '$ld$hide$os4.3$_NSHTTPCookieSecure', 
-                       '$ld$hide$os4.3$_NSHTTPCookieValue', '$ld$hide$os4.3$_NSHTTPCookieVersion', 
-                       '$ld$hide$os4.3$_NSNetServicesErrorCode', '$ld$hide$os4.3$_NSNetServicesErrorDomain',
-
-.......
-</code></pre>
-</div>
-
-<p>你会发现其实tbd文件就是一个文本文件，其中包含架构信息，以及在真实运行时候二进制所在的位置，以及包含了动态库的符号表还有类的一些信息，这些信息在编译阶段足够了。<strong><em>通过通过这种技术，可以大大减少所有的设备SDK的二进制动态库的体积，其中包含MacOSX，iPhoneOS，AppleTVOS，WatchOS</em></strong>。 <br />
-模拟器SDK的动态库依然是原始的动态库二进制文件,这点你可以进到<code class="highlighter-rouge">/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/CFNetwork.framework</code>目录下进行验证。</p>
 ]]></content:encoded>
     </item>
     

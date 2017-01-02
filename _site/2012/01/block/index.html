@@ -63,7 +63,7 @@
 
 <hr />
 
-<h3 id="section">1.介绍</h3>
+<h3 id="jie-shao-">1.介绍</h3>
 <p>Block是一个C Level的语法以及运行时的一个特性,非常像标准C中的函数(函数指针)，但是其运行需要编译器和运行时支持,目前LLVM+Clang可以很好的支持Block(苹果修改过的GCC也可以)。Block和函数不同的是其语义 <strong>闭包</strong> 特性，以及可以有匿名block的存在。
 你可以在LLVM的官方网站查看[Block语言规范][link-block-spec]. <br />
 [link-block-spec]:http://clang.llvm.org/docs/BlockLanguageSpec.txt</p>
@@ -139,7 +139,7 @@ Block的调用和函数的调用是非常相似的,如上面定义的blockReturn
 </code></pre>
 </div>
 
-<h3 id="block">3.Block和变量</h3>
+<h3 id="blockhe-bian-liang-">3.Block和变量</h3>
 
 <p>一个Block的内部是可以引用自身作用域外的变量的，包括static变量，extern变量或自由变量（定义一个变量的时候，如果不加存储修饰符，默认情况下就是自由变量auto,auto变量保存在stack中的.除了auto之外还存在register，static等存储修饰符） ,对于自由变量，在Block中是只读的。在引入block的同时，还引入了一种特殊的变量存储修饰符<code class="highlighter-rouge">__block</code>,通过它的变量叫做block变量，block变量在block内部可以进行写操作的。这些变量中，自由变量是最特殊的，在Block声明的时候，自由变量在Block内部只读且其值被固定住（自由变量被拷贝了一份，且限定为const），即使在block调用前改变了这个自由变量的值，block调用的时候，看到的却还是block声明的时候的那个值。</p>
 
@@ -293,7 +293,7 @@ Blocks通常是一小段自包含的代码片段.所以它经常被用于多线�
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2012/01/block/" data-title="Blocks编程" data-url="http://tyctac.github.io/2012/01/block/"></div>
+	<div class="ds-thread" data-thread-key="/2012/01/block/" data-title="Blocks编程" data-url="http://localhost:4000/2012/01/block/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -319,12 +319,12 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2011/10/iphone-cgbi-png-format/';
+        url = 'http://localhost:4000/2011/10/iphone-cgbi-png-format/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
-        url = 'http://tyctac.github.io/2012/01/ios-persistence/';
+        url = 'http://localhost:4000/2012/01/ios-persistence/';
         
         }
         if (url) {
@@ -339,7 +339,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>

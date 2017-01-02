@@ -64,7 +64,7 @@
 <p>使用python直接计算得到的结果是0.30000000000000004
 这其实涉及到浮点数在计算机中的表示方法，舍入的方式，以及如何进行数学运算等问题。</p>
 
-<h2 id="section">一.十进制转二进制</h2>
+<h2 id="shi-jin-zhi-zhuan-er-jin-zhi-">一.十进制转二进制</h2>
 <p>首先看下十进制的浮点数如何通过二进制的方式来表示.
 比如3.6如果使用二进制的方式来进行表示应该如何做呢？
 我们可以将整数和小数分开进行。
@@ -84,9 +84,9 @@
 
 <p>所以3.6使用二进制进行表示的话就是11.100110011001….(1001循环)</p>
 
-<h2 id="ieee754">二.IEEE754标准</h2>
+<h2 id="er-ieee754biao-zhun-">二.IEEE754标准</h2>
 
-<h3 id="ieee-754-">1.IEEE 754 存储格式</h3>
+<h3 id="ieee-754-cun-chu-ge-shi-">1.IEEE 754 存储格式</h3>
 
 <p>在计算机里表示一个数字可没有像我们在纸上写上一个阿拉伯数字那么简单。
 目前的计算机能够认识的就是0101，所以我们的数得转换成二进制表示，但同时数有正负，所以一般有一个符号位的概念。
@@ -103,7 +103,7 @@
 
 <p>双精度浮点数由64位二进制位组成（八个字节），其中1位符号位，11位指数位，52位尾数位。</p>
 
-<h3 id="section-1">2.舍入规则</h3>
+<h3 id="she-ru-gui-ze-">2.舍入规则</h3>
 
 <p>IEEE 754-1985 中提及了四种舍入规则</p>
 
@@ -122,7 +122,7 @@
 但是如果需要保留小数点后面两位，发现两位之后是11,很显然0.1011距离0.11更近，所以果断进位，得到0.11<br />
 如果保留小数点后3位，这个时候问题来了，因为0.1011和0.101,0.110的距离相等，但是由于0.110末位为偶，所以得到0.110</p>
 
-<h2 id="section-2">三.问题解析</h2>
+<h2 id="san-wen-ti-jie-xi-">三.问题解析</h2>
 
 <p>现在我们来看看开始说的0.1+0.2为什么不等于0.3的问题
 在Python中浮点数是64位双精度浮点数，相当于C语言中的double</p>
@@ -166,7 +166,7 @@
 0.29999999999999999<br />
 所以说造成0.1+0.2!=0.3的根本原因在于舍入上。0.1和0.2在舍入的时候都是进位，而0.3没有进位，所以0.3&lt;0.1+0.2</p>
 
-<h2 id="section-3">四.其他</h2>
+<h2 id="si-qi-ta-">四.其他</h2>
 
 <p>如果当我们数值计算的精度超出了IEEE   754所能表达的范围的时候，我们应该怎么办呢？为了满足这个需求，一般在高级语言中都有软件的方式实现，比如Java中的BigDecimal。<br />
 在经济、金融和与人相关的程序中，建议使用十进制浮点数。但是，由于没有硬件支持，用软件实现的十进制浮点计算比硬件实现的二进制浮点计算要慢。不过IBM公司貌似有硬件上的支持https://www.ibm.com/developerworks/wikis/display/WikiPtype/Decimal+Floating+Point</p>
@@ -211,7 +211,7 @@
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2011/03/ieee754-floating-point-arithmetic/" data-title="浮点数解惑" data-url="http://tyctac.github.io/2011/03/ieee754-floating-point-arithmetic/"></div>
+	<div class="ds-thread" data-thread-key="/2011/03/ieee754-floating-point-arithmetic/" data-title="浮点数解惑" data-url="http://localhost:4000/2011/03/ieee754-floating-point-arithmetic/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -237,12 +237,12 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2011/01/check-memory-with-cron-job/';
+        url = 'http://localhost:4000/2011/01/check-memory-with-cron-job/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
-        url = 'http://tyctac.github.io/2011/06/nsimage-imagenamed/';
+        url = 'http://localhost:4000/2011/06/nsimage-imagenamed/';
         
         }
         if (url) {
@@ -257,7 +257,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>

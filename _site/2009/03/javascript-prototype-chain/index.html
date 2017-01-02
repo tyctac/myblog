@@ -58,7 +58,7 @@
   <p>前言:如果想深入理解Javascript的面向对象编程思想,那么对于原型链的理解将十分重要,由于看了李战老师的<悟透Javascript>,产生了很多疑问,于是带着疑问在网络上查找答案,也翻出了Ecma-262来看了,总算明白了一些东西,但还是有些疑问.</悟透Javascript></p>
 </blockquote>
 
-<h3 id="section">一.类别和对象</h3>
+<h3 id="lei-bie-he-dui-xiang-">一.类别和对象</h3>
 <p>在Javascript没有所谓的其他高级语言中的”类”的概念,所有的”数据”除了基本类型便是对象.
 如果从集合论的角度在思考问题,我们可以将所有的这些数据进行分类,那么可以得到如下几类:
 Undefined,Null,Boolean,Number,String还有Object
@@ -81,12 +81,12 @@ Ecma-262文档中有如下表格</p>
 
 <p>我们从这里可以看出在Javascript中Object类别的成员又可以分成两类,普通的对象和函数对象.</p>
 
-<h3 id="build-in-object">2.内建对象(Build-in Object)</h3>
+<h3 id="nei-jian-dui-xiang-build-in-object">2.内建对象(Build-in Object)</h3>
 <p>在Javascript语言中有一些内建对象,其中有Global,Object,Function,Array,String,Boolean,Number,Math,Date,RegExp(注意这里和上面所讲的类别是两码事)还有一些其他的错误类,这里暂不一一列举.这些内建对象其实都是构造器,或者说它们都是函数.这里我们可以通过new运算符创建相应的对象.如</p>
 
 <p>var s = new String(‘string’);这样得到的是一个字符串对象,typeof s 是”object”而如果没有使用new而是var s=String(‘string’);得到的是一个基本类型字符串,typeof s得到的是”string”</p>
 
-<h3 id="prototype">3.原型Prototype</h3>
+<h3 id="yuan-xing-prototype">3.原型Prototype</h3>
 <p>由于Javascript中没有类,那通过什么来实现面向对象中的继承呢,对,就是原型,原型本身也是对象.
 每一个对象都有一个隐式的原型，而函数对象除了隐式的原型引用外，还有一个显式的原型引用。
 在一般情况下，对象的隐式原型是不可以访问的，而函数对象的显式原型可以通过 FunctionName.prototype进行访问，
@@ -114,7 +114,7 @@ Ecma-262文档中有如下表格</p>
 
 <p>一个创建的对象，如果不主动的修改其隐式的原型（当然我们无法修改），那么默认的隐式原型为其constructor的显式原型。</p>
 
-<h3 id="section-1">4.原型链</h3>
+<h3 id="yuan-xing-lian-">4.原型链</h3>
 <p>通过上面的例子我们已经可以隐约的知道，构造函数和通过构造函数创建的对象之间通过原型对象联系在一起了，Javascript也正是通过这种途径来进行继承的。
 我们看上图，MyFunction为一个函数，它的显式原型是FP，当然FP本身也是一个对象，而且其constructor是MyFunction
 o1,o2是通过MyFunction创建的两个对象，这两个对象的隐式原型都是FP.</p>
@@ -168,7 +168,7 @@ o1,o2是通过MyFunction创建的两个对象，这两个对象的隐式原型�
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2009/03/javascript-prototype-chain/" data-title="Javascript原型链研究" data-url="http://tyctac.github.io/2009/03/javascript-prototype-chain/"></div>
+	<div class="ds-thread" data-thread-key="/2009/03/javascript-prototype-chain/" data-title="Javascript原型链研究" data-url="http://localhost:4000/2009/03/javascript-prototype-chain/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -194,12 +194,12 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2009/02/numbers-in-javascript/';
+        url = 'http://localhost:4000/2009/02/numbers-in-javascript/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
-        url = 'http://tyctac.github.io/2009/03/about-death/';
+        url = 'http://localhost:4000/2009/04/about-the-constructor-property-in-javascript/';
         
         }
         if (url) {
@@ -214,7 +214,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>

@@ -56,7 +56,7 @@
         <section class="post">
 <p>当听闻Facebook要开源自己的Animation框架的时候，我还以为是基于Core Animation进行的封装，包含了一些动画效果库。等源码真正出来后，才发现完全想错了，Facebook Pop其实是基于CADisplayLink(Mac平台上使用的CVDisplayLink)实现的独立于Core Animation之外的动画方案。这里就不细说其实现原理了，主要讲讲Facebook Pop如何使用。</p>
 
-<h2 id="section">一.基本概念</h2>
+<h2 id="ji-ben-gai-nian-">一.基本概念</h2>
 <p>在计算机的世界里面，其实并不存在绝对连续的动画，你所看到的屏幕上的动画本质上都是离散的，只是在一秒的时间里面离散的帧多到一定的数量人眼就觉得是连续的了，在iOS中，最大的帧率是60帧每秒。
 iOS提供了Core Animation框架，只需要开发者提供关键帧信息，比如提供某个animatable属性终点的关键帧信息，然后中间的值则通过一定的算法进行插值计算，从而实现补间动画。 Core Aniamtion中进行插值计算所依赖的时间曲线由CAMediaTimingFunction提供。
 Pop Animation在使用上和Core Animation很相似，都涉及Animation对象以及Animation的载体的概念，不同的是Core Animation的载体只能是CALayer，而Pop Animation可以是任意基于NSObject的对象。当然大多数情况Animation都是界面上显示的可视的效果，所以动画执行的载体一般都直接或者间接是UIView或者CALayer。但是如果你只是想研究Pop Animation的变化曲线，你也完全可以将其应用于一个普通的数据对象，比如下面这个对象:</p>
@@ -219,7 +219,7 @@ anim.springSpeed = 6;
 
 <p>此block会在界面的每一帧更新的时候被调用，创建者需要在block中根据当前currentTime和elapsedTime来决定如何更新target的相关属性，以实现特定的动画。当你需要结束动画的时候就在block中返回NO，否则返回YES。</p>
 
-<h2 id="pop-animationcore-animation">四.Pop Animation相比于Core Animation的优点</h2>
+<h2 id="si-pop-animationxiang-bi-yu-core-animationde-you-dian-">四.Pop Animation相比于Core Animation的优点</h2>
 <p>Pop Animation应用于CALayer时，在动画运行的任何时刻，layer和其presentationLayer的相关属性值始终保持一致，而Core Animation做不到。 <br />
 Pop Animation可以应用任何NSObject的对象，而Core Aniamtion必须是CALayer。</p>
 
@@ -257,7 +257,7 @@ Pop Animation可以应用任何NSObject的对象，而Core Aniamtion必须是CAL
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2014/05/facebook-pop-usage/" data-title="Facebook Pop 使用指南" data-url="http://tyctac.github.io/2014/05/facebook-pop-usage/"></div>
+	<div class="ds-thread" data-thread-key="/2014/05/facebook-pop-usage/" data-title="Facebook Pop 使用指南" data-url="http://localhost:4000/2014/05/facebook-pop-usage/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -283,12 +283,12 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2014/05/custom-container-view-controller/';
+        url = 'http://localhost:4000/2014/05/custom-container-view-controller/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
-        url = 'http://tyctac.github.io/2015/04/handoff-between-native-app-and-web-browser/';
+        url = 'http://localhost:4000/2015/04/handoff-between-native-app-and-web-browser/';
         
         }
         if (url) {
@@ -303,7 +303,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>

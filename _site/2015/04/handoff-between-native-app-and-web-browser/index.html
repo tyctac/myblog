@@ -54,7 +54,7 @@
         <hr>
         <article class="content">
         <section class="post">
-<h3 id="handoff">一.Handoff的基本常识</h3>
+<h3 id="handoffde-ji-ben-chang-shi-">一.Handoff的基本常识</h3>
 
 <p>iOS 8以及Mac OS X Yosemite之后引入了一个新的功能特性：Handoff。Handoff也就是Continuity特性，连续互通，比如你用iPhone写邮件写到一半想在Mac上继续写，或者Mac上看到一个网页想在手机上浏览，这些便是Handoff的使用场景了。</p>
 
@@ -71,7 +71,7 @@
 
 <p>苹果已经对很多内置的App做了Handoff支持，如Safari浏览器，邮件，电话，消息，提醒事项等都是支持的，在你开始Handoff编程之前可以先使用这些App进行Handoff功能的体验。</p>
 
-<h3 id="ios-app--web-browser">二.iOS App 到 Web Browser</h3>
+<h3 id="er-ios-app-dao--web-browser">二.iOS App 到 Web Browser</h3>
 
 <p>Handoff编程的核心类便是NSUserActivity了，代表着一个用户的活动，每一个Activity都有一个activityType，用来标识Activity的类型。当App 到 App之间进行Handoff的话，那么接受方需要满足几个条件</p>
 
@@ -93,7 +93,7 @@ self.myActivity.webpageURL = [NSURL URLWithString:@"http://www.taobao.com"];
 
 <p>关于Handoff的调试，由于到目前为止模拟器还是没有支持Handoff的，所以你必须使用开发者证书进行真机调试。</p>
 
-<h3 id="web-browser--ios-app">三.Web Browser 到 iOS App</h3>
+<h3 id="san-web-browser-dao--ios-app">三.Web Browser 到 iOS App</h3>
 
 <p>相比于App到Web Browser，Web Browser到iOS App的Handoff实现起来就复杂一些了。
 首先先描述下大体的流程：</p>
@@ -106,7 +106,7 @@ self.myActivity.webpageURL = [NSURL URLWithString:@"http://www.taobao.com"];
 
 <p>下面讲解详细的操作步骤</p>
 
-<h4 id="section">1.客户端</h4>
+<h4 id="ke-hu-duan-">1.客户端</h4>
 <p>首先当然还是折腾客户端工程，当你创建好工程，创建好App ID，XCode中设置好自己的Developer账户之后，你便可以设置编译的Code Sign的相关东西了，配置都得选自动的，这样就可以通过XCode来管理配置 App ID 以及相应的 Provisioning Profiles了，当你通过developer后台网站就可以看到Provisioning Profiles中有一堆所谓的Managed by Xcode的条目了。</p>
 
 <p>你需要在XCode工程对应的Target的Capabilities这个Tab中开启Associated Domains，这个时候时候你可能会遇到错误提示“You must be a team admin or agent in order to enable this capability.”,其实即使账户是admin还是会报错，这个可能是XCode的bug吧，你需要切换到General这个tab中将Team先选None，然后再切换到你对应的Team，这个时候Team下方显示错误了，其实就是你更改了Entitlements，而这个和Provisioning Profiles有关联，所以你的Provisioning Profiles也需要重新更新，点击Team下方的Fix Issue按钮，等待重新下载新的Provisioning Profiles，然后回到Capabilities这个tab你会发现刚才的错误已经不见了。</p>
@@ -123,7 +123,7 @@ self.myActivity.webpageURL = [NSURL URLWithString:@"http://www.taobao.com"];
 当Mac上的浏览器访问一个网站的时候，此网站的域名如果被某个App的Associated Domains包含了，那么Handoff底层会去这个域名一个指定的路径下访问一个文件，这个指定的路径便是 :
 https://taobao.com/apple-app-site-association ,这个路径需要返回一个签名过的文件数据，里面指定了当前网站所支持Handoff的App ID们，这个下面会提及到</p>
 
-<h4 id="section-1">2.服务器端</h4>
+<h4 id="fu-wu-qi-duan-">2.服务器端</h4>
 <p>需要进行Handoff的网站，需要在https的特定的路径下放一个签名过的文件，这个文件里面指明了Handoff支持哪些App（Domain-approved apps IDs），这个文件的明文为JSON格式,在对JSON文件签名前最好去掉所有无用的空格以及检测下JSON格式的正确性，避免后面带来问题</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="nt">"activitycontinuation"</span><span class="p">:{</span><span class="nt">"apps"</span><span class="p">:[</span><span class="s2">"XN6U3EV979.com.taobao.handoff"</span><span class="p">]}}</span><span class="w">
@@ -142,7 +142,7 @@ https://taobao.com/apple-app-site-association ,这个路径需要返回一个签
 
 <p>生成的文件放到网站根目录下以及确保可以通过指定的路径进行访问。</p>
 
-<h4 id="section-2">3.如何进行本机调试</h4>
+<h4 id="ru-he-jin-xing-ben-ji-diao-shi-">3.如何进行本机调试</h4>
 
 <p>要想在开发机器上进行网站的Handoff的调试则首先的问题就是SSL证书，你需要自己搞一个CA证书，在Mac上可以通过Keychain Access(钥匙串访问)这个App中的证书助理来生成 。</p>
 
@@ -229,7 +229,7 @@ cat json.txt | openssl smime -sign -inkey privateKey.pem -signer lukesmac.cer -n
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2015/04/handoff-between-native-app-and-web-browser/" data-title="Handoff Between iOS App & Website" data-url="http://tyctac.github.io/2015/04/handoff-between-native-app-and-web-browser/"></div>
+	<div class="ds-thread" data-thread-key="/2015/04/handoff-between-native-app-and-web-browser/" data-title="Handoff Between iOS App & Website" data-url="http://localhost:4000/2015/04/handoff-between-native-app-and-web-browser/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -255,12 +255,12 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2014/05/facebook-pop-usage/';
+        url = 'http://localhost:4000/2014/05/facebook-pop-usage/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
-        url = 'http://tyctac.github.io/2016/03/ios-voiceover-programming-guide/';
+        url = 'http://localhost:4000/2016/03/ios-voiceover-programming-guide/';
         
         }
         if (url) {
@@ -275,7 +275,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>

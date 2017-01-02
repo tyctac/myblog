@@ -54,7 +54,7 @@
         <hr>
         <article class="content">
         <section class="post">
-<h3 id="section">1.介绍</h3>
+<h3 id="jie-shao-">1.介绍</h3>
 <p>在Cocoa 中，每一个窗口中的所有NSControl对象(包括按钮，输入框NSTextField…)，都公用一个称之为Field Editor的对象(其实就是一个NSTextView的单例)。</p>
 
 <p>同一时间只可能有一个NSControl对象处于active状态。所以一个窗口会存在一个公用的Field Editor来处理界面中的所有NSControl对象的输入以及键盘响应。
@@ -65,13 +65,13 @@
 <p>当你用鼠标点击一个输入框，使其从一般状态进去编辑状态的时候，
 First Responder先是这个输入框，然后瞬间交给FieldEditor。所以如果你想测试这个，你可以写一个NSTextField的子类，并在becomeFirstResponder和resignFirstResponder中打log，这个时候你会发现 这两个方法会被连续的调用，之后Field Editor成为了FirstResponder。然后你将焦点再次转移到别的控件，这个时候Field Editor的resignFirstResponder会被调用，然后再在另一个NSControl中进行着上面的过程。</p>
 
-<h3 id="field-editordelegate">2.Field Editor的delegate方法</h3>
+<h3 id="field-editorde-delegatefang-fa-">2.Field Editor的delegate方法</h3>
 <p>其实就是NSTextViewDelegate中定义的那些方法
 比如你想改变编辑时按 方向键的行为，你就需要subclass nstextfield并实现下面的方法，</p>
 
 <figure class="highlight"><pre><code class="language-objc" data-lang="objc"><span class="k">-</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="nf">textView</span><span class="p">:(</span><span class="n">NSTextView</span> <span class="o">*</span><span class="p">)</span><span class="nv">aTextView</span> <span class="nf">doCommandBySelector</span><span class="p">:(</span><span class="n">SEL</span><span class="p">)</span><span class="nv">aSelector</span></code></pre></figure>
 
-<h3 id="field-editor">3.自定义的Field Editor</h3>
+<h3 id="zi-ding-yi-de-field-editor">3.自定义的Field Editor</h3>
 <p>有时候，我们可能需要自定义输入框编辑状态下的外观或者行为，这个时候可能需要使用我们自己定义的Field Editor了，
 这里有两个方法，一个是subclass一个nswindow，然后覆盖下面的方法</p>
 
@@ -118,7 +118,7 @@ First Responder先是这个输入框，然后瞬间交给FieldEditor。所以如
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2011/07/about-field-editor/" data-title="关于Field Editor" data-url="http://tyctac.github.io/2011/07/about-field-editor/"></div>
+	<div class="ds-thread" data-thread-key="/2011/07/about-field-editor/" data-title="关于Field Editor" data-url="http://localhost:4000/2011/07/about-field-editor/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -144,12 +144,12 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2011/06/sqlite-autoincrement/';
+        url = 'http://localhost:4000/2011/06/sqlite-autoincrement/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
-        url = 'http://tyctac.github.io/2011/08/mac-multi-display-screen-crop/';
+        url = 'http://localhost:4000/2011/08/mac-multi-display-screen-crop/';
         
         }
         if (url) {
@@ -164,7 +164,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>

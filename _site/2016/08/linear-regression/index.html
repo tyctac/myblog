@@ -58,7 +58,7 @@
 
 <p>这里先介绍下”回归”（Regression）这个词使用的来源，Regression作为术语被首次使用在高尔顿(Francis Galton,1822～1911)在他的1886年发表的一篇研究人类遗传问题的名为“Regression towards mediocrity in hereditary stature”的论文中，其中相关的上下文就是人类身高的分布相对稳定而不产生两极分化，总是回归于平均水平。 后来该术语被其他人采纳，以至于它今天作为一个一般的统计方法存在，详细资料可以看这篇<a href="https://en.wikipedia.org/wiki/Regression_toward_the_mean">https://en.wikipedia.org/wiki/Regression_toward_the_mean</a>。</p>
 
-<h2 id="section">1. 概率知识回顾</h2>
+<h2 id="gai-lu-zhi-shi-hui-gu-">1. 概率知识回顾</h2>
 <p>学习生涯中最早接触<strong>回归</strong>这个概念是高中数学里统计学部分的<strong>线性回归方程</strong>吧，不过估计都忘得差不多了。 <br />
 回归问题属于统计学，现应用于数据分析，机器学习等多个领域，虽然各个领域对回归的细节表述不完全一致，但是其底层的数学意义是完全一致的。
   这里就简单介绍说下一元线性模型，假设给定一个样本数据的集合：</p>
@@ -80,7 +80,7 @@
 其中实际样本中的 $y^{(i)}$ 值和 $\hat{y}^{(i)}$ 的差 $e^{i} =y^{(i)}-\hat{y}^{(i)}$，我们称之为残差。虽然样本回归函数的模型中 $\hat{\theta}_0 ,\, \hat{\theta}_1$ 随着样本的变化而变化，通过样本数据可以估算出相应的值的，在机器学习的训练中，随着训练的不断进行，也就是样本数据的不断增加，模型的参数也是在不断的变化的。为了方便和通用我就将回归函数写成下面的形式：
 <script type="math/tex">y = \theta_0 + \theta_1x</script></p>
 
-<h2 id="section-1">2. 案例分析</h2>
+<h2 id="an-li-fen-xi-">2. 案例分析</h2>
 <p>下面我们来通过实际的例子而且从机器学习的角度来加深理解一元线性回归模型。
 假设下面是某公司某十个月的广告费用和对应的销售额：</p>
 
@@ -134,7 +134,7 @@ $J(\theta_0, \theta_1)$可以称之为误差代价函数，可以简称为代价
   <p>也许你可以找出其他的误差代价函数，但是对于线性回归问题，平方和误差代价函数是最好的选择。</p>
 </blockquote>
 
-<h2 id="section-2">3. 几何意义</h2>
+<h2 id="ji-he-yi-yi-">3. 几何意义</h2>
 <p>为了简化问题，我们先假设 $\theta_0$等于0，也就是直线经过原点，问题就简化成 <br />
 <script type="math/tex">J(\theta_1) = \ \frac{ 1 }{ 2*m }\sum_{i=0}^m (\theta_1x^{(i)} - y^{(i)})^2</script>
 我们假设样本数据为{(1,1),(2,2),(3,3)},将样本数据带入上述函数
@@ -162,7 +162,7 @@ J(\theta_0, \theta_1) =\frac{ 1 }{ 20 } (10*\theta_0^2+158*\theta_0*\theta_1-358
 图形化后是一个曲面如下图，所以最优的几何意义就是去面上在 $J(\theta_0, \theta_1)$ 轴上最小的点对应的 $\theta_0$ 和 $\theta_1$的值。<br />
 <img src="http://ww2.sinaimg.cn/large/65cc0af7gw1f6tprb61c1j20l70hp0wn.jpg" width="80%" height="80%" /></p>
 
-<h2 id="section-3">4. 最小二乘法</h2>
+<h2 id="zui-xiao-er-cheng-fa-">4. 最小二乘法</h2>
 <p>在实际的计算中，比较常用的有最小二乘法和梯度下降法，这节先讲最小二乘法，这个方法其实在高中的数学课本中以公式的形式存在的,假设样本数据容量为n，线性方程为 <code class="highlighter-rouge">y = a + bx</code>，那么对应的a，b分别为</p>
 
 <script type="math/tex; mode=display">\begin{cases}
@@ -241,11 +241,11 @@ J^{'}(\theta_1) = \ \frac{ 14 }{ 3 }{ (\theta_1 - 1)}</script>  <br />
 \theta_1 = \frac{\frac{ 1 }{ m }\sum_{i=1}^my^{(i)}*\sum_{i=1}^m x^{(i)}  - \sum_{i=1}^my^{(i)}*x^{(i)}}{\frac{ 1 }{ m }*(\sum_{i=1}^mx^{(i)})^2 - \sum_{i=1}^m(x^{(i)})^2}
 \end{cases}\\</script>
 
-<h2 id="section-4">5. 多元线性回归的最小二乘法</h2>
+<h2 id="duo-yuan-xian-xing-hui-gui-de-zui-xiao-er-cheng-fa-">5. 多元线性回归的最小二乘法</h2>
 
 <p>上面的研究的都是一元的线性回归，但是实际应用到，一般都是存在多个自变量的，比如公司的销售额其实不仅仅和广告投入相关，还会受别的很多因素的影响，所以这个时候就出现了多元线性回归的情况了。</p>
 
-<h2 id="section-5">6. 梯度下降法</h2>
+<h2 id="ti-du-xia-jiang-fa-">6. 梯度下降法</h2>
 
 </section>
 <section class="meta">
@@ -279,7 +279,7 @@ J^{'}(\theta_1) = \ \frac{ 14 }{ 3 }{ (\theta_1 - 1)}</script>  <br />
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2016/08/linear-regression/" data-title="线性回归" data-url="http://tyctac.github.io/2016/08/linear-regression/"></div>
+	<div class="ds-thread" data-thread-key="/2016/08/linear-regression/" data-title="线性回归" data-url="http://localhost:4000/2016/08/linear-regression/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -305,12 +305,12 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2016/07/disqus-migrate-to-duoshuo/';
+        url = 'http://localhost:4000/2016/07/disqus-migrate-to-duoshuo/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
-        url = 'http://tyctac.github.io/2016/09/blog-test/';
+        url = 'http://localhost:4000/2016/09/today-question/';
         
         }
         if (url) {
@@ -325,7 +325,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>

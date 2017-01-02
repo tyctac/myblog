@@ -64,7 +64,7 @@
 假设我们用公钥加密的过程为PubKeyEncrypt() 公钥解密为 PubKeyDecrypt()
 私钥加密的过程为 PriKeyEncrypt()私钥解密的过程为PriKeyDecrypt()</p>
 
-<h4 id="section">1.身份认证</h4>
+<h4 id="shen-fen-ren-zheng-">1.身份认证</h4>
 
 <p>比如A和B进行交互，A发消息给B，B要怎么样才能判断接受的消息确实来自A呢？ 可以这样
 PriKeyEncrypt(“hello”, A’s Private Key)然后发给B,然后B通过A的公钥来解密，如果正确的解密PubKeyDecrypt(msg,A’s Public Key)得到hello，就说明信息确实来自A
@@ -73,7 +73,7 @@ PriKeyEncrypt(“hello”, A’s Private Key)然后发给B,然后B通过A的公�
 A将自己的公钥（通常是一个CSR–Certificate Signing Request文件，CSR文件包含了你的公钥，以及你的组织和域名的信息）和相关的营业证书或者能够证明法人身份的证件传真发给CA机构，CA机构(第三方的大家都可以信任的)会对A的身份进行全面的认证，确保A就是真正的A（这个时候需要A提供能够证明其身份的证明），同时明确各自在法律上的责任。如果认证成功之后，CA机构使用自己的私钥将A提交的公钥以及相关信息的哈希值进行加密，也叫签名。PriKeyEncrypt(Hash value,CA’s Private Key) 这个时候得到的便是一个数字证书了。用户使用大家都信任的CA机构的Public Key将证书的签名解密可以得到相应的数字证书的哈希值然后比较看是否正确。
 比如B得到A的证书（这个证书别人是无法伪造的，除非得到CA机构的私钥），B通过CA机构的公钥将这个证书解密，得到A的公钥，然后再来使用，这个时候就没有问题了。</p>
 
-<h4 id="section-1">2.数据的保密性和完整性</h4>
+<h4 id="shu-ju-de-bao-mi-xing-he-wan-zheng-xing-">2.数据的保密性和完整性</h4>
 
 <p>也许很多人看到数据的保密性会直接想到，通过非对称的方式对传输的数据进行加密不就可以保证了数据的保密性了么？
 但是有一个成本的问题，非对称加密解密的成本比对称加密大的多，
@@ -84,7 +84,7 @@ A将自己的公钥（通常是一个CSR–Certificate Signing Request文件，C
 保障数据的完整性，我们通常的做法就是通过哈希函数对需要传输的数据进行哈希求值（哈希值也称为输入数据的数字指纹Digital Fingerprint或消息摘要Message Digest等），一般情况下我们可以使用MD5或者SHA-1，一般情况下认为，只要原文有一点变化，哈希值就会变化。
 算出的哈希值附在消息上一起发送给对方B，为了确保A在发给B的过程中，为了防止哈希值和原文同时被恶意修改，我们可以通过使用A的私钥对哈希值进行一次加密，这样只有得到A的私钥才能正确的修改这个哈希值。</p>
 
-<h4 id="section-2">3.不可否认性</h4>
+<h4 id="bu-ke-fou-ren-xing-">3.不可否认性</h4>
 
 <p>这个比较好理解，比如A和B，A经过CA认证了，如果A通过自己的私钥加密发送消息给了B
 那么A就无法否认了，因为只有使用A的私钥加密的信息才能被A的公钥进行解密。</p>
@@ -121,7 +121,7 @@ A将自己的公钥（通常是一个CSR–Certificate Signing Request文件，C
 </section>
 <section class="comment">
 <!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="/2009/12/public-key-cryptography/" data-title="Public-key cryptography" data-url="http://tyctac.github.io/2009/12/public-key-cryptography/"></div>
+	<div class="ds-thread" data-thread-key="/2009/12/public-key-cryptography/" data-title="Public-key cryptography" data-url="http://localhost:4000/2009/12/public-key-cryptography/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -147,12 +147,12 @@ $(function(){
     var url = false;
         if (e.which == 37 || e.which == 74) {  // Left arrow and J
             
-        url = 'http://tyctac.github.io/2009/12/dive-into-the-charset-of-java/';
+        url = 'http://localhost:4000/2009/12/dive-into-the-charset-of-java/';
         
         }
         else if (e.which == 39 || e.which == 75) {  // Right arrow and K
             
-        url = 'http://tyctac.github.io/2010/06/git-internals/';
+        url = 'http://localhost:4000/2010/06/git-internals/';
         
         }
         if (url) {
@@ -167,7 +167,7 @@ $(function(){
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2016 by <a href="http://geeklu.com/about/">Luke</a> | <span class="label label-info">2016-11-03 09:25:22 CST</span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> | Copyright 2008 - 2017 by <a href="https://tyctac.github.io/">dfas</a> | <span class="label label-info">2017-01-02 22:41:50 CST</span></small></p>
     </footer>
 
     </div>
